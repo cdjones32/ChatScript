@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Perform the Postgres build
+cd /home/vagrant/ChatScript/SRC
+make clean && make debugpgserver

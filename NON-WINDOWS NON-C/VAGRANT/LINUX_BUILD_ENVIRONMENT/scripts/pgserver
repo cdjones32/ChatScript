@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cd /home/vagrant/ChatScript/BINARIES/
+./ChatScriptpg pguser=" host = 127.0.0.1 port = 5432 user = vagrant password = vagrant "

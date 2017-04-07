@@ -1,0 +1,3 @@
+CREATE DATABASE users;
+CREATE USER vagrant WITH PASSWORD 'vagrant';
+GRANT ALL PRIVILEGES ON DATABASE users to vagrant;

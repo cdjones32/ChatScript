@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+build_server
+build_pg
+build_mongo
