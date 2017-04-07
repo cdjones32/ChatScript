@@ -174,9 +174,35 @@ static size_t convertFromHex(unsigned char* ptr,unsigned char* from)
 	return ptr - start;
 }
 
+// Checks the Postgres connection before attempting an action (to allow recovery from dropped/lost sessions)
+// Performs a simple Select (not from a table) to test whether the connection is still valid. If the session is no longer
+// valid (for example, a DB restart, session timeout, cluster failover), the connection will be reset to allow the
+// Postgres client to attempt reconnection on the next access.
+size_t checkConnection()
+{
+    PGresult *res = PQexec(usersconn, "SELECT 1 AS ping;");
+
+    int status = (int) PQresultStatus(res);
+
+    if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)
+    {
+        char* msg = PQerrorMessage(usersconn);
+        PQclear(res);
+        PQreset(usersconn);
+
+        ReportBug("Postgres checkConnection failed for %s PG status(%d): %s (attempting reset) ", pguserFilename, status, msg);
+        return status;
+    }
+    PQclear(res);
+    return 0;
+}
+
 size_t pguserRead(void* buf,size_t size, size_t count, FILE* file)
 {
-	char* buffer = (char*)buf;
+	// Check the connection is still valid
+    checkConnection();
+
+    char* buffer = (char*)buf;
 	sprintf(buffer,(char*)"SELECT file FROM userfiles WHERE userid = '%s' ;",pguserFilename); // one table per user
 	PGresult   *res = PQexec(usersconn, (const char*)buffer);  
 	int status = (int) PQresultStatus(res);
@@ -223,6 +249,10 @@ size_t pguserWrite(const void* buf,size_t size, size_t count, FILE* file)
 {
 	unsigned int before, after;
 	unsigned char* buffer = (unsigned char*)buf;
+	
+	// Check the connection is still valid
+    checkConnection();
+
 	convert2Hex(buffer, size * count,(unsigned char*) pgfilesbuffer,before,after); // does an update
 	PGresult   *res = PQexec(usersconn, pgfilesbuffer);  // do insert first (which may fail or succeed)-- want upsert pending postgres 9.5
 	int status = (int) PQresultStatus(res);
