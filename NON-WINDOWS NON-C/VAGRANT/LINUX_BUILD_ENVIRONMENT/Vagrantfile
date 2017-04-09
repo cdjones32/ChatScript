@@ -1,0 +1,85 @@
+# Vagrantfile is a Ruby script. The syntax (obviously) needs to conform to the Ruby language spec.
+
+# Installs the dependencies required for building the Postgres Version
+$script = <<SCRIPT
+
+# If the file doesn't exist, do the installs (assume if it exists we have done them)
+if [ ! -f epel-release-7-9.noarch.rpm ]; then
+    
+  # Install the EPEL Repo
+  curl -O http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
+  sudo rpm -ivh epel-release-7-9.noarch.rpm
+  
+  # Update the repository list 
+  sudo yum check-update
+  
+  # Install the development tools and the dependencies
+  sudo yum -y group install "Development Tools"
+  sudo yum -y install libcurl-devel
+  sudo yum -y install libpqxx-devel
+  
+  # Install Postgres for testing
+  sudo yum -y install postgresql-server postgresql-contrib
+  sudo postgresql-setup initdb
+ 
+  # Copy the Vagrant config for password authentication and access from the Host
+  sudo cp /vagrant/config/pg_hba.conf /var/lib/pgsql/data/pg_hba.conf
+  sudo cp /vagrant/config/postgresql.conf /var/lib/pgsql/data/postgresql.conf
+
+  # Restart the POSTGRES Service
+  sudo service postgresql restart
+   
+  # Setup a default user for testing
+  sudo -u postgres bash -c "psql -d postgres -f /vagrant/scripts/init_database.sql"
+  
+  # Install dependencies for MongoDB development
+  sudo yum -y install libmongo-client-devel
+  sudo yum -y install mongo-c-driver-devel
+  sudo yum -y install libbson-devel
+  sudo yum -y install cyrus-sasl-devel
+  
+  # Simple Editor
+  sudo yum -y install nano
+    
+  # Ensure the LinuxChatScript64 file is executable for our local client
+  chmod +x /home/vagrant/ChatScript/BINARIES/LinuxChatScript64
+
+fi
+
+# Copy Support Scripts to the binary folder
+cp -rp /vagrant/scripts/* /usr/local/bin/
+
+# Perform the Postgres build
+cd /home/vagrant/ChatScript/SRC
+# make clean && make pgserver
+
+SCRIPT
+
+# This is the main entry point for the vagrant configuration. The "2" indicates that the configuration conforms to the Vagrant Version 2 spec.
+# Documentation is: https://www.vagrantup.com/docs/vagrantfile/
+Vagrant.configure("2") do |config|
+
+  # Specifies the base Operating System image to use for the Virtualbox VM. Documentation: https://www.vagrantup.com/docs/boxes.html
+  # For this example we are just using a Vagrant default Ubuntu 14 image. These images will be dowloaded and cached the first time you run vagrant.
+  config.vm.box = "bento/centos-7.3"
+
+  # This section configures the parameters for the Virtualbox Virtual Machine. Name is the most significant.
+  # Documentation: https://www.vagrantup.com/docs/virtualbox/
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 1024
+    v.cpus = 2
+    v.name = "chatscript-linux-build"
+  end
+
+  # Forward the default ChatScript port so we can perform testing from the Host if required
+  config.vm.network :forwarded_port, host: 11024, guest: 1024
+
+  # Add a port for Postgres forwarding (for access using Host Tools)
+  config.vm.network :forwarded_port, host: 15432, guest: 5432
+
+  # Share the base Chatscript folder under the ChatScript Directory
+  config.vm.synced_folder "../../../", "/home/vagrant/ChatScript/", create: true
+
+  # Provision the VM, installing the C++ development environment and the required development dependencies
+  config.vm.provision "shell", inline: $script
+end

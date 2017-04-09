@@ -37,13 +37,13 @@ mongoserver: DEFINES+= -DLOCKUSERFILE=1 -DEVSERVER=1 -DEVSERVER_FORK=1 -DDISCARD
 mongoserver: PGLOAD= -pthread
 mongoserver: all
 mongoserver: EXECUTABLE=../BINARIES/ChatScriptMongo
-mongoserver: INCLUDEDIRS=-Iinclude -I/usr/local/include/libbson-1.0 -I/usr/local/include/libmongoc-1.0
+mongoserver: INCLUDEDIRS=-Iinclude -I/usr/local/include/libbson-1.0 -I/usr/local/include/libmongoc-1.0 -I/usr/include/libbson-1.0 -I/usr/include/libmongoc-1.0
 mongoserver: CFLAGS=-c   -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing -g
 
 debugmongoserver: DEFINES+= -DLOCKUSERFILE=1  -DDEBUG -DEVSERVER=1 -DEVSERVER_FORK=1  -DDISCARDPOSTGRES=1  -DDISCARDMYSQL=1
 debugmongoserver: PGLOAD= -lpq -pthread
 debugmongoserver: all
-debugmongoserver: INCLUDEDIRS=-Iinclude -I/usr/local/include/libbson-1.0 -I/usr/local/include/libmongoc-1.0
+debugmongoserver: INCLUDEDIRS=-Iinclude -I/usr/local/include/libbson-1.0 -I/usr/local/include/libmongoc-1.0 -I/usr/include/libbson-1.0 -I/usr/include/libmongoc-1.0
 debugmongoserver: EXECUTABLE=../BINARIES/ChatScriptMongoDebug
 debugmongoserver: CFLAGS=-c  -Wall  -funsigned-char  -Wno-write-strings -Wno-char-subscripts -Wno-strict-aliasing -g
 

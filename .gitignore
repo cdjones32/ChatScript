@@ -2,6 +2,7 @@
 VS2010/
 VS2015/
 TOPIC/BUILD*
+
 mackore/KoreNLPXC/KoreNLPXC.xcodeproj/xcuserdata/
 mackore/KoreNLPXC/KoreNLPXC.xcodeproj/project.xcworkspace/xcuserdata/
 
@@ -11,6 +12,7 @@ TMP/**/*.bin
 USERS/**/*.txt
 LOGS/**/*.txt
 VERIFY/**/*.txt
+
 
 # ignore so it does not get committed by mistake on windows
 BINARIES/MacChatScript
@@ -31,3 +33,6 @@ private/KORA/TESTS/*.swp
 
 # force keep
 !DICT/ENGLISH/
+
+# Ignore Vagrant Working Directory
+.vagrant/
