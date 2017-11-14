@@ -261,13 +261,22 @@ size_t pguserWrite(const void* buf,size_t size, size_t count, FILE* file)
 
 	// convert user data to hex
 	unsigned char* buffer = (unsigned char*)buf;
-	convert2Hex(buffer, size * count,(unsigned char*) pgfilesbuffer); // does an update
+
+	// The following line was no longer being used. It was converting the buffer to hex, but it was never used. (Since 7.6)
+	// convert2Hex(buffer, size * count,(unsigned char*) pgfilesbuffer); // does an update
+
+    // This is where we need to escape the bytea buffer or Postgres throws errors if either the input or output contains invalid characters (" \n etc.)
+    unsigned char * escapedBuffer;
+    size_t escapedBufferLength;
+
+    // Process the passed in buffer and escape as per the Postgres Bytea requirements.
+    escapedBuffer = PQescapeByteaConn(usersconn, buffer, size * count, &escapedBufferLength);
 
 	// run insert sql
 	// params are
-	// $1::bytea   - filedata
+	// $1::bytea   - filedata (escaped for bytea)
 	// $2::varchar - userid
-	const char *paramValues[2] = {(char*)buffer, (char*)pguserFilename};
+	const char *paramValues[2] = {(char*)escapedBuffer, (char*)pguserFilename};
 	PGresult   *res = PQexecParams(usersconn,
 								insertsql,
 								2,
@@ -279,6 +288,7 @@ size_t pguserWrite(const void* buf,size_t size, size_t count, FILE* file)
 
 	int status = (int) PQresultStatus(res);
 	PQclear(res);
+
 	if (status == PGRES_FATAL_ERROR && updatesql) // we don't already have a record
 	{
 		// call update sql with same args as insert sql
@@ -297,8 +307,13 @@ size_t pguserWrite(const void* buf,size_t size, size_t count, FILE* file)
 
     if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR) 
 	{
-		ReportBug("Postgres filessys write failed for %s",pguserFilename);
+	    // If we are failing to write the userfile, we need to log the reason...
+		char* msg;
+        msg = PQerrorMessage(usersconn);
+        ReportBug("Postgres filessys write failed for %s: %s", pguserFilename, msg);
 	}
+	// Free the buffer we used for escaping the BYTEA data
+	PQfreemem(escapedBuffer);
 	return size * count;
 }
 
