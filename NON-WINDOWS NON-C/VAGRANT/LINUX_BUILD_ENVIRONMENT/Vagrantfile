@@ -45,9 +45,9 @@ if [ ! -f epel-release-7-9.noarch.rpm ]; then
   sudo yum -y install nano
     
   # Other tools to help debugging and development
-  sudo yum install telnet
-  sudo yum install entr 
-  sudo yum install nc
+  sudo yum -y install telnet
+  sudo yum -y install entr 
+  sudo yum -y install nc
 
   # Ensure the LinuxChatScript64 file is executable for our local client
   chmod +x /home/vagrant/ChatScript/BINARIES/LinuxChatScript64
