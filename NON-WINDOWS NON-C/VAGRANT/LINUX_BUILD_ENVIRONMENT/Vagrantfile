@@ -7,8 +7,11 @@ $script = <<SCRIPT
 if [ ! -f epel-release-7-9.noarch.rpm ]; then
     
   # Install the EPEL Repo
-  curl -O http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
-  sudo rpm -ivh epel-release-7-9.noarch.rpm
+  # curl -O http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
+  # sudo rpm -ivh epel-release-7-9.noarch.rpm
+  
+  curl -O https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  sudo rpm -ivh epel-release-latest-7.noarch.rpm  
   
   # Update the repository list 
   sudo yum check-update
@@ -41,9 +44,13 @@ if [ ! -f epel-release-7-9.noarch.rpm ]; then
   # Simple Editor
   sudo yum -y install nano
     
+  # Other tools to help debugging and development
+  sudo yum install telnet
+  sudo yum install entr 
+  sudo yum install nc
+
   # Ensure the LinuxChatScript64 file is executable for our local client
   chmod +x /home/vagrant/ChatScript/BINARIES/LinuxChatScript64
-
 fi
 
 # Copy Support Scripts to the binary folder
@@ -61,7 +68,7 @@ Vagrant.configure("2") do |config|
 
   # Specifies the base Operating System image to use for the Virtualbox VM. Documentation: https://www.vagrantup.com/docs/boxes.html
   # For this example we are just using a Vagrant default Ubuntu 14 image. These images will be dowloaded and cached the first time you run vagrant.
-  config.vm.box = "bento/centos-7.3"
+  config.vm.box = "bento/centos-7.4"
 
   # This section configures the parameters for the Virtualbox Virtual Machine. Name is the most significant.
   # Documentation: https://www.vagrantup.com/docs/virtualbox/
