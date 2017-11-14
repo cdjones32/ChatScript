@@ -10,14 +10,21 @@ unsigned int userCacheCount = 1;		// holds 1 user by default
 unsigned int userCacheSize = DEFAULT_USER_CACHE; // size of user file buffer (our largest buffers)
 int volleyLimit =  -1;					// default save user records to file every n volley (use default 0 if this value is unchanged by user)
 char* userDataBase = NULL;				// current write user record base
+unsigned int userTopicStoreSize,userTableSize; // memory used which we will display
 
-void InitCache(unsigned int dictStringSize)
+void InitCache()
 {
-	cacheBase = (char*) malloc(dictStringSize + userTopicStoreSize + userTableSize );
+	if (cacheBase != 0) return;	// no need to reallocate on reload
+	
+	userTableSize = userCacheCount * 3 * sizeof(unsigned int);
+	userTableSize /= 64;
+	userTableSize = (userTableSize * 64) + 64; // 64 bit align both ends
+
+	cacheBase = (char*) malloc( userTopicStoreSize + userTableSize );
 	if (!cacheBase)
 	{
-		printf((char*)"Out of  memory space for dictionary w user cache %d %d %d %d\r\n",dictStringSize,userTopicStoreSize,userTableSize,MAX_ENTRIES);
-		ReportBug((char*)"FATAL: Cannot allocate memory space for dictionary %ld\r\n",(long int)(dictStringSize + userTopicStoreSize))
+		printf((char*)"Out of  memory space for user cache %d %d %d\r\n",userTopicStoreSize,userTableSize,MAX_DICTIONARY);
+		ReportBug((char*)"FATAL: Cannot allocate memory space for user cache %ld\r\n",(long int) userTopicStoreSize)
 	}
 	cacheIndex = (unsigned int*) (cacheBase + userTopicStoreSize); // linked list for caches - each entry is [3] wide 0=prior 1=next 2=TIMESTAMP
 	char* ptr = cacheBase;
@@ -30,16 +37,13 @@ void InitCache(unsigned int dictStringSize)
 	}
 	cacheIndex[PRIOR(0)] = userCacheCount-1; // last one as prior
 	cacheIndex[NEXT(userCacheCount-1)] = 0;	// start as next one (circular list)
+	ClearNumbers();
 }
 
 void CloseCache()
 {
 	free(cacheBase);
 	cacheBase = NULL;
-#ifdef SEPARATE_STRING_SPACE 	
-	free(stringEnd);
-	stringEnd = NULL;
-#endif
 }
 
 static void WriteCache(unsigned int which,size_t size)
@@ -55,7 +59,7 @@ static void WriteCache(unsigned int which,size_t size)
 	*at = 0;
 	char filename[SMALL_WORD_SIZE];
 	strcpy(filename,ptr); // safe separation
-	*at = '\r';
+	*at = '\r'; // legal
 	clock_t start_time = ElapsedMilliseconds();
 
 	FILE* out = userFileSystem.userCreate(filename); // wb binary file (if external as db write should not fail)
@@ -98,7 +102,7 @@ static void WriteCache(unsigned int which,size_t size)
 	}
 #endif
 #endif
-	EncryptableFileWrite(ptr,1,size,out); // user topic file write
+	EncryptableFileWrite(ptr,1,size,out,userEncrypt,"USER"); // user topic file write
 	userFileSystem.userClose(out);
 	if (trace & TRACE_USERCACHE) Log((server) ? SERVERLOG : STDTRACELOG,(char*)"write out cache (%d)\r\n",which);
 	if (timing & TIME_USERCACHE) {
@@ -200,16 +204,18 @@ void CopyUserTopicFile(char* newname)
 {
 	char file[SMALL_WORD_SIZE];
 	sprintf(file,(char*)"%s/topic_%s_%s.txt",users,loginID,computerID);
-
+	if (stricmp(language, "english")) sprintf(file, (char*)"%s/topic_%s_%s_%s.txt", users, loginID, computerID,language);
 	char newfile[MAX_WORD_SIZE];
 	sprintf(newfile,(char*)"LOGS/%s-topic_%s_%s.txt",newname,loginID,computerID);
-	CopyFile2File(file,newfile,false);	
+	if (stricmp(language, "english")) sprintf(newfile, (char*)"LOGS/%s-topic_%s_%s_%s.txt", newname, loginID, computerID, language);
+	CopyFile2File(file,newfile,false);
 }
 
 char* GetFileRead(char* user,char* computer)
 {
 	char word[MAX_WORD_SIZE];
 	sprintf(word,(char*)"%s/%stopic_%s_%s.txt",users,GetUserPath(loginID),user,computer);
+	if (stricmp(language,"english")) sprintf(word, (char*)"%s/%stopic_%s_%s_%s.txt", users, GetUserPath(loginID), user, computer,language);
 	char* buffer;
 	if ( filesystemOverride == NORMALFILES) // local files
 	{
@@ -255,7 +261,7 @@ char* GetFileRead(char* user,char* computer)
 	if (in) // read in data if file exists
 	{
 		size_t readit;
-		readit = DecryptableFileRead(buffer,1,userCacheSize,in); // reading topic file of user
+		readit = DecryptableFileRead(buffer,1,userCacheSize,in,userEncrypt,"USER"); // reading topic file of user
 		buffer[readit] = 0;
 		buffer[readit+1] = 0; // insure nothing can overrun
 		userFileSystem.userClose(in);

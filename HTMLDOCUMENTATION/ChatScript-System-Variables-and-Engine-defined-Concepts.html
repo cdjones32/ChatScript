@@ -9,12 +9,7 @@
 </head>
 <body>
 <h1 id="chatscript-system-variables-and-engine-defined-concepts">ChatScript System Variables and Engine-defined Concepts</h1>
-<blockquote>
-<p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
-</blockquote>
-<blockquote>
-<p>Revision 12/7/2016 cs6.91</p>
-</blockquote>
+<p>© Bruce Wilcox, gowilcox@gmail.com www.brilligunderstanding.com <br>Revision 10/22/2017 cs7.6</p>
 <ul>
 <li><a href="ChatScript-System-Variables-and-Engine-defined-Concepts.html#engine-defined-concepts">Engine-defined Concepts</a></li>
 <li><a href="ChatScript-System-Variables-and-Engine-defined-Concepts.html#system-variables">System Variables</a></li>
@@ -23,10 +18,10 @@
 </ul>
 <h1 id="engine-defined-concepts">Engine-defined concepts</h1>
 <p>In addition to concepts defined in script files, the system automatically defines a bunch of dictionary-based sets as well as dynamically computed concept members.</p>
-<table style="width:35%;">
+<table style="width:67%;">
 <colgroup>
 <col width="23%" />
-<col width="11%" />
+<col width="43%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -99,37 +94,613 @@
 </table>
 <h2 id="interjections-discourse-acts-and-concept-sets">Interjections, &quot;discourse acts&quot;, and concept sets</h2>
 <p>Some words and phrases have interpretations based on whether they are at sentence start or not. E.g., <em>good day, mate</em> and <em>It is a good day</em> are different for <em>good day</em>.</p>
-<p>Likewise sure and I am sure are different. Words that have a different meaning at the start of a sentence are commonly called interjections.</p>
-<p>In ChatScript these are defined by the <code>livedata/interjections.txt</code> file. In addition, the file augments this concept with &quot;discourse acts&quot;, phrases that are like an interjection. All interjections and discourse acts map to concept sets, which come thru as the user input instead of what they wrote. For example yes and sure and of course are all treated as meaning the discourse act of agreement in the interjections file. So you don’t see yes, I will go coming out of the engine.</p>
-<p>The interjections file will remap that to the sentence ~yes, breaking off that into its own sentence, followed by I will go as a new sentence.</p>
-<p>These generic interjections (which are open to author control via interjections.txt) are: <code>~yes</code>,<code>~no</code>,<code>~emomaybe</code>,<code>~emohello</code>,<code>~emogoodbye</code>,<code>~emohowzit</code>,<code>~emothanks</code>, <code>~emolaugh</code>,<code>~emohappy</code>,<code>~emosad</code>,<code>~emosurprise</code>, <code>~emomisunderstand</code>, <code>~emoskeptic</code>,<code>~emoignorance</code>,<code>~emobeg</code>, <code>~emobored</code>, <code>~emopain</code>,<code>~emoangry</code>, <code>~emocurse</code>,<code>~emodisgust</code>,<code>~emoprotest</code>, <code>~emoapology</code>,<code>~emomutual</code></p>
+<p>Likewise <em>sure</em> and <em>I am sure</em> are different.</p>
+<p>Words that have a different meaning at the start of a sentence are commonly called interjections.</p>
+<p>In ChatScript these are defined by the <code>livedata/interjections.txt</code> file. In addition, the file augments this concept with &quot;discourse acts&quot;, phrases that are like an interjection. All interjections and discourse acts map to concept sets, which come thru as the user input instead of what they wrote.</p>
+<p>For example <em>yes</em> and <em>sure</em> and <em>of course</em> are all treated as meaning the discourse act of agreement in the interjections file. So you don’t see <em>yes, I will go</em> coming out of the engine.</p>
+<p>The interjections file will remap that to the sentence <code>~yes</code>, breaking off that into its own sentence, followed by <em>I will go</em> as a new sentence.</p>
+<p>These generic interjections (which are open to author control via interjections.txt) are:</p>
+<table>
+<thead>
+<tr class="header">
+<th>interjection</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~yes</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~no</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~emomaybe</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~emohello</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~emogoodbye</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~emohowzit</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~emothanks</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~emolaugh</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~emohappy</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~emosad</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~emosurprise</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~emomisunderstand</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~emoskeptic</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~emoignorance</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~emobeg</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~emobored</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~emopain</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~emoangry</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~emocurse</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~emodisgust</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~emoprotest</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~emoapology</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~emomutual</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <p>Because all interjections at the start of a sentence are broken off into their own sentence, this kind of pattern does not work:</p>
 <pre><code>u: (~yes _*)</code></pre>
 <p>You cannot capture the rest of the sentence here, because it will be part of the next sentence instead. This means interjections act somewhat differently from other concepts.</p>
 <p>If you use a word in a pattern which may get remapped on input, the script compiler will issue a warning. Likely you should use the remapped name instead.</p>
-<p>The following concepts are triggered by exactly repeating either the chatbot or oneself (to a repeat count of how often repeated). Repeats are within a recency window of about 20 volleys. <code>~repeatme</code>, <code>~repeatinput1</code>, <code>~repeatinput2</code>, <code>~repeatinput3</code>, <code>~repeatinput4</code>, <code>~repeatinput5</code>, <code>~repeatinput6</code>,</p>
+<p>The following concepts are triggered by exactly repeating either the chatbot or oneself (to a repeat count of how often repeated). Repeats are within a recency window of about 20 volleys.</p>
+<table>
+<thead>
+<tr class="header">
+<th>concept</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~repeatme</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~repeatinput1</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~repeatinput2</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~repeatinput3</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~repeatinput4</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~repeatinput5</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~repeatinput6</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <h2 id="pos-part-of-speech-tags">POS (Part of Speech) Tags</h2>
-<p>Words will have pos-tags attached, specififying both generic and specific tag attributes, eg., <code>~noun</code> and <code>~noun_singular</code>.</p>
-<h3 id="genric-specifics">Genric Specifics</h3>
-<p><code>~noun</code>, <code>~noun_singular</code>, <code>~noun_plural</code>, <code>~noun_proper_singular</code>, <code>~noun_proper_plural</code>, <code>~noun_gerund</code>, <code>~noun_number</code>, <code>~noun_infinitive</code>, <code>~noun_omitted_adjective</code>, <code>~verb</code>, <code>~verb_present</code>, <code>~verb_present_3ps</code>, <code>~verb_infinitive</code>, <code>~verb_present_participle</code>, <code>~verb_past</code>, <code>~verb_past_participle</code>, <code>~aux_verb</code>, <code>~aux_verb_present</code>, <code>~aux_verb_past</code>, <code>~aux_verb_future</code> (<code>~aux_verb_tenses</code>), <code>~aux_be</code>, <code>~aux_have</code>, <code>~aux_do</code></p>
+<p>Words will have pos-tags attached, specififying both generic and specific tag attributes, eg., <code>~noun</code>, <code>~noun_singular</code>.</p>
+<h3 id="generic-specifics">Generic Specifics</h3>
+<table>
+<thead>
+<tr class="header">
+<th>nouns</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~noun</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~noun_singular</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~noun_plural</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~noun_proper_singular</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~noun_proper_plural</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~noun_gerund</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~noun_number</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~noun_infinitive</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~noun_omitted_adjective</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th>verbs</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~verb</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~verb_present</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~verb_present_3ps</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~verb_infinitive</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~verb_present_participle</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~verb_past</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~verb_past_participle</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~aux_verb</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~aux_verb_present</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~aux_verb_past</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~aux_verb_future</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~aux_verb_tenses</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~aux_be</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~aux_have</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~aux_do</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <p>Auxilliary verbs are segmented into normal ones and special ones. Normal ones give their tense directly. Special ones give their root word. The tense of the be/have/do verbs can be had via <code>^properties()</code> and testing for verb tenses</p>
-<p><code>~adjective</code>, <code>~adjective_normal</code>, <code>~adjective_number</code>, <code>~adjective_noun</code>, <code>~adjective_participle</code></p>
-<p>Adjectives in comparative form will also have <code>~more_form</code> or <code>~most_form</code>. <code>~adverb</code>, <code>~adverb_normal</code></p>
-<p>Adverbs in comparative form will also have <code>~more_form</code> or <code>~most_form</code>. <code>~pronoun</code>, <code>~pronoun_subject</code>, <code>~pronoun_object</code>, <code>~conjunction_bits</code>, <code>~conjunction_coordinate</code> , <code>~conjunction_subordinate</code>, <code>~determiner_bits</code>, <code>~determiner</code>, <code>~pronoun_possessive</code>, <code>~predeterminer</code>, <code>~possessive</code> (covers ' and 's at end of word), <code>~to_infinitive</code> (&quot;to&quot; when used before a noun infinitive), <code>~preposition</code>, <code>~particle</code> (free-floating preposition tied to idiomatic verb), <code>~comma</code>, <code>~quote</code> (covers ' and &quot; when not embedded in a word), <code>~paren</code> (covers opening and closing parens), <code>~foreign_word</code> (some unknown word), <code>~there_existential</code> (the word there used existentially),</p>
+<table>
+<thead>
+<tr class="header">
+<th>adjectives</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~adjective</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~adjective_normal</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~adjective_number</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~adjective_noun</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~adjective_participle</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th>adjectives in comparative form</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~more_form</code><br><code>~most_form</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~adverb</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~adverb_normal</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th>adverbs in comparative form</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~more_form</code><br><code>~most_form</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~pronoun</code><br><code>~pronoun_subject</code><br><code>~pronoun_object</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~conjunction_bits</code><br><code>~conjunction_coordinate</code><br><code>~conjunction_subordinate</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~determiner_bits</code><br><code>~determiner</code><br><code>~pronoun_possessive</code><br><code>~predeterminer</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~possessive</code></td>
+<td>covers <em>'</em> and <em>'s</em> at end of word</td>
+</tr>
+<tr class="even">
+<td><code>~to_infinitive</code></td>
+<td>&quot;to&quot; when used before a noun infinitive</td>
+</tr>
+<tr class="odd">
+<td><code>~preposition</code><br><code>~particle</code></td>
+<td>free-floating preposition tied to idiomatic verb</td>
+</tr>
+<tr class="even">
+<td><code>~comma</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~quote</code></td>
+<td>covers <em>'</em> and <em>&quot;</em> when not embedded in a word</td>
+</tr>
+<tr class="even">
+<td><code>~paren</code></td>
+<td>covers opening and closing parens</td>
+</tr>
+<tr class="odd">
+<td><code>~foreign_word</code></td>
+<td>some unknown word</td>
+</tr>
+<tr class="even">
+<td><code>~there_existential</code></td>
+<td>the word there used existentially</td>
+</tr>
+</tbody>
+</table>
 <p>In addition to normal generic kinds of pos tags, words which are serving a pos-tag role different from their putative word type are marked as members of the major tag they act as part of. E.g,</p>
-<p><code>~noun_gerund</code> – verb used as a ~noun <code>~noun_infinitive</code> – verb used as a ~noun <code>~noun_omitted_adjective</code> – an adjective used as a collective noun (eg the beautiful are kind)</p>
-<p><code>~adjectival_noun</code> (noun used as adjective like bank &quot;bank teller&quot;) <code>~adjective_participle</code> (verb participle used as an adjective)</p>
+<table style="width:64%;">
+<colgroup>
+<col width="43%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~noun_gerund</code></td>
+<td>verb used as a ~noun</td>
+</tr>
+<tr class="even">
+<td><code>~noun_infinitive</code></td>
+<td>verb used as a ~noun</td>
+</tr>
+<tr class="odd">
+<td><code>~noun_omitted_adjective</code></td>
+<td>an adjective used as a collective noun (eg <em>the beautiful are kind</em>)</td>
+</tr>
+<tr class="even">
+<td><code>~adjectival_noun</code></td>
+<td>noun used as adjective like bank &quot;bank teller&quot;</td>
+</tr>
+<tr class="odd">
+<td><code>~adjective_participle</code></td>
+<td>verb participle used as an adjective</td>
+</tr>
+</tbody>
+</table>
 <p>For <code>~noun_gerund</code> in <em>I like swimming</em> the verb gerund <em>swimming</em> is treated as a noun (hence called noun-gerund) but retains verb sense when matching keywords tagged with part-of-speech (i.e., it would match <code>swim~v</code> as well as <code>swim~n</code>).</p>
-<p><code>~number</code> is not a part of speech, but is comprise of <code>~noun_number</code> (a normal number value like <em>17</em> or <em>seventeen</em>) and <code>~adjective_number</code> (also a normal numeral value and also <code>~placenumber</code>) like first.</p>
+<p>Additionally, there is</p>
+<table style="width:53%;">
+<colgroup>
+<col width="31%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~number</code></td>
+<td>is not a part of speech, but is comprise of <code>~noun_number</code> (a normal number value like <em>17</em> or <em>seventeen</em>)</td>
+</tr>
+<tr class="even">
+<td><code>~adjective_number</code></td>
+<td>also a normal numeral value and also <code>~placenumber</code>) like <em>first</em>.</td>
+</tr>
+<tr class="odd">
+<td><code>~integer</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~float</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~positiveinteger</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~negativeinteger</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~modelnumber</code></td>
+<td>not a true number, but a word with both alpha and numeric</td>
+</tr>
+</tbody>
+</table>
 <p>To can be a preposition or it can be special. When used in the infinitive phrase To go, it is marked <code>~to_infinitive</code> and is followed by <code>~noun_infinitive</code>.</p>
-<p><code>~verb_infinitive</code> refers to a match on the infinitive form of the verb (I hear John sing or I will sing).</p>
-<p><code>~There_existential</code> refers to the use of where not involving location, meaning the existence of, as in There is no future.</p>
-<p><code>~Particle</code> refers to a preposition piece of a compound verb idiom which allows being separated from the verb. If you say <em>I will call off the meeting</em>, call_off is the composite verb and is a single token. But if you split it as in <em>I will call the meeting off</em>, then there are two tokens. The original form of the verb will be call and the canonical form of the verb will be call_off, while the free-standing off will be labeled <code>~particle</code>.</p>
-<p><code>~verb_present</code> will be used for normal present verbs not in third person singular like I walk and <code>~verb_present_3ps</code> will be used for things like he walks</p>
-<p><code>~possesive</code> refers to ‘s and ‘ that indicate possession, while possessive pronouns get their own labeling <code>~pronoun_possessive</code>.</p>
-<p><code>~pronoun_subject</code> is a pronoun used as a subject (like he) while pronoun_object refers to objective form like (him)</p>
+<table style="width:53%;">
+<colgroup>
+<col width="31%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~verb_infinitive</code></td>
+<td>refers to a match on the infinitive form of the verb (<em>I hear John sing</em> or <em>I will sing</em>).</td>
+</tr>
+<tr class="even">
+<td><code>~There_existential</code></td>
+<td>refers to the use of where not involving location, meaning the existence of, as in There is no future.</td>
+</tr>
+<tr class="odd">
+<td><code>~Particle</code></td>
+<td>refers to a preposition piece of a compound verb idiom which allows being separated from the verb. If you say <em>I will call off the meeting</em>, call_off is the composite verb and is a single token. But if you split it as in <em>I will call the meeting off</em>, then there are two tokens. The original form of the verb will be call and the canonical form of the verb will be call_off, while the free-standing off will be labeled <code>~particle</code>.</td>
+</tr>
+<tr class="even">
+<td><code>~verb_present</code></td>
+<td>will be used for normal present verbs not in third person singular like <em>I walk</em> and</td>
+</tr>
+<tr class="odd">
+<td><code>~verb_present_3ps</code></td>
+<td>will be used for things like <em>he walks</em></td>
+</tr>
+<tr class="even">
+<td><code>~possesive</code></td>
+<td>refers to <em>‘s</em> and <em>‘</em> that indicate possession, while possessive pronouns get their own labeling <code>~pronoun_possessive</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>~pronoun_subject</code></td>
+<td>is a pronoun used as a subject (like <em>he</em>)</td>
+</tr>
+<tr class="even">
+<td><code>~pronoun_object</code></td>
+<td>refers to objective form like <em>him</em></td>
+</tr>
+</tbody>
+</table>
 <p>Individual words serve roles in the parse of a sentence, which are retrievable. These include:</p>
-<p><code>~mainsubject</code>, <code>~mainverb</code>, <code>~mainindirect</code>, <code>~maindirect</code>, <code>~subject2</code>, <code>~verb2</code>, <code>~indirectobject2</code>, <code>~object2</code>, <code>~subject_complement</code> – (adjective object of sentence involving linking verb), <code>~object_complement</code> – (2ndary noun or infinitive verb filling modifying mainobject or object2), <code>~conjunct_noun</code>, <code>~conjunct_verb</code>, <code>~conjunct_adjective</code>, <code>~conjunct_adverb</code> <code>~conjunct_phrase</code>, <code>~conjunct_clause</code>, <code>~conjunct_sentence</code>, <code>~postnominalAdjective</code> - adjective occuring AFTER the noun it modified, <code>~reflexive</code> - (reflexive pronouns), <code>~not</code>, <code>~address</code> – noun used as addressee of sentence, <code>~appositive</code> – noun restating and modifying prior noun, <code>~absolutephrase</code> – special phrase describing whole sentence, <code>~omittedtimeprep</code> – modified time word used as phrase but lacking preposition (Next tuesday I will go), <code>~phrase</code> – a prepositional phrase start (except, <code>~clause</code> – a subordinate clause start, <code>~verbal</code> – a verb phrase.</p>
+<table style="width:53%;">
+<colgroup>
+<col width="31%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>~mainsubject</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~mainverb</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~mainindirect</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~maindirect</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~subject2</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~verb2</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~indirectobject2</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~object2</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~subject_complement</code></td>
+<td>adjective object of sentence involving linking verb</td>
+</tr>
+<tr class="even">
+<td><code>~object_complement</code></td>
+<td>2ndary noun or infinitive verb filling modifying mainobject or object2</td>
+</tr>
+<tr class="odd">
+<td><code>~conjunct_noun</code><br><code>~conjunct_verb</code><br><code>~conjunct_adjective</code><br><code>~conjunct_adverb</code><br><code>~conjunct_phrase</code><br><code>~conjunct_clause</code><br><code>~conjunct_sentence</code></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>~postnominalAdjective</code></td>
+<td>adjective occuring AFTER the noun it modified</td>
+</tr>
+<tr class="odd">
+<td><code>~reflexive</code></td>
+<td>reflexive pronouns</td>
+</tr>
+<tr class="even">
+<td><code>~not</code></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td><code>~address</code></td>
+<td>noun used as addressee of sentence</td>
+</tr>
+<tr class="even">
+<td><code>~appositive</code></td>
+<td>noun restating and modifying prior noun</td>
+</tr>
+<tr class="odd">
+<td><code>~absolutephrase</code></td>
+<td>special phrase describing whole sentence</td>
+</tr>
+<tr class="even">
+<td><code>~omittedtimeprep</code></td>
+<td>modified time word used as phrase but lacking preposition (<em>Next tuesday I will go</em>)</td>
+</tr>
+<tr class="odd">
+<td><code>~phrase</code></td>
+<td>a prepositional phrase start (except</td>
+</tr>
+<tr class="even">
+<td><code>~clause</code></td>
+<td>a subordinate clause start</td>
+</tr>
+<tr class="odd">
+<td><code>~verbal</code></td>
+<td>a verb phrase</td>
+</tr>
+</tbody>
+</table>
+<p>and special concepts: | <code>~capacronym</code> | word is in all caps (and &amp;) and is likely an acronym</p>
 <h1 id="system-variables">System Variables</h1>
 <p>The system has some predefined variables which you can generally test and use but not normally assign to. These all begin with <code>%</code> . Ones that are reasonable to set are written in bold underline. Boolean values are always <code>1</code> or <code>null</code> on returns. <code>1</code> or <code>0</code> if you are setting them.</p>
 <h2 id="date-time-numbers">Date &amp; Time &amp; Numbers</h2>
@@ -162,50 +733,54 @@
 <td>seconds representing the current time and date (Unix epoch time)</td>
 </tr>
 <tr class="odd">
-<td><code>%timenumbers</code></td>
-<td>completely consistent full time info in numbers that you can do <code>_0 = ^burst(%timenumbers)</code>to get <code>_0</code> =seconds (2digit) <code>_1</code>=minutes (2digit) <code>_2</code>=hours (2digit) <code>_3</code>=dayinweek(0-6 Sunday=0) <code>_4</code>=dateinmonth (1-31) <code>_5</code>=month(0-11 January=0) <code>_6</code>=year. <br>You need to get it simultaneously if you want to do accurate things with current time, since retrieving %hour %minute separately allows time to change between calls</td>
+<td><code>%hour</code></td>
+<td>0-23</td>
 </tr>
 <tr class="even">
+<td><code>%timenumbers</code></td>
+<td>completely consistent full time info in numbers that you can do <br><code>_0 = ^burst(%timenumbers)</code>to get <code>_0</code> =seconds (2digit) <br><code>_1</code>=minutes (2digit) <br><code>_2</code>=hours (2digit) <br><code>_3</code>=dayinweek(0-6 Sunday=0) <br><code>_4</code>=dateinmonth (1-31) <br><code>_5</code>=month(0-11 January=0) <br><code>_6</code>=year.<br>You need to get it simultaneously if you want to do accurate things with current time, since retrieving %hour %minute separately allows time to change between calls</td>
+</tr>
+<tr class="odd">
 <td><code>%leapyear</code></td>
 <td>boolean if current year is a leap year</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>%daylightsavings</code></td>
 <td>boolean if current within daylight savings</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>%minute</code></td>
 <td>0-59</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>%month</code></td>
 <td>1-12 (January = 1)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>%monthname</code></td>
 <td>January, etc</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>%second</code></td>
 <td>0-59</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>%volleytime</code></td>
 <td>number of seconds of computation since volley input started</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>%time</code></td>
 <td>hh:mm in military 24-hour time</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>%week</code></td>
 <td>1-5 (week of the month)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>%year</code></td>
 <td>e.g., 2011</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>%rand</code></td>
 <td>get a random number from 1 to 100 inclusive</td>
 </tr>
@@ -213,9 +788,9 @@
 </table>
 <p>Time and date information are normally local, relative to the system clock of the machine CS is running on. See $cs_utcoffset for adjusting time based on relationship to utc (e.g your server is in Virginia and you are in Colorado).</p>
 <h2 id="user-input">User Input</h2>
-<table style="width:24%;">
+<table style="width:39%;">
 <colgroup>
-<col width="12%" />
+<col width="27%" />
 <col width="11%" />
 </colgroup>
 <thead>
@@ -231,7 +806,7 @@
 </tr>
 <tr class="even">
 <td><code>%revisedinput</code></td>
-<td>Boolean is current input from ^input not direct from user</td>
+<td>Boolean is current input from <code>^input</code> not direct from user</td>
 </tr>
 <tr class="odd">
 <td><code>%command</code></td>
@@ -254,68 +829,72 @@
 <td>ip address supplied</td>
 </tr>
 <tr class="even">
+<td><code>%language</code></td>
+<td>current dictionary language</td>
+</tr>
+<tr class="odd">
 <td><code>%length</code></td>
 <td>the length in tokens of the current sentence</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>%more</code></td>
 <td>Boolean is there another sentence after this</td>
 </tr>
-<tr class="even">
-<td><code>%morequestion</code></td>
-<td>Boolean is there a ? or question word in the pending sentences</td>
-</tr>
 <tr class="odd">
+<td><code>%morequestion</code></td>
+<td>Boolean is there a <code>?</code> or question word in the pending sentences</td>
+</tr>
+<tr class="even">
 <td><code>%originalinput</code></td>
 <td>all sentences user passed into volley, before adjusted in any way except OOB data is stripped off</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>%originalsentence</code></td>
 <td>the current sentence after tokenization but before any adjustments</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>%parsed</code></td>
 <td>Boolean was current input parsed successfully</td>
 </tr>
-<tr class="even">
-<td><code>%question</code></td>
-<td>Boolean was the user input a question – same as ? in a pattern</td>
-</tr>
 <tr class="odd">
+<td><code>%question</code></td>
+<td>Boolean was the user input a question – same as <code>?</code> in a pattern</td>
+</tr>
+<tr class="even">
 <td><code>%quotation</code></td>
 <td>Boolean is current input a quotation</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>%sentence</code></td>
 <td>Boolean does it seem like a sentence (subject/verb or command)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>%tense</code></td>
 <td>past , present, or future simple tense (present perfect is a past tense)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>%user</code></td>
 <td>user login name supplied</td>
 </tr>
-<tr class="odd">
-<td><code>%userfirstline</code></td>
-<td>value of %input that is at the start of this conversation start</td>
-</tr>
 <tr class="even">
+<td><code>%userfirstline</code></td>
+<td>value of <code>%input</code> that is at the start of this conversation start</td>
+</tr>
+<tr class="odd">
 <td><code>%userinput</code></td>
 <td>Boolean is the current input from the user (vs the chatbot)</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>%voice</code></td>
 <td>active or passive on current input</td>
 </tr>
 </tbody>
 </table>
 <h2 id="chatbot-output">Chatbot Output</h2>
-<table style="width:24%;">
+<table style="width:31%;">
 <colgroup>
 <col width="12%" />
-<col width="11%" />
+<col width="18%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -342,7 +921,7 @@
 </tr>
 <tr class="odd">
 <td><code>%response</code></td>
-<td>number of responses that have been generated for this sentence</td>
+<td>number of committed responses that have been generated for this sentence (see Advanced User- Advanced Output: Committed Responses</td>
 </tr>
 </tbody>
 </table>
@@ -385,7 +964,7 @@
 </tr>
 <tr class="odd">
 <td><code>%maxmatchvariables</code></td>
-<td>highest number of _match variables, currently 20</td>
+<td>highest number of match variables, currently 20</td>
 </tr>
 <tr class="even">
 <td><code>%maxfactsets</code></td>
@@ -431,9 +1010,13 @@
 <td><code>%restart</code></td>
 <td>You can set and retrieve a value here across a system restart.</td>
 </tr>
+<tr class="odd">
+<td><code>%timeout</code></td>
+<td>Boolean tells if a timeout has happened, based on the timelimit command line parameter</td>
+</tr>
 </tbody>
 </table>
-<h2 id="build-data">Build data+</h2>
+<h2 id="build-data">Build data</h2>
 <table>
 <thead>
 <tr class="header">
@@ -464,7 +1047,9 @@
 </tr>
 </tbody>
 </table>
-<p>You actually can assign to any of them. This will override them and make them return what you tell them to and is a particularly BAD thing to do if this is running on a server since it affects all users (unless you reset the variable at the end of the volley. Assigning a period to a variable resets it). Typically one does this as a temporary assignment in a #! comment line to set up conditions for testing using :verify. Making them return a new value is NOT the same thing as making the engine have a different value. Unless the variable is marked as settable, setting a value affects only the value returned by a future call to the system variable. It does not change engine values the variable is meant to reflect.</p>
+<p>You actually can assign to any of them. This will override them and make them return what you tell them to and is a particularly BAD thing to do if this is running on a server since it affects all users (unless you reset the variable at the end of the volley. Assigning a period to a variable resets it).</p>
+<p>Typically one does this as a temporary assignment in a <code>#!</code> comment line to set up conditions for testing using <code>:verify</code>.</p>
+<p>Making them return a new value is NOT the same thing as making the engine have a different value. Unless the variable is marked as settable, setting a value affects only the value returned by a future call to the system variable. It does not change engine values the variable is meant to reflect.</p>
 <h1 id="control-over-input">Control Over Input</h1>
 <p>The system can do a number of standard processing on user input, including spell correction, proper-name merging, expanding contractions etc. This is managed by setting the user variable <code>$cs_token</code>.</p>
 <p>The default one that comes with Harry is:</p>
@@ -474,12 +1059,12 @@
             #DO_PROPERNAME_MERGE | 
             #DO_SPELLCHECK |
             #DO_PARSE</code></pre>
-<p>The <code>#</code>signals a named constant from the dictionarySystem.h file. One can set the following:</p>
+<p>The <code>#</code>signals a named constant from the <code>dictionarySystem.h</code> file. One can set the following:</p>
 <p>These enable various LIVEDATA files to perform substitutions on input:</p>
-<table style="width:18%;">
+<table>
 <colgroup>
-<col width="6%" />
-<col width="11%" />
+<col width="33%" />
+<col width="66%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -490,31 +1075,31 @@
 <tbody>
 <tr class="odd">
 <td><code>#DO_ESSENTIALS</code></td>
-<td>perform LIVEDATA/systemessentials which mostly strips off trailing punctuation and sets corresponding flags instead</td>
+<td>perform <code>LIVEDATA/systemessentials</code> which mostly strips off trailing punctuation and sets corresponding flags instead</td>
 </tr>
 <tr class="even">
 <td><code>#DO_SUBSTITUTES</code></td>
-<td>perform LIVEDATA/substitutes</td>
+<td>perform <code>LIVEDATA/substitutes</code></td>
 </tr>
 <tr class="odd">
 <td><code>#DO_CONTRACTIONS</code></td>
-<td>perform LIVEDATA/contractions, expanding contractions</td>
+<td>perform <code>LIVEDATA/contractions</code>, expanding contractions</td>
 </tr>
 <tr class="even">
 <td><code>#DO_INTERJECTIONS</code></td>
-<td>perform LIVEDATA/interjections, changing phrases to interjections</td>
+<td>perform <code>LIVEDATA/interjections</code>, changing phrases to interjections</td>
 </tr>
 <tr class="odd">
 <td><code>#DO_BRITISH</code></td>
-<td>perform LIVEDATA/british, respelling brit words to American</td>
+<td>perform <code>LIVEDATA/british</code>, respelling brit words to American</td>
 </tr>
 <tr class="even">
 <td><code>#DO_SPELLING</code></td>
-<td>performs the LIVEDATA/spelling file (manual spell correction)</td>
+<td>performs the <code>LIVEDATA/spelling</code> file (manual spell correction)</td>
 </tr>
 <tr class="odd">
 <td><code>#DO_TEXTING</code></td>
-<td>performs the LIVEDATA/texting file (expand texting notation)</td>
+<td>performs the <code>LIVEDATA/texting</code> file (expand texting notation)</td>
 </tr>
 <tr class="even">
 <td><code>#DO_SUBSTITUTE_SYSTEM</code></td>
@@ -530,23 +1115,24 @@
 </tr>
 <tr class="odd">
 <td><code>#$DO_PROPERNAME_MERGE</code></td>
-<td>merge multiple proper name into one (_George Harrison)</td>
+<td>merge multiple proper name into one (<em>George Harrison</em>)</td>
 </tr>
 <tr class="even">
 <td><code>#DO_DATE_MERGE</code></td>
 <td>merge month day and/or year sequences (<em>January 2, 1993</em>)</td>
 </tr>
 <tr class="odd">
-<td><code>#JSON_DIRECT_OOB</code></td>
-<td>asking the tokenizer to directly process OOB data. See ^jsonparse in JSON manual.</td>
+<td><code>#JSON_DIRECT_FROM_OOB</code></td>
+<td>asking the tokenizer to directly process OOB data. See <code>^jsonparse</code> in JSON manual.</td>
 </tr>
 </tbody>
 </table>
-<p>If any of the above items affect the input, they will be echoed as values into %tokenFlags so you can detect they happened. The next changes do not echo into %tokenFlags and relate to grammar of input:</p>
-<table style="width:18%;">
+<p>The contents of the files are pairs of tokens per line. Left is the word to replace and right is the replacement. When multiple words are involved, the left side uses underscores to represent this and the right side uses <code>+</code>. If the right side is missing, it means just delete.</p>
+<p>If any of the above items affect the input, they will be echoed as values into <code>%tokenFlags</code> so you can detect they happened. The next changes do not echo into %tokenFlags and relate to grammar of input:</p>
+<table>
 <colgroup>
-<col width="6%" />
-<col width="11%" />
+<col width="29%" />
+<col width="70%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -568,14 +1154,18 @@
 <td>perform pos-tagging only if all words are known. Avoids wasting time on foreign sentences in particular</td>
 </tr>
 <tr class="even">
+<td><code>NO_CONDITIONAL_IDIOM</code></td>
+<td>will not perform substitutions in the dictionary which are considered conditional idioms</td>
+</tr>
+<tr class="odd">
 <td><code>NO_ERASE</code></td>
 <td>where a substitution would delete a word entirely as junk, don't</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>DO_SPLIT_UNDERSCORES</code></td>
 <td>happens after all other input tokenization and adjustments except number merge, and separates words that have been conjoined either because the dictionary has them (<em>credit_card</em>) or because they were merged by proper name merging, or by substitution. The result is only words without underscores (excluding number words like <em>five_thousand_and_four</em></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>MARK_LOWER</code></td>
 <td>if a word is considered a proper name in CS and is marked as an upper case word, this will force it to perform any markings for its lower case form as well. Sometimes users type stuff in upper case that really should be lower</td>
 </tr>
@@ -655,7 +1245,9 @@
 </tr>
 </tbody>
 </table>
-<p>Note, you can change <code>$cs_token</code> on the fly and force input to be reanalyzed via <code>^retry(SENTENCE)</code>. I do this when I detect the user is trying to give his name, and many foreign names might be spell-corrected into something wrong and the user is unlikely to misspell his own name. Just remember to reset <code>$cs_token</code> back to normal after you are done. Here is one such way, assuming <code>$stdtoken</code> is set to your normal tokenflags in your bot definition outputmacro:</p>
+<p>Note</p>
+<p>you can change <code>$cs_token</code> on the fly and force input to be reanalyzed via <code>^retry(SENTENCE)</code>. I do this when I detect the user is trying to give his name, and many foreign names might be spell-corrected into something wrong and the user is unlikely to misspell his own name.</p>
+<p>Just remember to reset <code>$cs_token</code> back to normal after you are done. Here is one such way, assuming <code>$stdtoken</code> is set to your normal tokenflags in your bot definition outputmacro:</p>
 <pre><code>#! my name is Rogr
 s: (name is _*)
 
@@ -668,11 +1260,13 @@ s: (name is _*)
         }
     _0 is the name.
     $cs_token = $stdtoken</code></pre>
-<p>If you type <em>my name is Rogr</em> into a topic with this, the original input is spell-corrected to <em>my name is Roger</em>, but this will change the <code>$cs_token</code> over to one without spell correction and redo the sentence, which will now come back with <em>my name is Rogr</em> and be echoed correctly, and <code>$cs_token reset</code>. That's assuming nothing else would run differently and trap the response elsewhere. If you were worried about that, it would be possible for the script to save where it is using <code>^getrule(tag)</code> and modify your control script to return immediate control to here after input processing if you had changed <code>$cs_token</code>.</p>
+<p>If you type <em>my name is Rogr</em> into a topic with this, the original input is spell-corrected to <em>my name is Roger</em>, but this will change the <code>$cs_token</code> over to one without spell correction and redo the sentence, which will now come back with <em>my name is Rogr</em> and be echoed correctly, and <code>$cs_token reset</code>.</p>
+<p>That's assuming nothing else would run differently and trap the response elsewhere. If you were worried about that, it would be possible for the script to save where it is using <code>^getrule(tag)</code> and modify your control script to return immediate control to here after input processing if you had changed <code>$cs_token</code>.</p>
 <h2 id="private-substitutions">Private Substitutions</h2>
 <p>While in general, substitutions are defined in the LIVEDATA folder, you can define private substititions for your specific bot using the scripting language. You can say</p>
 <pre><code>replace: xxx yyyyy</code></pre>
-<p>which defines a substitution just like a livedata substitution file. It actually creates a substitution file called <code>private0.txt</code> or <code>private1.txt</code> in your TOPIC folder. Even then, those substitutions will not be enacted unless you explicitly add to the $cs_token value #DO_PRIVATE, eg</p>
+<p>which defines a substitution just like a livedata substitution file. It actually creates a substitution file called <code>private0.txt</code> or <code>private1.txt</code> in your TOPIC folder.</p>
+<p>Even then, those substitutions will not be enacted unless you explicitly add to the <code>$cs_token</code> value <code>#DO_PRIVATE</code>, eg</p>
 <pre><code>$cs_token = #DO_INTERJECTION_SPLITTING | 
             #DO_SUBSTITUTE_SYSTEM |
             #DO_NUMBER_MERGE | 
@@ -680,10 +1274,17 @@ s: (name is _*)
             #DO_SPELLCHECK | 
             #DO_PARSE | 
             #DO_PRIVATE</code></pre>
+<p>The left side of the substitution pair is case insensitive (matches either case on input) and can be placed in double-quotes (which converts spaces to underscores internally).</p>
+<p>The right side of the substitution pair is case sensitive and can be placed in double-quotes (which converts spaces to plus signs internally).</p>
 <p>Similarly while canonical values of words can be defined in <code>LIVEDATA/SYSTEM/canonical.txt</code>, you can define private canonical values for your bots by using the scripting language. You can say:</p>
 <pre><code>canon: oh 0 faster fast</code></pre>
-<p>which defines new canonical values for things and creates a file canon0.txt or canon1.txt in your TOPIC folder. If you want to set a canonical pair from a table during compilation, you can use a function to do the same thing (but only 1 pair at a time).</p>
+<p>which defines new canonical values for things and creates a file <code>canon0.txt</code> or <code>canon1.txt</code> in your TOPIC folder.</p>
+<p>If you want to set a canonical pair from a table during compilation, you can use a function to do the same thing (but only 1 pair at a time).</p>
 <pre><code>^canon(word canonicalform)</code></pre>
+<h2 id="numeric-substitutions">Numeric Substitutions</h2>
+<p>A special kind of private substitution (equally applicable in regular substitution files) is the numeric substitution.</p>
+<pre><code>replace: ?_km kilometers</code></pre>
+<p>The ?_ matches a digit number followed immediately by km, like <code>1.2km</code> and will separate the number and replace the units with the given replacement. The input can be singular or have an 's' like <code>10.5dollars</code>. And it can be with or without abbreviation periods, like <code>10kps</code> or <code>10k.p.s</code></p>
 <h1 id="interchange-variables">Interchange Variables</h1>
 <p>The following variables can be defined in a script and the engine will react to their contents.</p>
 <table style="width:39%;">
@@ -704,7 +1305,7 @@ s: (name is _*)
 </tr>
 <tr class="even">
 <td><code>$cs_response</code></td>
-<td>controls automatic handling of outputs to user. By default it consists of <code>$cs_response = #Response_upperstart | #response_removespacebeforecomma | #response_alterunderscores | #response_removetilde</code> If you want none of theses, use $cs_response = 0 (all flags turned off). See ^print for explanation of flags. <br><code>#response_upperstart</code> – makes the first letter of an output sentence capitalized, <br><code>#Response_removespacebeforecomma</code> – does the obvious, <br><code>#Response_alterunderscores</code> - converts single underscores to spaces and double underscores to singles (eg for a web url)</td>
+<td>controls automatic handling of outputs to user. By default it consists of <code>$cs_response = #Response_upperstart | #response_removespacebeforecomma | #response_alterunderscores | #response_removetilde</code> If you want none of theses, use $cs_response = 0 (all flags turned off). See ^print for explanation of flags. <br><code>#response_noconvertspecial</code> – leave escaped n r and t alone in output and ^log, <br><code>#response_upperstart</code> – makes the first letter of an output sentence capitalized, <br><code>#Response_removespacebeforecomma</code> – does the obvious, <br><code>#Response_alterunderscores</code> - converts single underscores to spaces and double underscores to singles (eg for a web url)</td>
 </tr>
 <tr class="odd">
 <td><code>$cs_jsontimeout</code></td>
@@ -831,10 +1432,47 @@ s: (name is _*)
 <td>end of found words from ^match</td>
 </tr>
 <tr class="even">
-<td><code>$cs_factowner</code></td>
-<td>when non-zero creates facts restricted by this bitmask so facts created by other masks cannot be seen. allows you to separate facts per bot in a multi-bot environment</td>
+<td><code>$cs_fullfloat</code></td>
+<td>if defined, causes the system to generate full float 64-bit precision on outputs, otherwise you get 2 digit precision by default</td>
+</tr>
+<tr class="odd">
+<td><code>$cs_botid</code></td>
+<td>when non-zero creates facts and functions restricted by this bitmask so facts and functions created by other masks cannot be seen. allows you to separate facts and functions per bot in a multi-bot environment. During compilation if this is set by a bot: command, then functions created and facts created by tables will be restricted to that owner.</td>
+</tr>
+<tr class="even">
+<td><code>$cs_numbers</code></td>
+<td>if defined, causes the system to output numbers in a different language style: french, indian. All other values are english.</td>
+</tr>
+<tr class="odd">
+<td><code>$cs_topicretrylimit</code></td>
+<td>if defined changes how many times you can pass back RETRY_TOPIC before it fails (current limit is 30)</td>
+</tr>
+<tr class="even">
+<td><code>$$topic_retry_limit_exceeded</code></td>
+<td>set if topic retry limit is encountered</td>
+</tr>
+<tr class="odd">
+<td><code>$cs_topicretrylimit</code></td>
+<td>if defined changes how many times you can pass back RETRY_TOPIC before it fails (current limit is 30)</td>
+</tr>
+<tr class="even">
+<td><code>$cs_saveusedJson</code></td>
+<td>if not null, the only JSON facts CS will write into the user's topic files that are referred to (directly or indirectly) from user variables being saved. (see below)</td>
+</tr>
+<tr class="odd">
+<td><code>$cs_proxycredentials</code></td>
+<td>See ^JSONOPEN in JSON manual</td>
+</tr>
+<tr class="even">
+<td><code>$cs_proxyserver</code></td>
+<td>See ^JSONOPEN in JSON manual</td>
+</tr>
+<tr class="odd">
+<td><code>$cs_proxymethod</code></td>
+<td>See ^JSONOPEN in JSON manual</td>
 </tr>
 </tbody>
 </table>
+<p><code>$cs_saveusedJson</code> exists as a kind of garbage collection. Nowadays most facts will come from JSON data either from a website or created in script. But keeping on top of deleting obsolete JSON may be overlooked. When this variable is non-null, ChatScript will automatically destroy any JSON fact that cannot trace a JSON fact path back to some user variable. Variables that have as values the name of a JSON object or array automatically protect all JSON facts underneath. JSON references merely within some text string will not protect anything, nor will references from some other non-JSON fact.</p>
 </body>
 </html>

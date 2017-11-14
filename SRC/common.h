@@ -1,7 +1,7 @@
 #ifndef _MAXH_
 #define _MAXH_
 #ifdef INFORMATION
-Copyright (C) 2011-2016 by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -14,9 +14,6 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTH
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
-#define DISCARDDICTIONARYBUILD 1  
-#define SEPARATE_STRING_SPACE 1
-
 // These can be used to shed components of the system to save space
 //#define DISCARDSERVER 1
 //#define DISCARDSCRIPTCOMPILER 1
@@ -26,33 +23,30 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 //#define DISCARDMYSQL 1
 //#define DISCARDPOSTGRES 1
 //#define DISCARDMONGO 1
-//#define DISCARDDICTIONARYBUILD 1 // only a windows version can build a dictionary from scratch
-//#define DISCARDJSON 1 
+//#define DISCARDJSONOPEN 1 
 //#define DISCARDJAVASCRIPT 1
-#define DISCARDMYSQL 1
+//#define DISCARDMYSQL 1
 
-#ifdef LOEBNER
-#undef SEPARATE_STRING_SPACE
+// these can add components
+//#define  TREETAGGER 1
+
+#ifdef DLL
+#define NOMAIN 1
+#endif
+
+#ifdef  LOEBNER
 #define DISCARDSERVER 1
-#define DISCARDSCRIPTCOMPILER 1
-#define DISCARDTESTING 1
 #define DISCARDTCPOPEN 1
 #define DISCARDMYSQL 1
 #define DISCARDPOSTGRES 1
 #define DISCARDMONGO 1
 #define DISCARDCOUNTER 1
 #define DISCARDCLIENT 1
-#define DISCARDJSON 1
+#define DISCARDJSONOPEN 1
 #define DISCARDJAVASCRIPT 1
 
 #elif WIN32
 //#define USERPATHPREFIX 1
-#define DISCARDMYSQL 1
-#define DISCARDPOSTGRES 1
-#define DISCARDMONGO 1
-//#undef  DISCARDDICTIONARYBUILD  // only a windows version can build a dictionary from scratch
-//#undef SEPARATE_STRING_SPACE
-//#define  TREETAGGER 1
 
 #elif IOS
 #define DISCARDCOUNTER 1
@@ -61,7 +55,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define DISCARDMONGO 1
 #define DISCARDCOUNTER 1
 #define DISCARDCLIENT 1
-#define DISCARDJSON 1
+#define DISCARDJSONOPEN 1
 
 #elif ANDROID
 #define DISCARDCOUNTER 1
@@ -70,16 +64,17 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define DISCARDMONGO 1
 #define DISCARDCOUNTER 1
 #define DISCARDCLIENT 1
-#define DISCARDJSON 1
+#define DISCARDJSONOPEN 1
 
 #elif __MACH__
 #define DISCARDCOUNTER 1
-#define DISCARDCLIENT 1
 #define DISCARDPOSTGRES 1
 #define DISCARDMYSQL 1
 //#define DISCARDMONGO 1
-
 #else // GENERIC LINUX
+#ifndef EVSERVER
+#define SAFETIME 1  // protect server from time concurrency issues in C++ library.
+#endif
 #endif
 
 // These can be used to include LINUX EVSERVER component - this is automatically done by the makefile in src - EV Server does not work under windows
@@ -140,6 +135,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #ifdef IOS
 #elif __MACH__
 #include <sys/malloc.h>
+#elif FREEBSD
+// avoid requesting malloc.h
 #else
 #include <malloc.h>
 #endif
@@ -186,8 +183,8 @@ using namespace std;
 
 #include "common1.h"
 
-#include "dictionarySystem.h"
 #include "os.h"
+#include "dictionarySystem.h"
 #include "mainSystem.h"
 #include "factSystem.h"
 #include "functionExecute.h"
@@ -216,7 +213,7 @@ using namespace std;
 #include "variableSystem.h"
 
 #ifdef PRIVATE_CODE
-#include "privatesrc.h"
+#include "../privatecode/privatesrc.h"
 #endif 
 
 #ifdef WIN32

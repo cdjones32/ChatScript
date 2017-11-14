@@ -1,7 +1,7 @@
 #ifndef _OUTPUTPROCESSH_
 #define _OUTPUTPROCESSH_
 #ifdef INFORMATION
-Copyright (C) 2011-2016 by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -22,11 +22,12 @@ extern unsigned int currentOutputLimit;
 extern char* currentOutputBase;
 extern char* currentRuleOutputBase;
 extern unsigned int outputNest;
+extern int oldOutputIndex;
+extern unsigned int maxOutputUsed;
 
 // styles of output
 char* StdIntOutput(int n);
-char* StdFloatOutput(float n);
-void ReformatString(char starter,char* word,char* buffer,FunctionResult& result,unsigned int controls = 0, bool space = false);
+void ReformatString(char starter,char* word,char*& buffer,FunctionResult& result,unsigned int controls = 0,char* space = NULL);
 
 // output buffer management
 void AllocateOutputBuffer();
@@ -37,9 +38,9 @@ void ResetOutput();
 bool LegalVarChar(char at);
 
 // ways to generate output
-void StdNumber(char* word,char* output,int controls, bool space = false);
+void StdNumber(char* word,char*& output,int controls);
 bool SafeCopy(char* output, char* word, bool space = false);
-char* ReadCommandArg(char* ptr, char* answer,FunctionResult &result,unsigned int control = 0, unsigned int limit = maxBufferSize);
+char* GetCommandArg(char* ptr, char* buffer,FunctionResult& result,unsigned int control);
 char* ReadShortCommandArg(char* ptr, char* buffer,FunctionResult& result,unsigned int control = 0);
 char* Output(char* ptr,char* buffer,FunctionResult &result,int controls = 0);
 char* FreshOutput(char* ptr,char* buffer,FunctionResult &result,int controls = 0,unsigned limit = maxBufferSize);

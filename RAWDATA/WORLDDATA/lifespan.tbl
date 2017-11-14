@@ -2,7 +2,6 @@
  
 table: ~xlifespan (^what  ^years )
 ^createfact(^years lifespan ^what)
-^addproperty(^what NOUN NOUN_SINGULAR)
 
 DATA:
 [worker_ant ant]  0.5 
@@ -63,7 +62,7 @@ eel              55
 elephant                    70 
 elephant        69
 elk             22
-english_sparrow  23
+English_Sparrow  23
 ferret  12 
 finch            14 
 fox                            14  
@@ -94,7 +93,7 @@ hummingbird      8
 ~insect 1
 kangaroo                  9 
 koala                     8 
-labrador_retriever 12.5 
+Labrador_retriever 12.5 
 lion                   35 
 lion            30
 lizard      4 

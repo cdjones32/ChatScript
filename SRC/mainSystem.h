@@ -1,7 +1,7 @@
 #ifndef MAINSYSTEMH
 #define MAINSYSTEMH
 #ifdef INFORMATION
-Copyright (C) 2011-2016 by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -22,7 +22,7 @@ typedef struct RESPONSE
     unsigned int responseInputIndex;                        // which input sentence does this stem from?
 	int topic;										// topic of rule
 	char id[24];											// .100.30
-	char response[OUTPUT_BUFFER_SIZE];						// answer sentences, 1 or more per input line
+	char* response;						// answer sentences, 1 or more per input line
 } RESPONSE;
 
 #define SENTENCE_LIMIT 50 // how many sentence from user do we accept
@@ -32,6 +32,11 @@ typedef struct RESPONSE
 #define TIMEOUT_INSTANCE 1000000
 
 #define PENDING_RESTART -1	// perform chat returns this flag on turn
+
+typedef void (*DEBUGAPI)(char* buffer);
+extern DEBUGAPI debugInput;
+extern DEBUGAPI debugOutput;
+extern int forkcount;
 
 #define START_BIT 0x8000000000000000ULL	// used looping thru bit masks
 #define INPUTMARKER '`'	// used to start and end ^input data
@@ -60,7 +65,7 @@ typedef struct RESPONSE
 	SOURCE_ECHO_LOG = 2,
 };
 #define MAX_TRACED_FUNCTIONS 50
- 
+extern char treetaggerParams[200];
 extern unsigned short int derivationIndex[256];
 extern int derivationLength;
 extern char* derivationSentence[MAX_SENTENCE_LENGTH];
@@ -69,15 +74,28 @@ extern unsigned int docSentenceCount;
 extern clock_t startTimeInfo;
 extern unsigned int outputLength;
 extern bool readingDocument;
+extern int inputRetryRejoinderTopic;
+extern int inputRetryRejoinderRuleID;
+extern bool build0Requested;
+extern bool build1Requested;
 extern bool callback;
-extern char inputCopy[MAX_BUFFER_SIZE]; 
+extern char inputCopy[INPUT_BUFFER_SIZE]; 
 extern unsigned char responseOrder[MAX_RESPONSE_SENTENCES+1];
 extern RESPONSE responseData[MAX_RESPONSE_SENTENCES+1];
+extern char language[40];
+extern char livedata[500];
+extern char languageFolder[500];
+extern char systemFolder[500];
+extern bool rebooting;
 extern int responseIndex;
 extern bool documentMode;
 extern bool assignedLogin;
+extern bool servertrace;
+extern char apikey[100];
+extern char defaultbot[100];
 extern unsigned int volleyCount;
 extern FILE* sourceFile;
+extern bool multiuser;
 extern bool oobExists;
 extern char hostname[100];
 extern int argc;
@@ -88,18 +106,19 @@ extern unsigned long sourceStart;
 extern unsigned int sourceTokens;
 extern unsigned int sourceLines;
 extern char* version;
-extern int sentencePreparationIndex;
-extern int lastRestoredIndex;
 extern unsigned int tokenCount;
 extern unsigned int choiceCount;
+extern int externalTagger;
 extern bool redo;
 extern bool commandLineCompile;
+extern char websocketParam[1000];
 extern int inputCounter,totalCounter;
 extern int inputSentenceCount;  
 extern char* extraTopicData;
 extern char postProcessing;
-extern char rawSentenceCopy[MAX_BUFFER_SIZE];
-extern char* authorizations;
+extern char rawSentenceCopy[INPUT_BUFFER_SIZE];
+extern char authorizations[200];
+extern FILE* userInitFile;
 extern uint64 tokenControl;
 extern unsigned int responseControl;
 extern bool moreToCome,moreToComeQuestion;
@@ -118,6 +137,7 @@ extern int timerCheckInstance;
 extern clock_t volleyStartTime;
 extern bool autonumber;
 extern bool showWhy;
+extern bool noboot;
 extern bool showTopic;
 extern bool showInput;
 extern bool showReject;
@@ -125,6 +145,9 @@ extern bool showTopics;
 extern bool shortPos;
 extern char users[100];
 extern char logs[100];
+extern char topic[100];
+extern char tmp[100];
+extern char buildfiles[100];
 
 // pending control
 extern int systemReset;
@@ -141,12 +164,12 @@ extern std::string interfaceKind;
 #endif
 
 // buffers
-extern char ourMainInputBuffer[MAX_BUFFER_SIZE];
+extern char ourMainInputBuffer[INPUT_BUFFER_SIZE];
 extern char* mainInputBuffer;
-extern char ourMainOutputBuffer[MAX_BUFFER_SIZE];
+extern char* ourMainOutputBuffer;
 extern char* mainOutputBuffer;
-extern char currentInput[MAX_BUFFER_SIZE];
-extern char revertBuffer[MAX_BUFFER_SIZE];
+extern char currentInput[INPUT_BUFFER_SIZE];
+extern char revertBuffer[INPUT_BUFFER_SIZE];
 extern char* readBuffer;
 extern char* nextInput;
 
@@ -166,23 +189,26 @@ char* SkipOOB(char* buffer);
 
 // startup
 #ifdef DLL
-extern "C" __declspec(dllexport) unsigned int InitSystem(int argc, char * argv[],char* unchangedPath = NULL,char* readonlyPath = NULL, char* writablePath = NULL, USERFILESYSTEM* userfiles = NULL);
+extern "C" __declspec(dllexport) unsigned int InitSystem(int argc, char * argv[],char* unchangedPath = NULL,char* readonlyPath = NULL, char* writablePath = NULL, USERFILESYSTEM* userfiles = NULL,DEBUGAPI in = NULL, DEBUGAPI out = NULL);
 #else
-unsigned int InitSystem(int argc, char * argv[],char* unchangedPath = NULL,char* readonlyPath = NULL, char* writablePath = NULL, USERFILESYSTEM* userfiles = NULL);
+unsigned int InitSystem(int argc, char * argv[],char* unchangedPath = NULL,char* readonlyPath = NULL, char* writablePath = NULL, USERFILESYSTEM* userfiles = NULL,DEBUGAPI in = NULL, DEBUGAPI out = NULL);
 #endif
 int FindOOBEnd(int start);
 void InitStandalone();
 void CreateSystem();
 void ReloadSystem();
 void CloseSystem();
+void NLPipeline(int trace);
 void PartiallyCloseSystem();
 int main(int argc, char * argv[]);
 void ProcessOOB(char* buffer);
 void ComputeWhy(char* buffer, int n);
-
+void FlipResponses();
+void MoreToCome();
+int CountWordsInBuckets(int& unused, unsigned int* depthcount, int limit);
 // Input processing
 void MainLoop();
-void FinishVolley(char* input,char* output,char* summary);
+void FinishVolley(char* input,char* output,char* summary,int limit = outputsize);
 int ProcessInput(char* input);
 FunctionResult DoSentence(char* prepassTopic,bool atlimit);
 

@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 9/25/2016 cs6.84
+> Revision 8/27/2016 cs7.54
 
 * [Running the server](ChatScript-ClientServer-Manual.md#running-the-server)
 * [Unique User Names](ChatScript-ClientServer-Manual.md#unique-user-names)
@@ -19,7 +19,6 @@
 * [Memory issues with multiple servers on a machine](ChatScript-ClientServer-Manual.md#memory-issues-with-multiple-servers-on-a-machine)
 * [Commands affecting the server](ChatScript-ClientServer-Manual.md#commands-affecting-the-server)
 * [Command Authorization](ChatScript-ClientServer-Manual.md#command-authorization)
-* [Command line parameters](ChatScript-ClientServer-Manual.md#command-line-parameters)
 * [RESTful server](ChatScript-ClientServer-Manual.md#restful-server)
 * [Encryption](ChatScript-ClientServer-Manual.md#encrption)
 
@@ -102,11 +101,14 @@ doesn't care how long it takes the user to come back again.
 # ChatScript Protocol
 
 The message a client sends is a concatenation of three null-terminated text strings.
-The first string is the user login name.
-The second is the name of the chatbot to talk to. If this is a null string, the system will
+Or in place of the first two null-termination markers, you may use Ascii 1 (since JavaScript doesn't play 
+well with trying to join null-terminated strings) so that you send a single null-terminated string with ascii 1 as
+separators between components.
+The first component is the user login name.
+The second component is the name of the chatbot to talk to. If this is a null string (or just Ascii 1), the system will
 connect to the default bot.
 
-The third string is the message. If the message is null, this is a start of new conversation.
+The third component is the message. If the message is null, this is a start of new conversation.
 This MUST be the first thing you do with a new user. Ideally you do it whenever a new
 conversation is starting with that user which is how the system knows the old
 conversation ended. 
@@ -220,12 +222,14 @@ files without carriage returns.
 
 # Testing for server presence
 
-If you send the message: null 1 null (that’s the null string user id, the string of the
-character “1” as bot id, and the null string message, the server will send back the string of
-[you have no user id]with no logging done and minimal load on the server. This
-constitutes an echo-test to prove the server is running.
-
-
+To truly know if the server is alive, you actually need to send it a message that it responds to.
+This means implementing `something` in your bot that reacts rapidly to your message.
+The fastest messages are OOB ones, because they do not parse. So early in your control script
+you can do something like:
+```
+u: ( \[ ping \]) Pong.
+```
+and use that to prove the server is fully functional.
 
 # Server Crashes & cron
 
@@ -245,6 +249,11 @@ and accesses its data relative to that. For cron this means you want an entry li
 0,5,10,15,20,25,30,35,40,45,50,55 * * * * cd /home/bruce/ChatScript;
 ./ChatScript/LinuxChatscript32 2>/home/bruce/cronserver.log
 ```
+
+# Logging
+CS user or server logs are never written to anything other than local filesystem. A server log could in theory be written remote to a database since it is done as a single log line, but user logs can involve tracing, which must go to local fileserver since the log is written incrementally within a line and there would be inordinate network traffic. 
+
+Still, for server logs it is a constantly increasing record count and performance would suffer significantly so logs go to the local filesystem and you have to get logs from the local machine(s). This is what they do at Amazon and they have tools to yank logs from all deployed servers.
 
 
 # CPU vs IO bound
@@ -335,205 +344,6 @@ L_master
 An authorization of `all` allows everyone.
 See also `authorize=` command line parameter and nodebug parameter.
 
-
-# Command Line Parameters
-
-Either Mac/LINUX or Windows versions accept the following command line args:
-
-## Server or Not
-```
-port=xxx
-```
-This tells the system to be a server and to use the given numeric port. You must do this to
-tell Windows to run as a server. The standard port is 1024 but you can use any port.
-
-```
-local
-```
-The opposite of the port command, this says run the program as a stand-alone system, not
-as a server.
-
-```
-interface=127.0.0.1
-```
-By default the value is `0.0.0.0` and the system directly uses a port that may be open to the
-internet. You can set the interface to a different value and it will set the local port of the
-TCP connection to what you designate.
-
-
-
-# User Facts
-
-Scripts can direct the system to store individualized data for a user in the user's topic file
-in USERS. It can store user variables (`$xxx`) or facts. Since variables hold only a single
-piece of information a script already controls how many of those there are. But facts can
-be arbitrarily created by a script and there is no natural limit. 
-As these all take up room in the user's file, affecting how long it takes to process a volley 
-(due to the time it takes to load and write back a topic file), 
-you may want to limit how many facts each user can have written. 
-This is unrelated to universal facts the system has at its permanent disposal as part of the base system.
-
-```
-fact=xxxx
-```
-This limits the user to only the xxxx most recent facts created by his interactions. The
-default is `800000` which is HUGE. It's also meaningless if you don't have scripts that
-write facts.
-
-
-## User Caching
-Each user is tracked via their topic file in USERS. The system must load it and write it
-back for each volley and in some cases will become I/O bound as a result (particularly if
-the filesystem is not local). 
-
-You can direct the system to keep a cache in memory of recent users, to reduce the I/O volume. 
-It will still write out data periodically, but not every volley. 
-Of course if you do this and the server crashes, 
-writebacks may not have happened and some system rememberance of user interaction will be lost. 
-
-Of course if the system crashes, user's may not think it unusually that the chatbot forgot some of what happened. 
-By default, the system automatically writes to disk every volley, If you use a different value, 
-a user file will never be more out of date than that.
-```
-cache=20
-cache=20x1
-```
-This specifies how many users can be cached in memory and how big the cache block in
-kb should be for a user. The default block size is `50` (50,000 bytes). 
-User files typically are under 20,000 bytes.
-
-If a file is too big for the block, it will just have to write directly to and from the filesystem. 
-The default cache count is 1, telling how many users to cache at once, 
-but you can explicitly set how many users get cached with the number after the
-"x". If the second number is 0, then no caching is done and users have no data saved.
-They remember nothing from volley to volley.
-
-Do not use caching with fork. The forks will be hiding user data from each other.
-
-```
-save=n
-```
-This specifies how many volleys should elapse before a cached user is saved to disk.
-Default is 1. A value of 0 not only causes a user's data to be written out every volley, but
-also causes the user record to be dropped from the cache, so it is read back in every time
-it is needed (handy when running multi-core copies of chatscript off the same port). 
-
-Note, if you change the default to a number higher than 1, you should always use `:quit` 
-to end a server. Merely killing the process may result in loss of the most recent user activity.
-
-
-
-# Access to server machine itself
-```
-sandbox
-```
-If the engine is not allowed to alter the server machine other than through the standard
-ChatScript directories, you can start it with the parameter `sandbox` which disables Export and System calls.
-
-```
-nodebug
-```
-Users may not issue debug commands (regardless of authorizations). Scripts can still do so.
-
-```
-authorize="" bunch of authorizations ""
-```
-The contents of the string are just like the contents of the authorizations file for the
-server. Each entry separated from the other by a space. This list is checked first. 
-If it fails to authorize AND there is a file, then the file will be checked also. 
-Otherwise authorization is denied.
-
-
-# Logging or Not
-
-In stand-alone mode the system logs what a user says with a bot in the USERS folder. It
-can also do this in server mode. It can also log what the server itself does. But logging
-slows down the system. Particularly if you have an intervening server running and it is
-logging things, you may have no use whatsoever for ChatScript's logging.
-
-```
-Userlog
-```
-Store a user-bot log in USERS directory. Stand-alone default if unspecified.
-
-```
-Nouserlog
-```
-Don't store a user-bot log. Server default if unspecified.
-
-```
-Serverlog
-```
-Write a server log. Server default if unspecified. The server log will be put into the LOGS
-directory under serverlogxxx.txt where xxx is the port.
-
-```
-Noserverprelog
-```
-Normally CS writes of a copy of input before server begins work on it to server log.
-Helps see what crashed the server (since if it crashes you get no log entry). This turns it
-off to improve performance.
-
-```
-Serverctrlz
-```
-Have server terminate its output with 0x00 0xfe 0xff as a verification the client received
-the entire message, since without sending to server, client cannot be positive the
-connection wasn't broken somewhere and await more input forever.
-
-```
-Noserverlog
-```
-Don't write a server log.
-
-```
-Fork=n
-```
-If using LINUX EVSERVER, you can request extra copies of ChatScript (to run on each
-core for example). n specifies how many additional copies of ChatScript to launch.
-
-```
-Serverretry
-```
-Allows `:retry` to work from a server - don't use this except for testing a single-person 
-on a server as it slows down the server.
-
-
-
-# No such bot-specific - nosuchbotrestart=true
-
-If the system does not recognize the bot name requested, it can automatically restart a
-server (on the presumption that something got damaged). If you don't expect no such bot
-to happen, you can enable this restart using `nosuchbotrestart=true`. Default is false.
-
-
-## Testing a server
-
-There are various configurations for having an instance be a client to test a server.
-```
-client=xxxx:yyyy
-```
-This says be a client to test a remote server at IP xxxx and port yyyy. You will be able to
-"login" to this client and then send and receive messages with a server.
-
-```
-client=localhost:yyyy
-```
-This says be a client to test a local server on port yyyy. Similar to above.
-
-```
-Load=1
-```
-This creates a localhost client that constantly sends messages to a server. Works its way
-through `REGRESS/bigregress.txt` as its input (over 100K messages). Can assign different
-numbers to create different loading clients (e.g., load=10 creates 10 clients).
-
-```
-Dual
-```
-Yet another client. But this one feeds the output of the server back as input for the next
-round. There are also command line parameters for controlling memory usage which are not
-specific to being a server.
 
 
 # CS as an embedded Client
@@ -631,7 +441,7 @@ ChatScript normally reads and writes everything in plain text. If you need great
 
 3. Use default system or roll your own encryption in privatecode.
 
-Encryption applies to user topic files and long term memory files (^export and ^import). The built-in encryption method calls an external api server using json to perform encryption and decryption, passing the server urls provided by encrypt= and decrypt= command line parameters.  The routines will add in the user's login id if you use %s in the command line parameters. Eg.,
+Encryption applies to user topic files and long term memory files (^export and ^import). The built-in encryption method calls an external api server using json to perform encryption and decryption, passing the server urls provided by `encrypt=` and `decrypt=` and `ltmencrypt` and `userencrypt` command line parameters.  The routines will add in the user's login id if you use %s in the command line parameters. Eg.,
 
 encrypt=http://someapi/someotherdata/%s
 decrypt=http://someapi/%s/something

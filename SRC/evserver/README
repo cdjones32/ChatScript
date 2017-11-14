@@ -4,9 +4,9 @@ libev is a high-performance event loop/event model with lots of features.
 
 ABOUT
 
-   Homepage: http://software.schmorp.de/pkg/libev
+   Homepage: http://software.schmorp.de/pkg/libev.html
    Mailinglist: libev@lists.schmorp.de
-                http://lists.schmorp.de/cgi-bin/mailman/listinfo/libev
+                http://lists.schmorp.de/mailman/listinfo/libev
    Library Documentation: http://pod.tst.eu/http://cvs.schmorp.de/libev/ev.pod
 
    Libev is modelled (very losely) after libevent and the Event perl

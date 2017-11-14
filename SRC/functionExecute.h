@@ -3,7 +3,7 @@
 
 
 #ifdef INFORMATION
-Copyright (C) 2011-2016 by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -68,15 +68,20 @@ extern TestMode wasCommand;
 
 #define MAX_ARG_LIST 200
 #define MAX_CALL_DEPTH 400
+extern char* codeStart;
+extern char* realCode;
 extern unsigned int callIndex;
 extern WORDP callStack[MAX_CALL_DEPTH];
 extern unsigned int callArgumentBases[MAX_CALL_DEPTH];    // arguments to functions
 extern unsigned int callArgumentIndex;
-
+extern int maxGlobalSeen;
 extern long http_response;
+extern char* currentFunctionName;
+extern unsigned int savedSentences;
 
-#define MAX_ARG_LIMIT 15 // max args to a call -- limit using 2 bit (COMPILE/KEEP_QUOTES) per arg for table mapping behavior
+#define MAX_ARG_LIMIT 31 // max args to a call -- limit using 2 bit (COMPILE/KEEP_QUOTES) per arg for table mapping behavior
 extern unsigned int currentIterator;
+extern char* fnOutput;
 
 extern char lastInputSubstitution[INPUT_BUFFER_SIZE];
 extern int globalDepth;
@@ -84,10 +89,10 @@ extern int globalDepth;
 FunctionResult InitWinsock();
 #endif
 
-
 FunctionResult RunJavaScript(char* definition, char* buffer,unsigned int args);
 void DeletePermanentJavaScript();
 void DeleteTransientJavaScript();
+unsigned int MACRO_ARGUMENT_COUNT(unsigned char* defn);
 
 //   argument data for user calls
 char* InitDisplay(char* list);
@@ -98,12 +103,15 @@ extern char* currentFunctionDisplay;
 extern bool planning;
 extern bool nobacktrack;
 FunctionResult MemoryMarkCode(char* buffer);
+char* GetArgOfMacro(int i, char* buffer, int limit);
 FunctionResult MemoryFreeCode(char* buffer);
+unsigned char* FindAppropriateDefinition(WORDP D, FunctionResult& result);
 void ResetReuseSafety();
+unsigned char* GetDefinition(WORDP D);
 void InitFunctionSystem(); 
 char* DoFunction(char* name, char* ptr, char* buffer,FunctionResult &result);
 void DumpFunctions();
-unsigned int Callback(WORDP D,char* arguments,bool boot);
+unsigned int Callback(WORDP D,char* arguments,bool boot,bool mainoutput = false);
 void ResetFunctionSystem();
 void SaveMark(char* buffer,unsigned int iterator);
 FunctionResult RegularReuse(int topic, int id, char* rule,char* buffer,char* arg3,bool crosstopic);

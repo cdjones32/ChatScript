@@ -111,92 +111,93 @@ u: (%document) $$scoregood += 0  $$scorebad += 0
 
 topic: ~tallybasepos keep repeat()
 u: (_*1) 
-	$$tmp = _0   if ($$tmp == unknown-word) { $$tmp = '_0   _0 = $$tmp} 
+	$_tmp = _0   if ($_tmp == unknown-word) { $_tmp = '_0   _0 = $_tmp} 
 	refine()
 	a: ('_0?~noun) 
-		$$tmp = join($$tmp ~ n)
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = join($_tmp ~ n)
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: ('_0?~verb)
-		$$tmp = join($$tmp ~ v)
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = join($_tmp ~ v)
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: ('_0?~aux_verb)
-		$$tmp = join($$tmp ~ aux)
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = join($_tmp ~ aux)
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: ('_0?~adjective)
-		$$tmp = join($$tmp ~ adj)
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $t$ally) retry(toprule)
+		$_tmp = join($_tmp ~ adj)
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $t$ally) retry(toprule)
 	a: ('_0?~adverb)
-		$$tmp = join($$tmp ~ adv)
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = join($_tmp ~ adv)
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: ('_0?~pronoun)
-		$$tmp = '_0
-		$$tmp = join($$tmp ~ pro)
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = '_0
+		$_tmp = join($_tmp ~ pro)
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: ('_0?~preposition)
-		$$tmp = join($$tmp ~ prep)
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = join($_tmp ~ prep)
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: ('_0?~conjunction)
-		$$tmp = join($$tmp ~ con)
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = join($_tmp ~ con)
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: ('_0?~interjection)
-		$$tmp = join($$tmp ~ int)
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = join($_tmp ~ int)
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: ('_0?~determiner)
-		$$tmp = '_0
-		$$tmp = join($$tmp ~ det)
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = '_0
+		$_tmp = join($_tmp ~ det)
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: ('_0?~predeterminer)
-		$$tmp = '_0
-		$$tmp = join($$tmp ~ pre)
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = '_0
+		$_tmp = join($_tmp ~ pre)
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: ('_0?~there_existential)
-		$$tmp = join($$tmp ~ ex)
-		$$tmp = '_0
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = join($_tmp ~ ex)
+		$_tmp = '_0
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: ('_0?~number)
-		$$tmp = '_0
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = '_0
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: () 
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 
 		
 topic: ~tallybase keep repeat()
 u: (_*1) 
-	$$tmp = _0   if ($$tmp == unknown-word) { $$tmp = '_0   _0 = $$tmp} 
+	$_tmp = _0   if ($_tmp == unknown-word) { $_tmp = '_0   _0 = $_tmp} 
 	refine()
 	a: ('_0?~determiner)
-		$$tmp = '_0
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = '_0
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: ('_0?~predeterminer)
-		$$tmp = '_0
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = '_0
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: ('_0?~number)
-		$$tmp = '_0
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$_tmp = '_0
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 	a: () 
-		$$tally = ^tally($$tmp) + 1
-		^tally($$tmp $$tally) retry(toprule)
+		$$tally = ^tally($_tmp) + 1
+		^tally($_tmp $$tally) retry(toprule)
 
 topic: ~tallyraw keep repeat()
 u: (_*1) 
-	$$tmp = '_0
-	$$tally = ^tally($$tmp) + 1
-	^tally($$tmp $$tally) retry(toprule)
+	$_tmp = '_0
+	$$tally = ^tally($_tmp) + 1
+	^tally($_tmp $$tally) 
+	retry(toprule)
 

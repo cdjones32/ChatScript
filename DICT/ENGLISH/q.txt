@@ -1,159 +1,71 @@
-﻿ Quesnel ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Qiana ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Quam ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Quebec_Bridge ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Quebec_Bridge~1nz (^cantilever_bridge~1) a cantilever bridge in Quebec
- quarterlight ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
-    quarterlight~1nz (^car_window~1) car window consisting of a small pivoted glass vent in the door of a car
- Quebec ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+﻿ Quebec ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Quebec~1nz (^Canadian_province~1) the largest province of Canada
     Quebec_City~1n 
- Queen ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
- quick_march ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    quick_march~1nz (^march~2) marching at quick time
- quality_control ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    quality_control~1nz (^internal_control~1) maintenance of standards of quality of manufactured goods
- quarter_note ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    crotchet~3nz (^note~5) a musical note having the time value of a quarter of a whole note
- Qiao ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- quarter-tone ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR posdefault:NOUN ) 
-    quarter_tone~1nz (^interval~3) half of a semitone
- Quentrell ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Quinta ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Qssim ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Qualls ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- quaintness ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
-    quaintness~1nz (^unfamiliarity~1) strangeness as a consequence of being old fashioned
-    quaintness~2nz (^old-fashionedness~1) the quality of being quaint and old-fashioned
- Quentin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Quany ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- quill_feather ( meanings=1 NOUN NOUN_SINGULAR ) 
-    pinion~2n 
- quetzal_bird ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    quetzal~1nz (^trogon~1) large trogon of Central America and South America having golden-green and scarlet plumage
- quiaquia ( meanings=1 NOUN NOUN_SINGULAR ) 
-    cigarfish~1n 
- Quennel ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Quach ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- qualitative_analysis ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    chemical_analysis~1nz (^analysis~1) the act of decomposing a substance into its constituent elements
- quay ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    quay~1nz (^dock~6) wharf usually built parallel to the shoreline
- quantisation ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
-    quantization~1nz (^division~1) the act of dividing into quanta or expressing in terms of quantum theory
- Quackenbush ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Querida ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Quintana ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- queen_mole_rat ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    queen_mole_rat~1nz (^naked_mole_rat~1) an especially large mole rat and the only member of a colony of naked mole rats to bear offspring which are sired by only a few males
- quackery ( meanings=2 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
-    empiricism~1n 
-    charlatanism~1n 
- Quijano ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- quadraphonic_system ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
-    quadriphonic_system~1nz (^stereo~1) a stereophonic sound recording or reproducing system using four separate channels
- Quint ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Qaletaqa ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Quesada ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- quislingism ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
-    collaboration~2n 
- quadrature ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    quadrature~1nz (^construction~1) the construction of a square having the same area as some other figure
- quantitative_analysis ( meanings=1 NOUN NOUN_SINGULAR ) 
-    quantitative_chemical_analysis~1n 
- quickie ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    band_aid~1n 
  Queensland ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Queensland~1nz (^Australian_state~1) a state in northeastern Australia
- quetzal ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
-    quetzal_bird~1n 
-    quetzal~2nz (^Guatemalan_monetary_unit~1) the basic unit of money in Guatemala
- Quinones ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
- Quiles ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- quantitative_chemical_analysis ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
-    quantitative_analysis~1nz (^qualitative_analysis~1) chemical analysis to determine the amounts of each element in the substance
- Quezada ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Quin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Quintanilla ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Quercus_stellata ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    brash_oak~1nz (^oak~1) small deciduous tree of eastern and central United States having dark green lyrate pinnatifid leaves and tough moisture-resistant wood used especially for fence posts
- quivering ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
-    vibration~1n 
-    quiver~4n 
- Quirk ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Quintero ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Quevedo ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Quimby ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quach ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quackenbush ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quade ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Qualls ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quam ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quan ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Quarles ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Quinevere ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Quinlan ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- qoph ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
-    qoph~1nz (^letter~3) the 19th letter of the Hebrew alphabet
- Quent ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- quickstep ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT ) 
-    quickstep~1nz (^ballroom_dancing~1) a ballroom dance with both quick and slow steps
-    quickstep~2nz (^military_march~1) military march accompanying quick time
-    quickstep~3vz perform a quickstep
- Quesenberry ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Quintin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Quillen ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- quartering ( meanings=3 glosses=3 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:VERB ) 
-    quartering~1nz (^division~1) dividing into four equal parts
-    quartering~2nz (^housing~2) living accommodations
-    quartering~3nz (^heraldry~1) a coat of arms that occupies one quarter of an escutcheon
- Quincey ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Queenie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- quelling ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:VERB ) 
-    stifling~1n 
- quilting ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
-    quilting~1nz (^material~1) a material used for making a quilt, or a quilted fabric
-    quilting~2nz (^embroidery_stitch~1) stitching through layers of fabric and a filling so as to create a design
  Quattlebaum ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Queena ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Queensland_lungfish ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Australian_lungfish~1n 
+ Queen ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN_TITLE_OF_ADDRESS NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
+ Quesada ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quesenberry ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quevedo ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quezada ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quigley ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quijano ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quiles ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quillen ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quimby ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quinlan ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quinn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quinones ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON2 ) 
+ Quinonez ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quintana ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quintanilla ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quintero ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quinton ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quirk ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Quiroga ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Quiroz ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Qadir ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Qaletaqa ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Qaseem ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Qeturah ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Qiana ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Qiao ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Qochata ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Qssim ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quaid ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quany ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quarrie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Queena ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Queenie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Quennel ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quent ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quentin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quenton ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quentrell ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Queran ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Querida ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Quesnel ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quiana ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Quin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quincey ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Quincy ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
     Josiah_Quincy~1n 
- Qadir ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- quiver ( meanings=7 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
-    quivering~1nz (^motion~2) the act of vibrating
-    quiver~2nz (^case~2) case for holding arrows
-    chill~2n 
-    palpitation~1nz (^motion~7) a shaky motion
-    flitter~1vz move back and forth very rapidly
-    beat~24v 
-    palpitate~2vz shake with fast, tremulous movements
- Quenton ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Qeturah ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Quigley ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- quirt ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
-    quirt~1nz (^whip~2) whip with a leather thong at the end
- Quintrell ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Quinn ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- quiz ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT ) plural=quizzes 
-    quiz~1nz (^examination~5) an examination consisting of a few short questions
-    test~8v 
- quadrille ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
-    quadrille~1nz (^square_dancing~1) a square dance of 5 or more figures for 4 or more couples
-    quadrille~2nz music for dancing the quadrille
- quantification ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    quantification~1nz (^measure~3) the act of discovering or expressing the quantity of something
-    quantification~2nz (^restriction~3) a limitation imposed on the variables of a proposition
- Quade ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Quan ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Quinonez ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Quinton ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Quiroga ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Qaseem ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Qochata ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Quaid ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Quarrie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Queran ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Quiana ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Quinevere ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Quint ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quinta ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Quinten ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quintin ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Quintrell ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  quantity ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER GRADE5_6 posdefault:NOUN ) 
-    amount~1n 
+    measure~1n 
     quantity~2nz (^amount~2) an adequate or large amount
     quantity~3nz (^construct~1) the concept that something has a magnitude and can be represented in mathematical expressions by a constant or a variable
  qualifying ( meanings=2 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:VERB ) 
@@ -174,29 +86,68 @@
     warm~5az easily aroused or excited
     immediate~3az performed with little or no delay
     speedy~1az accomplished rapidly and without delay
-    fast~8az hurried and brief
+    flying~2az hurried and brief
     ready~2az apprehending and responding with speed and sensitivity
     quick~8az 
-    quickly~2b 
+    quickly~2z 
+ quickie ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
+    band_aid~1n 
  quicky ( meanings=1 NOUN NOUN_SINGULAR COMMON2 ) 
     quickie~1n 
+ quick_march ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    quick_march~1nz (^march~2) marching at quick time
  quickening ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
     acceleration~1n 
     quickening~2nz (^biological_process~1) the process of showing signs of life
     quickening~3nz (^degree~7) the stage of pregnancy at which the mother first feels the movements of the fetus
- quantization ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    quantisation~1n 
+ quiver ( meanings=7 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE5_6 posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
+    quivering~1nz (^motion~2) the act of vibrating
+    quiver~2nz (^case~2) case for holding arrows
+    thrill~2n 
+    palpitation~1nz (^motion~7) a shaky motion
+    flitter~1vz move back and forth very rapidly
+    beat~24v 
+    palpitate~2vz shake with fast, tremulous movements
+ quivering ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
+    vibration~1n 
+    vibration~4n 
+ quartering ( meanings=3 glosses=3 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:VERB ) 
+    quartering~1nz (^division~1) dividing into four equal parts
+    quartering~2nz (^housing~2) living accommodations
+    quartering~3nz (^heraldry~1) a coat of arms that occupies one quarter of an escutcheon
+ quantization ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
+    quantisation~1nz (^division~1) the act of dividing into quanta or expressing in terms of quantum theory
+ quantisation ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
+    quantization~1n 
+ quickstep ( meanings=3 glosses=3 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_NOOBJECT ) 
+    quickstep~1nz (^ballroom_dancing~1) a ballroom dance with both quick and slow steps
+    quickstep~2nz (^military_march~1) military march accompanying quick time
+    quickstep~3vz perform a quickstep
+ quadrille ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
+    quadrille~1nz (^square_dancing~1) a square dance of 5 or more figures for 4 or more couples
+    quadrille~2nz music for dancing the quadrille
+ quackery ( meanings=2 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
+    empiricism~1n 
+    charlatanism~1n 
+ qualitative_analysis ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    chemical_analysis~1nz (^analysis~1) the act of decomposing a substance into its constituent elements
  qualitative ( meanings=2 glosses=2 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
     qualitative~1az involving distinctions based on qualities
     qualitative~2az relating to or involving comparisons based on qualities
+ quantitative_analysis ( meanings=1 NOUN NOUN_SINGULAR ) 
+    quantitative_chemical_analysis~1n 
  quantitative ( meanings=3 glosses=3 ADJECTIVE ADJECTIVE_NORMAL COMMON4 posdefault:ADJECTIVE ) 
     quantitative~1az expressible as a quantity or relating to or susceptible of measurement
     quantitative~2az having a metric system based on relative duration of syllables
     quantitative~3az relating to the measurement of quantity
+ quantitative_chemical_analysis ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    quantitative_analysis~1nz (^qualitative_analysis~1) chemical analysis to determine the amounts of each element in the substance
  quarterback ( meanings=3 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 posdefault:NOUN VERB_NOOBJECT ) 
     signal_caller~1n 
     signal_caller~2n 
     quarterback~3vz play the quarterback
+ quality_control ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    quality_control~1nz (^internal_control~1) maintenance of standards of quality of manufactured goods
  quality ( meanings=7 glosses=5 NOUN_ABSTRACT NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON4 COMMON2 NOUN_NODETERMINER GRADE1_2 posdefault:NOUN ) 
     quality~1nz (^attribute~1) an essential and distinguishing attribute of something or someone
     calibre~1nz (^degree~1) a degree or grade of excellence or worth
@@ -206,8 +157,10 @@
     quality~6az of high social status
     choice~4a 
  queerness ( meanings=2 NOUN NOUN_SINGULAR COMMON2 ) 
-    homosexualism~1n 
+    homoeroticism~1n 
     quirk~2n 
+ quadrature ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
+    quadrature~1nz (^construction~1) the construction of a square having the same area as some other figure
  quarrying ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
     quarrying~1nz (^production~4) the extraction of building stone or slate from an open surface quarry
  quest ( meanings=7 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 GRADE5_6 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
@@ -218,6 +171,9 @@
     bay~9v 
     quest~6vz search the trail of 
     quest~7vz make a search 
+ quantification ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
+    quantification~1nz (^measure~3) the act of discovering or expressing the quantity of something
+    quantification~2nz (^restriction~3) a limitation imposed on the variables of a proposition
  quotation ( meanings=4 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 
     quotation~1nz (^practice~1) the practice of quoting from books or plays etc.
     citation~2n 
@@ -229,6 +185,8 @@
  quiescency ( meanings=2 NOUN NOUN_SINGULAR COMMON1 ) 
     quiescence~1n 
     quiescence~2n 
+ quelling ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:VERB ) 
+    crushing~1n 
  quitclaim ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
     quitclaim~1nz (^transfer~3) act of transferring a title or right or claim to another
     quitclaim_deed~1n 
@@ -243,10 +201,12 @@
     quarantine~1nz (^closing_off~1) isolation to prevent the spread of infectious disease
     quarantine~2nz (^isolation~5) enforced isolation of patients suffering from a contagious disease in order to prevent the spread of disease
     quarantine~3vz place into enforced isolation, as for medical reasons
- quarter ( meanings=18 glosses=18 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_NUMBER COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT TIMEWORD ) 
+ quislingism ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
+    collaboration~2n 
+ quarter ( meanings=18 glosses=18 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT TIMEWORD ) 
     quarter~1nz (^mercifulness~1) clemency or mercy shown to a defeated opponent
     quarter~2nz (^piece_of_leather~1) piece of leather that comprises the part of a shoe or boot covering the heel and joining the vamp
-    stern~1nz (^back~5) the rear part of a ship
+    after_part~1nz (^back~5) the rear part of a ship
     quarter~4nz (^city_district~1) a district of a city having some distinguishing character
     quarter~5nz (^individual~1) an unspecified person
     quarter~6nz (^coin~1) a United States or Canadian coin worth one fourth of a dollar
@@ -270,19 +230,24 @@
     quail~1nz (^phasianid~1) small gallinaceous game birds
     quail~2nz (^wildfowl~1) flesh of quail
     cringe~1vz draw back, as with fear or pain
+ quetzal ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
+    quetzal_bird~1n 
+    quetzal~2nz (^Guatemalan_monetary_unit~1) the basic unit of money in Guatemala
+ quetzal_bird ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    quetzal~1nz (^trogon~1) large trogon of Central America and South America having golden-green and scarlet plumage
  quack-quack ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     quack-quack~1nz (^duck~1) child's word for a duck
  quill ( meanings=4 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     quill~1nz (^spine~1) a stiff hollow protective spine on a porcupine or hedgehog
     shaft~1n 
-    flight_feather~1n 
+    pinion~2n 
     quill_pen~1n 
  quahog ( meanings=2 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER ) 
+    Venus_mercenaria~1n 
+    quahaug~2n 
+ quahaug ( meanings=2 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
     Mercenaria_mercenaria~1n 
     hard-shell_clam~2n 
- quahaug ( meanings=2 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
-    quahog~1n 
-    quahog~2n 
  queen ( meanings=1 glosses=1 NOUN_HUMAN NOUN_SHE NOUN NOUN_SINGULAR COMMON4 KINDERGARTEN posdefault:NOUN VERB_NOOBJECT ) 
     world-beater~1nz (^competition~3) a competitor who holds a preeminent position
  quarry ( meanings=4 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT ) 
@@ -295,14 +260,22 @@
     four-footed~1a 
  queen_bee ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     queen_bee~1nz fertile egg-laying female bee
+ queen_mole_rat ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    queen_mole_rat~1nz (^naked_mole_rat~1) an especially large mole rat and the only member of a colony of naked mole rats to bear offspring which are sired by only a few males
  quarter_horse ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     quarter_horse~1nz (^mount~2) a small powerful horse originally bred for sprinting in quarter-mile races in Virginia
  quagga ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     Equus_quagga~1n 
+ quill_feather ( meanings=1 NOUN NOUN_SINGULAR ) 
+    quill~3n 
+ Queensland_lungfish ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Neoceratodus_forsteri~1n 
  quinnat_salmon ( meanings=1 NOUN NOUN_SINGULAR ) 
-    chinook_salmon~1n 
+    king_salmon~1n 
+ quiaquia ( meanings=1 NOUN NOUN_SINGULAR ) 
+    cigarfish~1n 
  queenfish ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
-    white_croaker~2n 
+    Seriphus_politus~1n 
  queen_triggerfish ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     Balistes_vetula~1nz (^triggerfish~1) tropical Atlantic fish
  quoin ( meanings=3 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
@@ -342,6 +315,8 @@
     quarter-circle~1n 
  quadraphony ( meanings=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     quadraphonic_system~1n 
+ quadraphonic_system ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    quadriphonic_system~1nz (^stereo~1) a stereophonic sound recording or reproducing system using four separate channels
  quadraphonic ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     quadrisonic~1az of or relating to quadraphony
  quadriphonic_system ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -358,10 +333,12 @@
     Quaker~1nz (^Christian~1) a member of the Religious Society of Friends founded by George Fox
  quarrel ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:NOUN VERB_NOOBJECT ) 
     quarrel~1nz (^arrow~1) an arrow that is shot from a crossbow
-    dustup~1n 
+    row~4n 
     altercate~1vz have a disagreement over something
  quarterdeck ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     quarterdeck~1nz (^deck~1) the stern area of a ship's upper deck
+ quarterlight ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
+    quarterlight~1nz (^car_window~1) car window consisting of a small pivoted glass vent in the door of a car
  quarter_plate ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     quarter_plate~1nz (^plate~9) a photographic plate measuring 3.25 inches by 4.25 inches
  quarterstaff ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) plural=quarterstaves 
@@ -374,6 +351,10 @@
     quartz_crystal~1nz (^quartz~1) a thin plate or small rod of quartz cut along certain lines and ground so that it can produce an electric signal at a constant frequency
  quartz_lamp ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     quartz_lamp~1nz (^mercury-vapor_lamp~1) a mercury-vapor lamp that is enclosed in a quartz container instead of a glass container
+ quay ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
+    quay~1nz (^dock~6) wharf usually built parallel to the shoreline
+ Quebec_Bridge ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Quebec_Bridge~1nz (^cantilever_bridge~1) a cantilever bridge in Quebec
  queen_post ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     queen_post~1nz (^post~4) vertical tie post in a roof truss
  Queensboro_Bridge ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -383,7 +364,7 @@
  quill_pen ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     quill~4nz (^pen~2) pen made from a bird's feather
  quilt ( meanings=3 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT ) 
-    puff~5n 
+    comforter~2n 
     quilt~2vz create by stitching together
     quilt~3vz stitch or sew together
  quilted_bedspread ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -391,6 +372,9 @@
  quilted ( meanings=2 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 posdefault:VERB ) 
     quilted~1az made of layers of fabric held together by patterned stitching
     quilted~2az 
+ quilting ( meanings=2 glosses=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:VERB ) 
+    quilting~1nz (^material~1) a material used for making a quilt, or a quilted fabric
+    quilting~2nz (^embroidery_stitch~1) stitching through layers of fabric and a filling so as to create a design
  quinacrine ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     quinacrine_hydrochloride~1n 
  quinacrine_hydrochloride ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -415,6 +399,8 @@
     quirk_moulding~1n 
  quirk_moulding ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     quirk_molding~1nz (^moulding~4) a molding having a small groove in it
+ quirt ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
+    quirt~1nz (^whip~2) whip with a leather thong at the end
  quoit ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     quoit~1nz (^game_equipment~1) game equipment consisting of a ring of iron or circle of rope used in playing the game of quoits
  QWERTY_keyboard ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -440,6 +426,9 @@
     wonder~5vz place in doubt or express doubtful speculation
  quirkiness ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
     queerness~2nz (^unfamiliarity~1) a strange attitude or habit
+ quaintness ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
+    quaintness~1nz (^unfamiliarity~1) strangeness as a consequence of being old fashioned
+    quaintness~2nz (^old-fashionedness~1) the quality of being quaint and old-fashioned
  quotability ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     quotability~1nz (^worthiness~1) the quality of being worthy of being quoted
  quiet ( meanings=13 glosses=9 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 COMMON1 NOUN_NODETERMINER KINDERGARTEN posdefault:ADJECTIVE VERB_DIRECTOBJECT VERB_NOOBJECT ADJECTIVE_GOOD_SUBJECT_COMPLEMENT ) 
@@ -453,7 +442,7 @@
     restrained~3az not showy or obtrusive
     quiet~9az free of noise or uproar
     quiet~10az characterized by an absence or near absence of agitation or activity
-    quietly~3b 
+    quietly~3z 
     calm~9v 
     pipe_down~1vz become quiet or quieter
  quietness ( meanings=2 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER ) 
@@ -572,8 +561,8 @@
  quarterly ( meanings=4 glosses=4 NOUN ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON4 KINDERGARTEN posdefault:ADJECTIVE TIMEWORD ) 
     quarterly~1nz (^serial_publication~1) a periodical that is published every quarter
     quarterly~2az of or relating to or consisting of a quarter
-    every_quarter~1bz in three month intervals
-    quarterly~4bz in diagonally opposed quarters of an escutcheon
+    every_quarter~1z in three month intervals
+    quarterly~4z in diagonally opposed quarters of an escutcheon
  quote ( meanings=6 glosses=6 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 GRADE5_6 posdefault:NOUN posdefault:VERB VERB_DIRECTOBJECT VERB_INDIRECTOBJECT VERB_NOOBJECT ) 
     quotation~2nz (^selection~3) a passage or expression that is quoted or cited
     inverted_comma~1nz (^punctuation_mark~1) a punctuation mark used to attribute the enclosed text to someone else
@@ -583,6 +572,9 @@
     quote~6vz name the price of
  quiz_program ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     quiz_program~1nz (^game_show~1) a game show in which contestants answer questions
+ quiz ( meanings=2 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 GRADE3_4 posdefault:NOUN VERB_DIRECTOBJECT ) plural=quizzes 
+    quiz~1nz (^examination~5) an examination consisting of a few short questions
+    test~8v 
  quota ( meanings=3 glosses=3 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER posdefault:NOUN ) 
     quota~1nz (^import_barrier~1) a limitation on imports
     quota~2nz (^allotment~2) a proportional share assigned to each participant
@@ -608,12 +600,18 @@
  Q ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Q~1nz (^letter~3) the 17th letter of the Roman alphabet
  q ( COMMON4 COMMON1 ) 
+ qoph ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
+    qoph~1nz (^letter~3) the 19th letter of the Hebrew alphabet
  question_mark ( meanings=1 NOUN NOUN_SINGULAR ) 
     interrogation_point~1n 
  quotation_mark ( meanings=1 NOUN NOUN_SINGULAR ) 
     quote~2n 
- quarter_tone ( meanings=1 NOUN NOUN_SINGULAR ) 
-    quarter-tone~1n 
+ quarter_tone ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    quarter-tone~1nz (^interval~3) half of a semitone
+ quarter-tone ( meanings=1 NOUN NOUN_SINGULAR posdefault:NOUN ) 
+    quarter_tone~1n 
+ quarter_note ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
+    crotchet~3nz (^note~5) a musical note having the time value of a quarter of a whole note
  quarter_rest ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     quarter_rest~1nz (^rest~3) a musical rest having one-fourth the time value of a whole rest
  quaver ( meanings=4 glosses=1 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT QUOTEABLE_VERB ) 
@@ -630,14 +628,14 @@
     Quapaw~1nz (^Dhegiha~1) the Dhegiha dialect spoken by the Quapaw
     Quapaw~2nz (^Dhegiha~2) a member of the Siouan people of the Arkansas river valley in Arkansas
  Quechua ( meanings=3 glosses=2 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Quechuan_language~1n 
+    Quechuan~1n 
     Kechua~2nz (^community~2) a community of South American Indians in Peru who were formerly the ruling class of the Incan Empire
     Kechua~3nz (^South_American_Indian~1) a member of a South American Indian people in Peru who were formerly the ruling class of the Inca empire
  Quechuan ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_PROPER_SINGULAR ) 
-    Quechua~1n 
+    Quechuan_language~1n 
     Kechuan~2az of or relating to the Quechua or their language
  Quechuan_language ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Kechua~1nz (^Indian~1) the language of the Quechua which was spoken by the Incas
+    Kechuan~1nz (^Indian~1) the language of the Quechua which was spoken by the Incas
  Quoratean ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Quoratean~1nz (^Hokan~1) a group of languages of the Hokan family
  Quiche ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -1045,6 +1043,8 @@
     Quercus_rubra~1n 
  Quercus_shumardii ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Shumard_oak~1nz (^red_oak~1) large deciduous red oak of southern and eastern United States having large seven-lobed to nine-lobed elliptical leaves, large acorns and medium hard coarse-grained wood
+ Quercus_stellata ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+    iron_oak~2nz (^oak~1) small deciduous tree of eastern and central United States having dark green lyrate pinnatifid leaves and tough moisture-resistant wood used especially for fence posts
  Quercus_suber ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     cork_oak~1nz (^oak~1) medium-sized evergreen oak of southern Europe and northern Africa having thick corky bark that is periodically stripped to yield commercial cork
  Quercus_texana ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -1173,9 +1173,9 @@
     tetrad~1n 
  quaternion ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     quatern~1n 
- quaternary ( meanings=3 glosses=2 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:ADJECTIVE ) 
+ quaternary ( meanings=3 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:ADJECTIVE ) 
     quaternion~1n 
-    quaternary~2az coming next after the third and just before the fifth in position or time or degree or magnitude
+    fourth~4a 
     quaternate~1az consisting of or especially arranged in sets of four
  quaternity ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     quaternary~1n 
@@ -1187,10 +1187,10 @@
  quite_a_little ( meanings=1 NOUN NOUN_SINGULAR ) 
     passel~1n 
  quite ( meanings=5 glosses=3 ADVERB PREDETERMINER EXTENT_ADVERB COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB ) 
-    quite~1bz to the greatest extent
-    rather~2b 
-    quite_an~1bz of an unusually noticeable or exceptional or remarkable kind 
-    quite~4bz actually or truly or to an extreme
+    quite~1z to the greatest extent
+    rather~2z 
+    quite_an~1z of an unusually noticeable or exceptional or remarkable kind 
+    quite~4z actually or truly or to an extreme
     quite~5z 
  quantitative_relation ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     magnitude_relation~1nz (^relation~1) a relation between magnitudes
@@ -1455,9 +1455,9 @@
  quarter-billion ( NOUN NOUN_NUMBER KINDERGARTEN ) 
  quarter-million ( NOUN NOUN_NUMBER KINDERGARTEN ) 
  quicker ( meanings=1 glosses=1 MORE_FORM ADJECTIVE ADVERB ADJECTIVE_NORMAL COMMON4 KINDERGARTEN posdefault:ADJECTIVE posdefault:ADVERB ) comparative=quick 
-    faster~1bz more quickly
+    faster~1z more quickly
  quickest ( meanings=1 glosses=1 MOST_FORM ADJECTIVE ADVERB ADJECTIVE_NORMAL COMMON2 COMMON1 KINDERGARTEN posdefault:ADJECTIVE ) comparative=quicker 
-    fastest~1bz most quickly
+    fastest~1z most quickly
  quaggier ( MORE_FORM ADJECTIVE ADJECTIVE_NORMAL ) comparative=quaggy 
  quaggiest ( MOST_FORM ADJECTIVE ADJECTIVE_NORMAL ) comparative=quaggier 
  queasier ( MORE_FORM ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) comparative=queasy 
@@ -1465,45 +1465,45 @@
  queenlier ( MORE_FORM ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) comparative=queenly 
  queenliest ( MOST_FORM ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) comparative=queenlier 
  quite_a ( meanings=1 ADVERB CONDITIONAL_IDIOM posdefault:ADVERB  poscondition=?=R ) 
-    quite~3b 
+    quite~3z 
  quite_an ( meanings=1 ADVERB CONDITIONAL_IDIOM  poscondition=?=R ) 
-    quite_a~1b 
+    quite_a~1z 
  quietly ( meanings=4 glosses=4 ADVERB COMMON4 KINDERGARTEN posdefault:ADVERB ) 
-    softly~1bz with low volume
-    quietly~2bz with little or no sound
-    quiet~11bz with little or no activity or no agitation 
-    restfully~1bz in a restful manner
+    softly~1z with low volume
+    quietly~2z with little or no sound
+    quiet~11z with little or no activity or no agitation 
+    restfully~1z in a restful manner
  quickly ( meanings=3 glosses=3 ADVERB COMMON4 COMMON1 KINDERGARTEN posdefault:ADVERB ) 
-    apace~1bz with rapid movements
-    promptly~3bz with little or no delay
-    cursorily~1bz without taking pains
+    apace~1z with rapid movements
+    promptly~3z with little or no delay
+    cursorily~1z without taking pains
  quantitatively ( meanings=1 glosses=1 ADVERB COMMON2 COMMON1 posdefault:ADVERB ) 
-    quantitatively~1bz in a quantitative manner
+    quantitatively~1z in a quantitative manner
  questioningly ( meanings=2 glosses=2 ADVERB COMMON2 posdefault:ADVERB ) 
-    wonderingly~1bz in a curious and questioning manner
-    quizzically~1bz in a quizzical and questioning manner
+    wonderingly~1z in a curious and questioning manner
+    quizzically~1z in a quizzical and questioning manner
  querulously ( meanings=1 ADVERB COMMON1 posdefault:ADVERB ) 
-    peevishly~1b 
+    peevishly~1z 
  quaintly ( meanings=2 glosses=2 ADVERB COMMON2 posdefault:ADVERB ) 
-    quaintly~1bz in a quaint old-fashioned manner
-    quaintly~2bz in a strange but not unpleasant manner
+    quaintly~1z in a quaint old-fashioned manner
+    quaintly~2z in a strange but not unpleasant manner
  qualitatively ( meanings=1 glosses=1 ADVERB COMMON2 COMMON1 posdefault:ADVERB ) 
-    qualitatively~1bz in a qualitative manner
+    qualitatively~1z in a qualitative manner
  queasily ( meanings=1 glosses=1 ADVERB COMMON1 posdefault:ADVERB ) 
-    queasily~1bz in a queasy manner
+    queasily~1z in a queasy manner
  queerly ( meanings=2 glosses=1 ADVERB COMMON2 posdefault:ADVERB ) 
-    fishily~1bz in a questionably unusual manner
-    strangely~1b 
+    fishily~1z in a questionably unusual manner
+    strangely~1z 
  questionably ( meanings=1 glosses=1 ADVERB COMMON2 posdefault:ADVERB ) 
-    dubiously~2bz in a questionable and dubious manner
+    dubiously~2z in a questionable and dubious manner
  quizzically ( meanings=1 ADVERB COMMON2 posdefault:ADVERB ) 
-    questioningly~2b 
+    questioningly~2z 
  quixotically ( meanings=1 glosses=1 ADVERB COMMON1 posdefault:ADVERB ) 
-    quixotically~1bz in a quixotic manner
+    quixotically~1z in a quixotic manner
  quaveringly ( meanings=1 glosses=1 ADVERB COMMON1 posdefault:ADVERB ) 
-    quaveringly~1bz in an unsteady quavering manner
+    quaveringly~1z in an unsteady quavering manner
  quaque_nocte ( meanings=1 ADVERB CONDITIONAL_IDIOM  poscondition=?=R ) 
-    quaque_nocte~1bz 
+    quaque_nocte~1z 
  qua ( meanings=1 PREPOSITION COMMON4 COMMON1 ) 
     qua~1z 
  quicken ( meanings=5 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB COMMON2 COMMON1 posdefault:VERB VERB_DIRECTOBJECT VERB_NOOBJECT ) 

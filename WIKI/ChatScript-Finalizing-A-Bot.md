@@ -1,9 +1,6 @@
 # ChatScript Finalizing a Bot Manual
-
->© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
-
-
->Revision 1/21/2016 cs6.1a
+© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
+<br>Revision 4/8/2017 cs7.31
 
 OK. You've written a bot. It sort of seems to work. Now, before releasing it, you should
 polish it. There are a bunch of tools to do this.
@@ -311,22 +308,27 @@ We generally adhere to a tweet limit (140 characters) and run `:abstract 140` to
 lines that are longer.
 
 
-### `:topicinfo` ~topic how
+### `:topicinfo ~topic how`
 
 This displays all sorts of information about a topic including its keywords, how they
 overlap with other topics, what rules exist and whether they are erased or not. You either
 name the topic or you can just you `~`, which means the current rejoinder topic (if there is
 one). You can also wildcard the name like `~co*` to see all topics that start with `~co`.
 
-If how is omitted, you get everything. You can restrict things with a collection of how
-keywords. These include "keys", to display the keywords, "overlap" to display the
-overlap with other topics' keywords, "gambits", "rejoinders", "responders" or "all" to
-limit rules to some of those, "used" and "available" to see only those rules meeting that
-criteria.
+If how is omitted, you get everything. 
+You can restrict things with a collection of how keywords. These include: 
+
+| how | meaning|
+|-----|--------|
+|`keys`| to display the keywords
+|`overlap`| to display the overlap with other topics' 
+|`keywords`<br>`gambits`<br>`rejoinders`<br>`responders`<br>`all` | to limit rules to some of those 
+|`used`<br>`available`| to see only those rules meeting that criteria.
 
 Of particular importance in finalization is the key overlap map. Keyword overlap is
 particularly interesting. As you assign keywords to topics, at times you will probably get
-excessive. Some topics will share keywords with other topics. For some things, this is
+excessive. 
+Some topics will share keywords with other topics. For some things, this is
 reasonable. "quark" is a fine keyword for a topic on cheese and one on astronomy. But
 odds are "family" is not a great keyword for a topic on money. 
 
@@ -363,42 +365,48 @@ and for variables it will list be documented and undocumented.
 
 There are several useful :abstract calls to do during finalization.
 
-### `:abstract` 100 
+### `:abstract 100` 
 
 If you want to adjust output of yours that would be too long for something
 like a phone screen, you can ask :abstract to show you all rules whose output would likely exceed some limit (here 100). 
-Without a topic name it does the entire system. With a topic name e.g., `:abstract 100 ~topicname`, it is restricted to that topic. 
-You can also use a wildcard like `~top*` to do all topics with `~top` at the start of the name. 
-You can also provide a list of topics, like `:abstract ~topic1 ~topic2`.
+Without a topic name it does the entire system. With a topic name e.g.
+
+    :abstract 100 ~topicname
+
+it is restricted to that topic.  You can also use a wildcard like `~top*` to do all topics with `~top` at the start of the name. 
+You can also provide a list of topics, like 
+
+    :abstract ~topic1 ~topic2
 
 
-### `:abstract` censor ~mywords 
+### `:abstract censor ~mywords` 
 
 will note all output which contains any words in mywords.
 Of course regular uses may also appear. The censor command looks for any words
 referred to by the concept given.
 
 
-### `:abstract` spell
+### `:abstract spell`
 
-will examine the outputs of all topics (or topic given) to find words whose spelling might be faulty. It's not a guarantee it is, but it can warn you about potential mistakes.
-And :abstract is handy just to print out a human-readable copy of your bot, without all the
-ChatScript scripting mess. As part of that, you can add header comments that will appear
-in the abstract. These are done as:
-```
-#!x whatever
-```
+will examine the outputs of all topics (or topic given) to find words whose spelling might be faulty. 
+It's not a guarantee it is, but it can warn you about potential mistakes.
+And `:abstract` is handy just to print out a human-readable copy of your bot, 
+without all the ChatScript scripting mess. As part of that, 
+you can add header comments that will appear in the abstract. These are done as:
+
+    #!x whatever
+    
 I often subset gambits and responders in a topic by section, e.g.,
-```
-#!x*** FAMILY COMPOSITION
-…
-#!x*** FAMILY RELATIONSHIPS
-```
 
-### `:abstract` story
+    #!x*** FAMILY COMPOSITION
+    ...
+    #!x*** FAMILY RELATIONSHIPS
+
+
+### `:abstract story`
 will display just topics and their gambits (+ rejoinders of them).
 
-### `:abstract` responder 
+### `:abstract responder` 
 will display topics and their responders (+ rejoinders of them).
 
 

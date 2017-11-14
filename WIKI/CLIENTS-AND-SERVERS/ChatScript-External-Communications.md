@@ -3,7 +3,7 @@
 > © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
 
 
-> Revision 1/21/2016 cs6.1a
+> Revision 1/1/2017 cs7.0
 
 ChatScript is fine for a chatbot that does not depend on the outer world. But if you need to control an
 avatar or grab information from sensors or the Internet, you need a way to communicate externally
@@ -30,7 +30,7 @@ it wants.
 ### `^jsonopen`( kind url postdata header )
 this function queries a website and returns a JSON datastructure as facts.
 
-### `^jsonprint`( name )
+### `^jsontree`( name )
 It prints out a tree of elements, one per line, where depth is represented as more deeply indented.
 
 ### `^jsonparse`( string )

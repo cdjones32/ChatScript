@@ -1,17 +1,12 @@
 # ChatScript PostgreSQL
 
-> © Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com
-
-
-> Revision 10/23/2016 cs6.86
+© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
+<br>Revision 6/25/2017 cs7.51
 
 ChatScript ships with code and WINDOWS libraries for accessing PostgreSQL but you need a database
-somewhere. All builds with the postgres client are `ChatScriptpg` in naming as opposed to
-`ChatScript.exe` or `LinuxChatScript32` or `LinuxChatScript64` which are non postgres builds.
+somewhere and you need a postgres build of ChatScript.
 
-On Linux, ChatScript ships with PostgreSQL client built-in, but if you want to rebuild the system for
-some reason, then while standing in /src type either
-
+While standing in the SRC directory, you can do:
 `make server` – build ordinary CS server w/o PostgreSQL client
 <br>`make pgserver` – build CS server w PostgreSQL client (you had to install postgress first)
 
@@ -25,17 +20,16 @@ On Mac and IOS `#define DISCARDDATABASE` is on by default.
 If you have access to a PostgreSQL server remotely, that's fine. 
 If you need one installed on your machine, see the end for how to install one.
 
-
 ## Using Postgres as file server
 
 Aside from using Postgres to store data for a chatbot to look up, one can also use Postgres as a
 replacement for the local file system of the USERS directory. This allows you to scale CS horizontally
 by having multiple CS servers all connecting to a common Postgres DB machine so a user can be
-routed to any server. To do this, on the command line use:
+routed to any server. To do this, on the ChatScript command line use:
 ```
-pguser="hostaddr = 129.22.22.24 port = 5432 user = postgres password = somepassword "
+pguser="host = 129.22.22.24 port = 5432 user = postgres password = somepassword "
 ```
-You can replace hostaddr with host to use a named notation. If both are omitted, it defaults to localhost.
+If host is omitted, it defaults to localhost.
 Localhost might not work as the name of the host, in which case use 127.0.0.1 .
 
 You do not specify the dbname. The system assumes you have a db named `users`. If it doesn't find it,
@@ -46,6 +40,38 @@ database and a `userfiles` tables.
 Each user will get an entry in the userfiles table.
 If Postgres is not available, the CS server will quit. Hopefully you have an automatic restart cron job and
 it will be able to connect to Postgres the next time.
+
+### Update 2017-10-04
+
+You can now specify the name of the postgres db:
+```
+pguser="dbname = mydb host = 129.22.22.24 port = 5432 user = postgres password = somepassword "
+```
+
+If the dbname is specified, the postgres module will not try to create a new database or a userfiles table.
+If dbname is not specified, the postgres module will provide its original behavior.
+
+The postgres code uses the following parameter queries to read, insert, and update a user record:
+```
+-- read a user
+SELECT file FROM userfiles WHERE userid = $1::varchar ;
+-- insert a user
+INSERT INTO userfiles (file, userid) VALUES ($1::bytea, $2::varchar) ;
+-- update a user
+UPDATE userfiles SET file = $1::bytea WHERE userid = $2::varchar ;
+```
+
+You can override these queries to support alternate schemas.  However, the postgres module
+assumes that any sql used to override the default queries will use the same sequence of arguments.
+For example, assume you want to store user data in a table named 'randomusertable.' The following
+parameters can be used to override the default postgres SQL:
+```
+pguserread=SELECT userdata FROM randomusertable WHERE username=$1::varchar ;
+pguserinsert=INSERT INTO randomusertable (userdata,username) VALUES ($1::bytea, $2::varchar) ;
+pguserupdate=UPDATE randomusertable SET userdata = $1::bytea WHERE username = $2::varchar ;
+```
+
+Note that the default and override queries use the same arguments in the same order.
 
 
 ## Access A PostgreSQL Database

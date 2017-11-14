@@ -1,8 +1,4 @@
 # folders
-VS2010/
-VS2015/
-TOPIC/BUILD*
-
 mackore/KoreNLPXC/KoreNLPXC.xcodeproj/xcuserdata/
 mackore/KoreNLPXC/KoreNLPXC.xcodeproj/project.xcworkspace/xcuserdata/
 
@@ -13,19 +9,31 @@ USERS/**/*.txt
 LOGS/**/*.txt
 VERIFY/**/*.txt
 
-
 # ignore so it does not get committed by mistake on windows
 BINARIES/MacChatScript
 BINARIES/chatscript_Debug_v140.exe
 
 # file types
-*.DS_Store
 *.bak
-*.pdb
+*.DS_Store
+*.db
+*.idb
 *.ilk
-*.o
 *.lnk
 *.log
+*.o
+*.obj
+*.pdb
+*.sdf
+*.tlog
+*.user
+*.suo
+
+# ignore local user settings for Visual Studio 2015/2017
+VS2015/.vs/
+VS2015/Debug/
+VS2017/.vs/
+VS2017/Debug/
 
 # specific files
 private/KORA/TESTS/regress-qabots-result*.txt
@@ -33,6 +41,3 @@ private/KORA/TESTS/*.swp
 
 # force keep
 !DICT/ENGLISH/
-
-# Ignore Vagrant Working Directory
-.vagrant/

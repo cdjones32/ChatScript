@@ -14,7 +14,7 @@ http://zserge.com/jsmn.html
 /**
  * Allocates a fresh unused token from the token pull.
  */
-static jsmntok_t *jsmn_alloc_token(jsmn_parser *parser,  jsmntok_t *tokens, size_t num_tokens) {
+static jsmntok_t *jsmn_alloc_token(jsmn_parser *parser,  jsmntok_t *tokens, size_t num_tokens, int len) {
 	jsmntok_t *tok;
 	if (parser->toknext >= num_tokens) return NULL;
 	tok = &tokens[parser->toknext++];
@@ -55,7 +55,7 @@ static jsmnerr_t jsmn_parse_primitive(jsmn_parser *parser, const char *js, size_
 				if (nest < 0) goto found; // was actual close of an array
 				continue;
 			case ':':
-			case '\t' : case '\r' : case '\n' : case ' ' :
+			case '\t' : case '\r' : case '\n' : case ' ' : // marks end of thingys
 			case ','  :  case '}' :
 				goto found;
 		}
@@ -70,7 +70,7 @@ found:
 		parser->pos--;
 		return (jsmnerr_t) 0;
 	}
-	token = jsmn_alloc_token(parser, tokens, num_tokens);
+	token = jsmn_alloc_token(parser, tokens, num_tokens,len);
 	if (token == NULL) {
 		parser->pos = start;
 		return JSMN_ERROR_NOMEM;
@@ -101,7 +101,7 @@ static jsmnerr_t jsmn_parse_string(jsmn_parser *parser, const char *js, size_t l
 		if (c == '\"') {
 			if (tokens == NULL)  return (jsmnerr_t) 0;
 
-			token = jsmn_alloc_token(parser, tokens, num_tokens);
+			token = jsmn_alloc_token(parser, tokens, num_tokens,len);
 			if (token == NULL) {
 				parser->pos = start;
 				return JSMN_ERROR_NOMEM;
@@ -167,7 +167,7 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len, jsmntok_t 
 				count++;
 				if (tokens == NULL) break;
 
-				token = jsmn_alloc_token(parser, tokens, num_tokens);
+				token = jsmn_alloc_token(parser, tokens, num_tokens,len);
 				if (token == NULL) return JSMN_ERROR_NOMEM;
 				if (parser->toksuper != -1) {
 					tokens[parser->toksuper].size++;
@@ -217,7 +217,7 @@ jsmnerr_t jsmn_parse(jsmn_parser *parser, const char *js, size_t len, jsmntok_t 
 				}
 #endif
 				break;
-			case '\t' : case '\r' : case '\n' : case ':' : case ',': case ' ': 
+			case '\t' : case '\r' : case '\n' : case ':' : case ',': case ' ':  // ignore all these
 				break;
 			case '"':
 				r = jsmn_parse_string(parser, js, len, tokens, num_tokens);

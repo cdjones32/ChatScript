@@ -1,12 +1,6 @@
-# ChatScript Wiki (user guides, tutorials, papers)
-
-> ChatScript Guide To Documentation
-
-
-> © Bruce Wilcox, gowilcox@gmail.com
-
-
-> Revision 7/31/16 cs6.7a
+# ChatScript Guide To Documentation (user guides, tutorials, papers)
+<br>© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com
+<br>Revision CS7.6
 
 ChatScript has a lot of documentation in various manuals, so knowing what to read may seem daunting.
 Here is an overview.
@@ -50,7 +44,6 @@ NLTK means nothing to you.
 <br>An illustration of hooking in an external pos-tagger for foreign language support.
 
 
-
 ## Advanced ChatScript
 
 * [ChatScript Advanced User Manual](ChatScript-Advanced-User-Manual.md)
@@ -65,13 +58,6 @@ NLTK means nothing to you.
 * [ChatScript Json](ChatScript-Json.md)
 <br>ChatScript support for Json
 
-* [ChatScript Debugging Manual](ChatScript-Debugging-Manual.md)
-<br>The features of CS that support debugging, including tracing.
-
-* [ChatScript Finalizing a Bot](ChatScript-Finalizing-A-Bot.md)
-<br>Once you have built a bot, how to polish it and make sure it is “ready”. A bot will likely
-never be complete because you will want to keep improving it.
-
 * [ChatScript Overview Input to Output](ChatScript-Overview-of-Input-to-Output.md)
 <br>An overview of the process of converting input to output. Not necessary except for
 really advanced users wanting the appropriate mental model.
@@ -82,8 +68,29 @@ really advanced users wanting the appropriate mental model.
 * [ChatScript System Variables and Engine-defined Concepts](ChatScript-System-Variables-and-Engine-defined-Concepts.md)
 <br> Engine-defined Concepts. System Variables. Control over Input. Interchange Variables.
 
+* [ChatScript Command Line Parameters](ChatScript-Command-Line-Parameters.md)
+<br> Command line parameters details and usage.
+
+* [ChatScript Multiple Bots](ChatScript-Multiple-Bots.md)
+<br> How to control multiple bots in a single server.
+
 * [Installing and Updating ChatScript](Installing-and-Updating-ChatScript.md)
 <br>Installing on Windows, Mac, Linux. Updating ChatScript (advanced).
+
+* [ChatScript Coding Standards](ChatScript-Coding-Standards.md)
+
+
+## Test and Debug
+
+* [ChatScript Finalizing a Bot](ChatScript-Finalizing-A-Bot.md)
+<br>Once you have built a bot, how to polish it and make sure it is “ready”. A bot will likely
+never be complete because you will want to keep improving it.
+
+* [ChatScript Testing Manual](ChatScript-Debugging-Manual.md)
+<br>The features of CS that support debugging, including tracing.
+
+ * [ChatScript Debugger](ChatScript-Debugger.md)
+<br>Built-in text oriented step debugger.
 
 
 ## Specialized ChatScript
@@ -126,8 +133,17 @@ really advanced users wanting the appropriate mental model.
  * [ChatScript PostgreSQL](ESOTERIC-CHATSCRIPT/ChatScript-PostgreSQL.md)
 <br>How to use the Postgres database directly from CS.
 
+ * [ChatScript MySQL](ESOTERIC-CHATSCRIPT/ChatScript-MySQL.md)
+<br>How to use the MySQL database directly from CS.
+
  * [ChatScript Exotica](ESOTERIC-CHATSCRIPT/ChatScript-Exotica-Examples.md)
 <br>Brief old interesting scripting tips
+
+ * [ChatScript Foreign Languages](ESOTERIC-CHATSCRIPT/ChatScript-Foreign-Languages.md)
+<br>Running CS in a language other than English.
+
+ * [ChatScript Engine](ESOTERIC-CHATSCRIPT/ChatScript-Engine.md)
+<br>How the internals of the engine work and how to extend it with private code.
 
 
 ## Papers in order
@@ -135,29 +151,29 @@ really advanced users wanting the appropriate mental model.
 * [Paper - ChatBots 102](../PAPERS/Paper-%20ChatBots%20102.pdf)
 <br>My first paper, looking at the flaws of AIML and why I felt I could do better (before Suzette won anything).
 
-* [Paper - Pattern Matching for Natural Language](../PAPERS/Paper-%20Pattern_Matching_for_Natural_Language_Applications.pdf)
+* [Paper - Pattern Matching for Natural Language](PAPERS/Paper-Pattern-Matching-for-Natural-Language-Applications.md)
 <br>Compares CS, AIML, and Facade
 
-* [Paper - Suzette The Most Human Computer](../PAPERS/Paper%20-%20Suzette_The_Most_Human_Computer.pdf)
+* [Paper - Suzette The Most Human Computer](PAPERS/Suzette-The-Most-Human-Computer.md)
 <br>How our first chatbot came about, won the Loebner's, and differed from AIML.
 
 * [Paper - Speaker for the Dead](../PAPERS/Paper-%20Speaker%20for%20theDead.pdf)
 <br>Applying chatbots to manage people's accumulations of papers, photos, etc.
 
-* [Paper - Google Talk](../PAPERS/Paper%20-%20Google%20Talk.pdf)
+* [Paper - Google Talk](PAPERS/Paper-Google-Talk.md)
 <br>A talk I gave at Google about my history, CS, and writing code to act out stories
 
-* [Paper - Writing a Chatbot](../PAPERS/Paper-%20Writing%20a%20Chatbot.pdf)
+* [Paper - Writing a Chatbot](PAPERS/Writing-a-Chatbot.md)
 <br>Useful discussion on how to think about writing a chatbot
 
-* [Paper - ARBOR_ MakingItReal](../PAPERS/Paper-%20ARBOR-MakingItReal.pdf)
+* [Paper - ARBOR_ MakingItReal](PAPERS/Paper-ARBOR-MakingItReal.md)
 <br>Useful discussion on how to think about writing a chatbot
 
 * [Paper - Winning 15 Minute Conversation](../PAPERS/Paper-%20Winning%2015%20Minute%20Conversation.pdf)
 <br>The conversation (1 of 2) that had our chatbot easily win best 15 minute conversation at ChatBot Battles 2012.
 
-* [Paper - Winning the Loebner's](../PAPERS/Paper-%20WinningTheLoebners.pdf)
+* [Paper - Winning the Loebner's](PAPERS/Paper%20-%20WinningTheLoebners.md)
 <br>Realities of the Loebner competition and additional ideas of english applied to chatbots
 
-* [ChatScript Training](../PDFDOCUMENTATION/OVERVIEWS-AND-TUTORIALS/ChatScript%20Training.pdf)
+* [ChatScript Training](PAPERS/ChatScript-Training.md)
 <br>A slide series on how CS works and how the engine works.

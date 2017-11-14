@@ -1,7 +1,7 @@
 #ifndef _VARIABLESYSTEMH_
 #define _VARIABLESYSTEMH_
 #ifdef INFORMATION
-Copyright (C) 2011-2016 by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -33,14 +33,12 @@ extern unsigned int wildcardPosition[MAX_WILDCARDS+1]; //   spot it started and 
 extern int impliedSet;
 extern int impliedWild;
 extern char impliedOp;
-extern unsigned int userVariableIndex;
 extern unsigned int tracedFunctionsIndex;
-extern unsigned int botVariableIndex;
-extern WORDP userVariableList[MAX_USER_VARS];
 extern WORDP tracedFunctionsList[MAX_TRACED_FUNCTIONS];
-extern WORDP botVariableList[MAX_USER_VARS];
 extern char wildcardSeparator[2];
-
+extern unsigned int userVariableThreadList;
+extern unsigned int botVariableThreadList;
+extern unsigned int kernelVariableThreadList;
 // wildcard accessors
 char* GetwildcardText(unsigned int i, bool canon);
 void SetWildCard(char* value,char* canonicalVale,const char* index,unsigned int position);
@@ -65,11 +63,13 @@ void PrepareVariableChange(WORDP D,char* word,bool init);
 // user variable accessors
 void ClearUserVariableSetFlags();
 void ClearUserVariables(char* above = 0);
+void MigrateUserVariables();
+void RecoverUserVariables();
 char* GetUserVariable(const char* word, bool nojson = false,bool notracing = false);
 void SetUserVariable(const char* var, char* word, bool assignment = false);
-void Add2UserVariable(char* var, char* word,char* op);
+void Add2UserVariable(char* var, char* word,char* op,char* originalArg);
 
-char* PerformAssignment(char* word,char* ptr,FunctionResult& result,bool nojson = false);
+char* PerformAssignment(char* word,char* ptr,char* buffer,FunctionResult& result,bool nojson = false);
 
 
 #endif

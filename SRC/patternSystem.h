@@ -1,7 +1,7 @@
 #ifndef _PATTERNH_
 #define _PATTERNH_
 #ifdef INFORMATION
-Copyright (C) 2011-2016 by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -20,7 +20,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 bool MatchesPattern(char* word, char* pattern);
 void GetPatternData(char* buffer);
-bool Match(char* ptr, unsigned int depth, int startposition,char* kind,int rebindable,unsigned int wildcardSelector, 
+bool Match(char* buffer,char* ptr, unsigned int depth, int startposition,char* kind,int rebindable,unsigned int wildcardSelector, 
 	int &returnStart,int& returnEnd,bool& uppercasem , int& firstmatched,int positionStart,int positionEnd,
 	bool reverse = false);
 extern bool matching;

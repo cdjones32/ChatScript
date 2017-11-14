@@ -103,7 +103,7 @@ char* GetNounPhrase(int i,const char* avoid)
 		if (posValues[start] & COMMA && !(posValues[start-1] & ADJECTIVE_BITS)) break; // NOT like:  the big, red, tall human
 		if (posValues[start] & CONJUNCTION_COORDINATE)
 		{
-			if ( canonicalLower[start] && strcmp(canonicalLower[start]->word,(char*)"and")) break;	// not "and"
+			if ( canonicalLower[start] && strcmp(canonicalLower[start]->word,(char*)"and") && strcmp(canonicalLower[start]->word, (char*)"&")) break;	// not "and"
 			if (!(posValues[start-1] & (ADJECTIVE_BITS|COMMA))) break;	// NOT like:  the big, red, and very tall human
 			if (posValues[start-1] & COMMA && !(posValues[start-2] & ADJECTIVE_BITS)) break;	// NOT like:  the big, red, and very tall human
 		}
@@ -353,7 +353,7 @@ void DumpSentence(int start,int end)
 			break;
 		}
 	}
-	char* buffer = AllocateBuffer();
+	char* buffer = AllocateStack(NULL,MAX_BUFFER_SIZE); // local display
 	strcat(buffer,(char*)"  MainSentence: ");
 
 	for (i = start; i <= to; ++i)
@@ -396,7 +396,7 @@ void DumpSentence(int start,int end)
 	else if (!stricmp(wordStarts[start],(char*)"what") && subject != 1 && object != 1) strcat(buffer,(char*)"(:what) ");
 	else if (!stricmp(wordStarts[start],(char*)"how")) strcat(buffer,(char*)"(:how) ");
 
-	if (tokenFlags & QUESTIONMARK)  strcat(buffer,(char*)"? (char*)");
+	if (tokenFlags & QUESTIONMARK)  strcat(buffer,(char*)"? ");
 
 	if (tokenFlags & PAST) strcat(buffer,(char*)" PAST ");
 	else if (tokenFlags & FUTURE) strcat(buffer,(char*)" FUTURE ");
@@ -442,7 +442,7 @@ void DumpSentence(int start,int end)
 	}
 	for (int i = 1; i <= describedClauses; ++i)
 	{
-		sprintf(word,(char*)"Clause %d %s : (char*)",i,wordStarts[describeClause[i]]);
+		sprintf(word,(char*)"Clause %d %s : ",i,wordStarts[describeClause[i]]);
 		strcat(buffer,word);
 		int clause = describeClause[i];
 		int clauseid = clauses[clause] & (-1 ^ clauses[clause-1]);
@@ -520,7 +520,7 @@ void DumpSentence(int start,int end)
 
 	Log(STDTRACELOG,(char*)"%s\r\n",buffer);
 
-	FreeBuffer();
+	ReleaseStack(buffer);
 	if (to < end) DumpSentence(to+1,end); // show next piece
 #endif
  }
@@ -531,7 +531,7 @@ char* roleSets[] =
 	(char*)"~whenunit",(char*)"~whereunit",(char*)"~howunit",(char*)"~whyunit",
 	(char*)"~subject2",(char*)"~verb2",(char*)"~object2",(char*)"~indirectobject2",(char*)"~byobject2",(char*)"~ofobject2",
 	(char*)"~appositive",(char*)"~adverbial",(char*)"~adjectival",
-	(char*)"~subjectcomplement",(char*)"~objectcomplement",(char*)"~address",(char*)"~postnominal_adjective",(char*)"~adjective_complement",(char*)"~omitted_time_prep",(char*)"~omitted_of_prep",
+	(char*)"~subjectcomplement",(char*)"~objectcomplement",(char*)"~address",(char*)"~postnominaladjective",(char*)"~adjectivecomplement",(char*)"~omittedtimeprep",(char*)"~omittedofprep",
 	(char*)"~comma_phrase",(char*)"~tagquestion",(char*)"~absolute_phrase",(char*)"~omitted_subject_verb",(char*)"~reflexive",(char*)"~DISTANCE_NOUN_MODIFY_ADVERB",(char*)"~DISTANCE_NOUN_MODIFY_ADJECTIVE",(char*)"~TIME_NOUN_MODIFY_ADVERB",(char*)"~TIME_NOUN_MODIFY_ADJECTIVE",
 	(char*)"~conjunct_noun",(char*)"~conjunct_verb",(char*)"~conjunct_adjective",(char*)"~conjunct_adverb",(char*)"~conjunct_phrase",(char*)"~conjunct_clause",(char*)"~conjunct_sentence",
 	NULL

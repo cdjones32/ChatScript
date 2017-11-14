@@ -16,7 +16,7 @@
 		#include "mongo/MongoDBClient.h"
     #endif
 
-// #include <bson.h>
+// #include <mongo/bson/bson.h>
 // #include <bcon.h>
 // #include <mongoc.h>
 
@@ -27,7 +27,7 @@
 static bool mongoInited = false;		// have we inited mongo overall
 static bool mongoShutdown = false;
 char* mongoBuffer = NULL;
-char* mongodbparams;
+char mongodbparams[300];
 
 // for script use
 mongoc_client_t*		g_pClient = NULL;
@@ -39,18 +39,6 @@ mongoc_database_t*		g_filesysDatabase = NULL;
 mongoc_collection_t*	g_filesysCollectionTopic = NULL; // user topic
 mongoc_collection_t*	g_filesysCollectionLtm = NULL; // user ltm
 
-void ProtectNL(char* buffer) // save ascii \r\n in json
-{
-	char* at = buffer;
-	while ((at = strchr(at,'\r')))
-	{
-		if (at[1] == '\n' ) 
-		{
-			*at++ = 0x7f;
-			*at++ = 0x7f;
-		}
-	}
-}
 
 char* MongoCleanEscapes(char* to, char* at,int limit) 
 { // any sequence of \\\ means mongo added \\  and any freestanding \ means mongo added that
@@ -64,8 +52,8 @@ char* MongoCleanEscapes(char* to, char* at,int limit)
 	{
 		if (*at == 0x7f && at[1] == 0x7f) // own special CR NL coding
 		{
-			*to++ = '\r';
-			*to++ = '\n';
+			*to++ = '\r'; // legal
+			*to++ = '\n'; // legal
 			++at;
 		}
 		else if (*at == '\\') // remove backslashed "
@@ -266,10 +254,11 @@ FunctionResult mongoGetDocument(char* key,char* buffer,int limit,bool user)
     }
     else result = FAILRULE_BIT;
     
+	if( pStrTemp != NULL ) bson_free( pStrTemp );
     if( pDoc != NULL ) bson_destroy( pDoc );
-    if( psQuery != NULL ) bson_destroy( psQuery );
     if( psCursor != NULL ) mongoc_cursor_destroy( psCursor );
-    return result;
+	if( psQuery != NULL ) bson_destroy( psQuery );
+	return result;
 }
 
 FunctionResult mongoFindDocument(char* buffer) // from user not system but can name filesys refs as ARGUMENT(2)
@@ -419,7 +408,7 @@ size_t mongouserRead(void* buffer,size_t size, size_t count, FILE* file)
 	FunctionResult result = mongoGetDocument(filename,mongoBuffer,(userCacheSize - MAX_USERNAME),false);
 	if (dot) *dot ='.';	 
 	size_t len = strlen(mongoBuffer);
-	return (result == NOPROBLEM_BIT) ? len : -1; // -1 is cannot find
+	return  len;
 }
 
 size_t mongouserWrite(const void* buffer,size_t size, size_t count, FILE* file)

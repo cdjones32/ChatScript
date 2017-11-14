@@ -1,43 +1,13 @@
 ﻿ Xiong ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Xarles ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- xeroradiography ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
-    xeroradiography~1nz (^radiography~1) radiography using X-rays and xerographic techniques
- Xenarthra ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    suborder_Xenarthra~1n 
- Xanthomonas ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    genus_Xanthomonas~1n 
- Xyphophorus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    genus_Xyphophorus~1n 
- Xiphiidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Xiphiidae~1nz (^fish_family~1) comprising the common swordfishes
- Xevera ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Xiphias ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    genus_Xiphias~1n 
- Xenicus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    genus_Xenicus~1n 
- Xenopodidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Xenopodidae~1nz (^amphibian_family~1) in some classifications the family of the genus Xenopus which is otherwise included in the family Pipidae
- Xiphosurus_polyphemus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Limulus_polyphemus~1nz (^arthropod~1) large marine arthropod of the Atlantic coast of North America having a domed carapace that is shaped like a horseshoe and a stiff pointed tail
- Xylocopa ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    genus_Xylocopa~1n 
- Xavierre ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- xenotransplant ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
-    xenotransplantation~1n 
- xylophonist ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
-    xylophonist~1nz (^percussionist~1) someone who plays a xylophone
- Xaviera ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Xenorhyncus_asiaticus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    black-necked_stork~1nz (^stork~1) large mostly white Australian stork
- Xandra ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Xander ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
- xanthomonad ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
-    xanthomonad~1nz (^true_bacteria~1) bacteria producing yellow non-water-soluble pigments
- Xestobium_rufovillosum ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    deathwatch_beetle~1nz (^beetle~1) bores through wood making a ticking sound popularly thought to presage death
+ Xandra ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Xarles ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Xavier ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
     Saint_Francis_Xavier~1n 
+ Xaviera ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Xavierra ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Xavierre ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Xevera ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Xeveria ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Xenia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  X-ray_therapy ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -54,16 +24,30 @@
     roentgenography~1nz (^diagnostic_procedure~1) radiography that uses X-rays to produce a roentgenogram
  xerography ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     xerography~1nz (^picture_taking~1) forming an image by the action of light on a specially coated charged plate
+ xeroradiography ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
+    xeroradiography~1nz (^radiography~1) radiography using X-rays and xerographic techniques
+ xenotransplant ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
+    xenotransplantation~1n 
  xenotransplantation ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
     xenotransplant~1nz (^organ_transplant~1) a surgical procedure in which tissue or whole organs are transfered from one species to another species
+ Xanthomonas ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    genus_Xanthomonas~1n 
+ xanthomonad ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
+    xanthomonad~1nz (^true_bacteria~1) bacteria producing yellow non-water-soluble pigments
  Xanthophyceae ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     class_Xanthophyceae~1n 
+ Xyphophorus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    genus_Xyphophorus~1n 
  Xyphophorus_helleri ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    helleri~1nz (^cyprinodont~1) freshwater fish of Central America having a long swordlike tail
+    swordtail~1nz (^cyprinodont~1) freshwater fish of Central America having a long swordlike tail
  Xenicidae ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Acanthisittidae~1n 
+ Xenicus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    genus_Xenicus~1n 
  Xenicus_gilviventris ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     rock_wren~2nz (^New_Zealand_wren~1) short-tailed bird resembling a wren
+ Xenopodidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    Xenopodidae~1nz (^amphibian_family~1) in some classifications the family of the genus Xenopus which is otherwise included in the family Pipidae
  Xenopus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     genus_Xenopus~1n 
  Xenopus_laevis ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -78,8 +62,22 @@
     genus_Xenosaurus~1n 
  Xiphosura ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     order_Xiphosura~1n 
+ Xiphosurus_polyphemus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+    horseshoe_crab~1nz (^arthropod~1) large marine arthropod of the Atlantic coast of North America having a domed carapace that is shaped like a horseshoe and a stiff pointed tail
  Xenorhyncus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     genus_Xenorhyncus~1n 
+ Xenorhyncus_asiaticus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+    jabiru~3nz (^stork~1) large mostly white Australian stork
+ Xestobium_rufovillosum ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+    deathwatch_beetle~1nz (^beetle~1) bores through wood making a ticking sound popularly thought to presage death
+ Xylocopa ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    genus_Xylocopa~1n 
+ Xenarthra ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    suborder_Xenarthra~1n 
+ Xiphiidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    Xiphiidae~1nz (^fish_family~1) comprising the common swordfishes
+ Xiphias ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    genus_Xiphias~1n 
  Xiphias_gladius ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     swordfish~1nz (^scombroid_fish~1) large toothless marine food fish with a long swordlike upper jaw
  XTC ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
@@ -171,6 +169,8 @@
  xenolith ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     xenolith~1nz (^stone~3) a piece of rock of different origin from the igneous rock in which it is embedded
     xenolith~2az 
+ xylophonist ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
+    xylophonist~1nz (^percussionist~1) someone who plays a xylophone
  Xenophanes ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Xenophanes~1nz (^philosopher~1) Greek philosopher
  Xenophon ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -299,9 +299,9 @@
     wood_sugar~1n 
  xenotime ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     xenotime~1nz (^mineral~1) a brown-to-yellow mineral that is a phosphate of yttrium in crystalline form
- xylene ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
+ xylene ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     xylol~1nz (^dissolving_agent~1) a colorless flammable volatile liquid hydrocarbon used as a solvent
- xylol ( meanings=1 NOUN NOUN_SINGULAR COMMON1 NOUN_NODETERMINER ) 
+ xylol ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     xylene~1n 
  xanthate ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON1 VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     xanthate~1nz (^salt~3) a salt or ester of xanthic acid
@@ -415,8 +415,8 @@
     ninety-seven~1a 
  xcviii ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     ninety-eight~1a 
- xcl ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
-    one_hundred_ninety~1a 
+ xcl ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
+    xcl~1az being ten more than one hundred eighty
  xeric ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
     xeric~1az being deficient in moisture
  xenogeneic ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 posdefault:ADJECTIVE ) 
@@ -432,14 +432,14 @@
  xylophagous ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) 
     xylophagous~1az 
  xenically ( meanings=2 ADVERB ) 
-    xenically~1bz 
-    xenically~2bz 
+    xenically~1z 
+    xenically~2z 
  xeroradiographically ( meanings=2 ADVERB ) 
-    xeroradiographically~1bz 
-    xeroradiographically~2bz 
+    xeroradiographically~1z 
+    xeroradiographically~2z 
  xeromammographically ( meanings=2 ADVERB ) 
-    xeromammographically~1bz 
-    xeromammographically~2bz 
+    xeromammographically~1z 
+    xeromammographically~2z 
  x-ray ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT ) 
     x-ray~1vz take an x-ray of something or somebody
     x-ray~2vz examine by taking x-rays

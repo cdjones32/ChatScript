@@ -89,12 +89,12 @@ DATA:
 7 [ pill_box pillbox etui ]
 7 hamper
 8 [ bin_bag trash_bag bin_liner     refuse_sack swag_sack   ]
-8 [ dumpster waste_receptacle ]
+8 [ Dumpster waste_receptacle ]
 8 [ mouse_hole mound ]
 9 [ lock_box lockbox safe vault ]
 9 [ log_box logbox manger trough ]
 9 [ lunch_box tin_box lunch_pail ]
-9 [ media_console media_stand tv_stand ]
+9 [ media_console media_stand TV_stand ]
 9 [ memento trophy ]
 9 [ rice_cooker rice_steamer ]
 9 blender
@@ -191,7 +191,7 @@ DATA:
 6 wash_bottle
 7 [ barrel wood_barrel wooden_barrel cask hogshead keg ]
 7 [ kettle tea_kettle teakettle tea_pot teapot ]
-7 klein_bottle
+7 Klein_bottle
 7 tankard
 9 blender
 9 slow_cooker

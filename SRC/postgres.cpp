@@ -9,7 +9,25 @@ static char pguserFilename[MAX_WORD_SIZE];
 // user files stored in postgres instead of file system
 static  PGconn     *usersconn; // shared db open stuff used instead of files for userwrites
 static char* pgfilesbuffer = 0;
-char* postgresparams = 0; // init string for pguser
+char postgresparams[300]; // init string for pguser
+
+// allow override of sql for user read and write
+char postgresuserread[300];
+char postgresuserinsert[300];
+char postgresuserupdate[300];
+char *pguserread = 0;
+char *pguserinsert = 0;
+char *pguserupdate = 0;
+
+// default SQL to manage userfile info
+//
+// Note: PG code now uses parameter queries (see PQexecParams) so the insert
+// and update sql must use the same parameters: $1 = userid, $2 = file.
+//
+char const * pgdefault_usercreate = "CREATE TABLE userfiles (userid varchar(400) PRIMARY KEY, file bytea);";
+char const * pgdefault_userread = "SELECT file FROM userfiles WHERE userid = $1::varchar ;";
+char const * pgdefault_userinsert = "INSERT INTO userfiles (file, userid) VALUES ($1::bytea, $2::varchar) ;";
+char const * pgdefault_userupdate = "UPDATE userfiles SET file = $1::bytea WHERE userid = $2::varchar ;";
 
 #ifdef WIN32
 #pragma comment(lib, "../SRC/postgres/libpq.lib")
@@ -177,13 +195,27 @@ static size_t convertFromHex(unsigned char* ptr,unsigned char* from)
 size_t pguserRead(void* buf,size_t size, size_t count, FILE* file)
 {
 	char* buffer = (char*)buf;
-	sprintf(buffer,(char*)"SELECT file FROM userfiles WHERE userid = '%s' ;",pguserFilename); // one table per user
-	PGresult   *res = PQexec(usersconn, (const char*)buffer);  
+
+	// has read sql been overridden?
+	const char * readsql = 0;
+	if (pguserread != 0) readsql = pguserread;
+	else readsql = pgdefault_userread; // // use default sql one table per user
+	if (trace) Log(STDTRACELOG,buffer);
+
+	const char* paramValues[1] = {(char*)pguserFilename};
+	PGresult   *res = PQexecParams(usersconn,
+								readsql,
+								1,
+								NULL,
+								paramValues,
+								NULL,
+								NULL,
+								0);
+
 	int status = (int) PQresultStatus(res);
-	char* msg = PQerrorMessage(usersconn);
 	if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)
     {
-		char* msg = PQerrorMessage(conn);
+		//char* msg = PQerrorMessage(usersconn);
         PQclear(res);
 		return 0;
     }
@@ -198,12 +230,8 @@ size_t pguserRead(void* buf,size_t size, size_t count, FILE* file)
 	return size;
 }
 
-static void convert2Hex(unsigned char* ptr, size_t len, unsigned char* buffer,unsigned int& before,  unsigned int& after)
+static void convert2Hex(unsigned char* ptr, size_t len, unsigned char* buffer)
 {
-	unsigned char* start = buffer;
-	sprintf((char*)buffer,(char*)"INSERT into userfiles VALUES ('%s', ",pguserFilename); 
-	buffer += strlen((char*) buffer);
-	before = buffer-start;
 	strcpy((char*)buffer,(char*)"E'\\\\x");
 	buffer += strlen((char*) buffer);
 	while (len--)
@@ -214,29 +242,56 @@ static void convert2Hex(unsigned char* ptr, size_t len, unsigned char* buffer,un
 		*buffer++ = hexbytes[second];
 	}
 	*buffer++ = '\'';
-	*buffer++ = ' ';
-	after = buffer-start;
-	sprintf((char*)buffer,(char*)" );");
+	*buffer++ = 0;
  }
- 	
+
 size_t pguserWrite(const void* buf,size_t size, size_t count, FILE* file)
 {
-	unsigned int before, after;
-	unsigned char* buffer = (unsigned char*)buf;
-	convert2Hex(buffer, size * count,(unsigned char*) pgfilesbuffer,before,after); // does an update
-	PGresult   *res = PQexec(usersconn, pgfilesbuffer);  // do insert first (which may fail or succeed)-- want upsert pending postgres 9.5
-	int status = (int) PQresultStatus(res);
-	char* msg = PQerrorMessage(usersconn);
-	PQclear(res);
-	if (status == PGRES_FATAL_ERROR) // we dont already have a record
+	const char *insertsql = pgdefault_userinsert;
+	const char *updatesql = pgdefault_userupdate;
+	if (pguserinsert)
 	{
-		sprintf((char*)pgfilesbuffer,(char*)"UPDATE userfiles SET file = "); 
-		char* at = pgfilesbuffer + strlen(pgfilesbuffer);
-		memset(at,' ',(pgfilesbuffer+before-at)); // blank fill
-		sprintf(pgfilesbuffer+after,(char*)" WHERE userid = '%s' ;",pguserFilename);
-		res = PQexec(usersconn,pgfilesbuffer);  
+		insertsql = pguserinsert;
+		// expectation is that insert and update sql will be overridded,
+		// or insertsql will be overridden and no update will be provided.
+		// e.g. if the insertsql is a stored proc that does an upsert
+		updatesql = 0;	// can be null
+	}
+	if (pguserupdate) updatesql = pguserupdate;
+
+	// convert user data to hex
+	unsigned char* buffer = (unsigned char*)buf;
+	convert2Hex(buffer, size * count,(unsigned char*) pgfilesbuffer); // does an update
+
+	// run insert sql
+	// params are
+	// $1::bytea   - filedata
+	// $2::varchar - userid
+	const char *paramValues[2] = {(char*)buffer, (char*)pguserFilename};
+	PGresult   *res = PQexecParams(usersconn,
+								insertsql,
+								2,
+								NULL,
+								paramValues,
+								NULL,
+								NULL,
+								0);
+
+	int status = (int) PQresultStatus(res);
+	PQclear(res);
+	if (status == PGRES_FATAL_ERROR && updatesql) // we don't already have a record
+	{
+		// call update sql with same args as insert sql
+		res = PQexecParams(usersconn,
+						updatesql,
+						2,
+						NULL,
+						paramValues,
+						NULL,
+						NULL,
+						0);
+
 		status = (int) PQresultStatus(res);
-		msg = PQerrorMessage(usersconn);
  		PQclear(res);
 	}
 
@@ -254,10 +309,30 @@ void PGUserFilesCode()
 #endif
     /* Make a connection to the database */
 	char query[MAX_WORD_SIZE];
-	sprintf(query,(char*)"%s dbname = users ",postgresparams); 
+	int dbname_specified = 0;
+
+	// Do not hardcode the database name if it is already specified
+	if (strstr(postgresparams, "dbname=") || strstr(postgresparams, "dbname ="))
+	{
+		// dbname already specified
+		dbname_specified = 1;
+		sprintf(query,(char*)"%s",postgresparams);
+	}
+	else
+	{
+		// original code: connect to users db
+		sprintf(query,(char*)"%s dbname = users ",postgresparams);
+	}
     usersconn = PQconnectdb(query);
     if (PQstatus(usersconn) != CONNECTION_OK) // users not there yet...
     {
+    	if (dbname_specified)
+    	{
+			DBCloseCode(NULL);
+			ReportBug((char*)"FATAL: Failed to open postgres db %s",postgresparams);
+    	}
+
+    	// dbname not specified; attempt to create users db
 		sprintf(query,(char*)"%s dbname = postgres ",postgresparams);
 		usersconn = PQconnectdb(query);
 		ConnStatusType statusType = PQstatus(usersconn);
@@ -287,7 +362,7 @@ void PGUserFilesCode()
 	}
 	
 	// these are dynamically stored, so CS can be a DLL.
-	pgfilesbuffer = AllocateBuffer();  // stays globally locked down
+	pgfilesbuffer = AllocateBuffer();  // stays globally locked down - may not be big enough
 	userFileSystem.userCreate = pguserCreate;
 	userFileSystem.userOpen = pguserOpen;
 	userFileSystem.userClose = pguserClose;
@@ -296,11 +371,15 @@ void PGUserFilesCode()
 	userFileSystem.userDelete = NULL;
 	filesystemOverride = POSTGRESFILES;
 	
-    PGresult   *res  = PQexec(usersconn, "CREATE TABLE userfiles (userid varchar(400) PRIMARY KEY, file bytea);");
-	int status = (int) PQresultStatus(res);
-	char* msg;
-	if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)  msg = PQerrorMessage(usersconn);
-	msg = NULL;
+	if (!dbname_specified)
+	{
+		// if dbname is not specified, original behavior is to attempt to create a userfiles table
+		PGresult   *res  = PQexec(usersconn, "CREATE TABLE userfiles (userid varchar(400) PRIMARY KEY, file bytea);");
+		int status = (int) PQresultStatus(res);
+		char* msg;
+		if (status == PGRES_BAD_RESPONSE ||  status == PGRES_FATAL_ERROR || status == PGRES_NONFATAL_ERROR)  msg = PQerrorMessage(usersconn);
+		msg = NULL;
+	}
 }
 
 FunctionResult DBExecuteCode(char* buffer)
@@ -323,9 +402,11 @@ FunctionResult DBExecuteCode(char* buffer)
 
 	char query[MAX_WORD_SIZE * 2];
 	char fn[MAX_WORD_SIZE];
-	char* ptr = ReadCommandArg(arg1,query,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER, MAX_WORD_SIZE * 2); 
+	char* ptr = GetCommandArg(arg1,buffer,result,OUTPUT_NOQUOTES); 
 	if (result != NOPROBLEM_BIT) return result;
-	ReadShortCommandArg(ptr,fn,result,OUTPUT_NOQUOTES|OUTPUT_EVALCODE|OUTPUT_NOTREALBUFFER); 
+	if (strlen(buffer) >= (MAX_WORD_SIZE * 2)) return FAILRULE_BIT;
+	strcpy(query,buffer);
+	ReadShortCommandArg(ptr,fn,result,OUTPUT_NOQUOTES); 
 	if (result != NOPROBLEM_BIT) return result;
 
 	// convert \" to " within params
@@ -341,7 +422,15 @@ FunctionResult DBExecuteCode(char* buffer)
 
 	unsigned int argflags = 0;
 	WORDP FN = (*function) ? FindWord(function) : NULL;
-	if (FN) argflags = FN->x.macroFlags;
+	if (FN)
+	{
+		unsigned char* defn = GetDefinition(FN);
+		char junk[MAX_WORD_SIZE];
+		defn = (unsigned char*) ReadCompiledWord((char*)defn, junk); // skip over botid
+		int flags;
+		ReadInt((char*)defn, flags);
+		argflags = flags;
+	}
 
 	if (trace & TRACE_SQL && CheckTopicTrace()) Log(STDTRACELOG, "DBExecute command %s\r\n", query);
     res = PQexec(conn, query);
@@ -357,7 +446,7 @@ FunctionResult DBExecuteCode(char* buffer)
         PQclear(res);
 		return FAILRULE_BIT;
      }
-	char* psBuffer = AllocateInverseString(NULL,MAX_BUFFER_SIZE);
+	char* psBuffer = AllocateStack(NULL,MAX_BUFFER_SIZE);
 	if (*function && status == PGRES_TUPLES_OK) // do something with the answers
 	{
 		psBuffer[0] = '(';
@@ -383,7 +472,7 @@ FunctionResult DBExecuteCode(char* buffer)
 				if (len > (maxBufferSize - 100))  // overflow
 				{
 					PQclear(res);
-					ReleaseInverseString(psBuffer);
+					ReleaseStack(psBuffer); // short term
 					return FAILRULE_BIT;
 				}
 				if (keepQuotes)
@@ -430,7 +519,7 @@ FunctionResult DBExecuteCode(char* buffer)
 			}
 		}
 	}
-	ReleaseInverseString(psBuffer);
+	ReleaseStack(psBuffer); // short term
 	PQclear(res);
 	return result;
 } 

@@ -2,7 +2,7 @@
 #define _DICTIONARYSYSTEM_H
 
 #ifdef INFORMATION
-Copyright (C) 2011-2016 by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -49,8 +49,8 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 // kinds of determiners 
 #define PREDETERMINER 			0x0000000001000000ULL  // Pennbank: PDT
 #define DETERMINER  			0x0000000000800000ULL   // Pennbank: DT
-#define POSSESSIVE				0x0000000000400000ULL	// is a possessive like 's or Taiwanese (but not possessive pronoun)
-#define PRONOUN_POSSESSIVE		0x0000000000200000ULL	// my your his her its our their				
+#define POSSESSIVE				0x0000000000400000ULL	// is a possessive like 's or Taiwanese (but not possessive pronoun) Pennbank: POS
+#define PRONOUN_POSSESSIVE		0x0000000000200000ULL	// my your his her its our their	Pennbank: PRP$			
 #define POSSESSIVE_BITS			( PRONOUN_POSSESSIVE | POSSESSIVE )
 #define DETERMINER_BITS		   ( DETERMINER | PREDETERMINER | POSSESSIVE_BITS ) // come before adjectives/nouns/ adverbs leading to those
 
@@ -73,16 +73,16 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 
 // unusual words
 #define INTERJECTION			0x0000000000000400ULL	 
-#define THERE_EXISTENTIAL		0x0000000000000200ULL	// "There" is no future in it. There is actually a unique kind of pronoun.
-#define FOREIGN_WORD			0x0000000000000100ULL 	
+#define THERE_EXISTENTIAL		0x0000000000000200ULL	// "There" is no future in it. There is actually a unique kind of pronoun.  Pennbank: EX
+#define FOREIGN_WORD			0x0000000000000100ULL 	// pennbank: FW
 #define TO_INFINITIVE	 		0x0000000000000080ULL 	// attaches to NOUN_INFINITIVE
 
 // kinds of nouns
 #define NOUN_ADJECTIVE			0x0000000000000040ULL 	// adjective used as a noun - "the rich"   implied people as noun  -- also past verb: (char*)"the *dispossessed are fun"
 #define NOUN_SINGULAR			0x0000000000000020ULL	// Pennbank: NN
 #define NOUN_PLURAL				0x0000000000000010ULL	// Pennbank: NNS
-#define NOUN_PROPER_SINGULAR	0x0000000000000008ULL	//   A proper noun that is NOT a noun is a TITLE like Mr.
-#define NOUN_PROPER_PLURAL		0x0000000000000004ULL	// ( or )
+#define NOUN_PROPER_SINGULAR	0x0000000000000008ULL	//   A proper noun that is NOT a noun is a TITLE like Mr.	Pennbank: NP
+#define NOUN_PROPER_PLURAL		0x0000000000000004ULL	// Pennbank: NPS
 #define NOUN_GERUND				0x0000000000000002ULL	// "Walking" is fun
 #define NOUN_NUMBER				0x0000000000000001ULL	// I followed the "20".
 #define NOUN_INFINITIVE 		0x0000800000000000ULL	// To *go is fun
@@ -91,13 +91,13 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define NOUN_BITS ( NORMAL_NOUN_BITS | NOUN_GERUND | NOUN_INFINITIVE )
 
 // kinds of verbs (tenses)
-#define VERB_PRESENT			0x0000400000000000ULL	// present plural (usually infinitive)
-#define VERB_PRESENT_3PS		0x0000200000000000ULL	// 3rd person singular singular
+#define VERB_PRESENT			0x0000400000000000ULL	// present plural (usually infinitive)  Pennbank: VBP
+#define VERB_PRESENT_3PS		0x0000200000000000ULL	// 3rd person singular singular  Pennbank: VBZ
 #define VERB_PRESENT_PARTICIPLE 0x0000100000000000ULL	// GERUND,  Pennbank: VBG
 #define VERB_PAST				0x0000080000000000ULL	// Pennbank: VBD
 #define VERB_PAST_PARTICIPLE    0x0000040000000000ULL	// Pennbank VBN
-#define VERB_INFINITIVE			0x0000020000000000ULL	//   all tense forms are linked into a circular ring
-#define PARTICLE				0x0000010000000000ULL	//   multiword separable verb (the preposition component) (full verb marked w systemflag SEPARABLE_PHRASAL_VERB or such) 
+#define VERB_INFINITIVE			0x0000020000000000ULL	//   all tense forms are linked into a circular ring   Pennbank: VB
+#define PARTICLE				0x0000010000000000ULL	//   multiword separable verb (the preposition component) (full verb marked w systemflag SEPARABLE_PHRASAL_VERB or such)  Pennbank: RP
 #define VERB_BITS (  VERB_INFINITIVE | VERB_PRESENT | VERB_PRESENT_3PS | VERB_PAST | VERB_PAST_PARTICIPLE | VERB_PRESENT_PARTICIPLE  )
 
 // kinds of pronouns
@@ -481,6 +481,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 
 #define TRACE_ECHO			0x20000000	// echo trace
 #define TRACE_USERFACT		0x40000000
+#define TRACE_TREETAGGER	0x80000000
 
 // TIME FLAGS
 // simple
@@ -629,7 +630,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define FOREIGN_TOKENS			0x0000000800000000ULL
 #define FAULTY_PARSE			0x0000001000000000ULL   
 #define QUOTATION				0x0000002000000000ULL
-#define NOT_SENTENCE				0x0000004000000000ULL   
+#define NOT_SENTENCE			0x0000004000000000ULL   
 
 // in tokencontrol, not tokenflags
 #define NO_PROPER_SPELLCHECK		0x0000008000000000ULL   
@@ -639,6 +640,8 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 
 // in tokenflags not token control
 #define NO_FIX_UTF					0x0000080000000000ULL   
+#define NO_CONDITIONAL_IDIOM        0x0000100000000000ULL
+//	0x0000200000000000ULL   
 #define JSON_DIRECT_FROM_OOB		0x0000400000000000ULL   
 
 // end of tokenflags
@@ -659,7 +662,7 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define	   OUTPUT_LOOP			0x00000200				// coming from a loop, fail does not cancel output
 #define	   OUTPUT_UNTOUCHEDSTRING 0x00000400	// leave string alone
 #define	   OUTPUT_FACTREAD		0x00000800			// reading in fact field
-#define    OUTPUT_EVALCODE		0x00001000			
+#define    OUTPUT_EVALCODE		0x00001000		// UNUSED now	
 #define	   OUTPUT_DQUOTE_FLIP	0x00002000
 #define	   OUTPUT_ECHO			0x00004000
 #define	   OUTPUT_STRING_EVALED 0x00008000	// format string should be treated like an output call
@@ -667,13 +670,16 @@ typedef unsigned int DICTINDEX;	//   indexed ref to a dictionary entry
 #define    OUTPUT_FNDEFINITION  0x00020000	// this is a function being run
 #define    OUTPUT_RAW			0x00040000	// there are no special characters, except variable references		
 #define    OUTPUT_RETURNVALUE_ONLY		0x00080000	// just return the buffer, dont print it out		
+#define    OUTPUT_FULLFLOAT		0x00100000		// dont truncate
 
-// flags to control response processing continue from output flags
-#define RESPONSE_UPPERSTART					0x00100000  // start each output sentence with upper case
-#define RESPONSE_REMOVESPACEBEFORECOMMA		0x00200000  // remove spaces before commas
-#define RESPONSE_ALTERUNDERSCORES			0x00400000
-#define RESPONSE_REMOVETILDE				0x00800000
-#define ALL_RESPONSES ( RESPONSE_UPPERSTART | RESPONSE_REMOVESPACEBEFORECOMMA | RESPONSE_ALTERUNDERSCORES | RESPONSE_REMOVETILDE ) 
+// flags to control response processing continue from output flags $cs_response
+#define RESPONSE_UPPERSTART		0x00200000  // start each output sentence with upper case
+#define RESPONSE_REMOVESPACEBEFORECOMMA		0x00400000  // remove spaces before commas
+#define RESPONSE_ALTERUNDERSCORES			0x00800000
+#define RESPONSE_REMOVETILDE				0x01000000
+#define RESPONSE_NOCONVERTSPECIAL			0x02000000
+#define RESPONSE_CURLYQUOTES				0x04000000
+#define ALL_RESPONSES ( RESPONSE_UPPERSTART | RESPONSE_REMOVESPACEBEFORECOMMA | RESPONSE_ALTERUNDERSCORES | RESPONSE_REMOVETILDE | RESPONSE_NOCONVERTSPECIAL ) 
 
 #define ASSIGNMENT				0x01000000 //used by performassignment
 
@@ -695,6 +701,7 @@ typedef struct WORDENTRY //   a dictionary entry  - starred items are written to
 	char*     word;					//   entry name
 	unsigned int internalBits;
 	unsigned int parseBits;			// only for words, not for function names or concept names
+									// functions/topics use this for offset into the map file where it is defined (debugger)
 
 	//   if you edit this, you may need to change ReadBinaryEntry and WriteBinaryEntry
 	union {
@@ -717,7 +724,6 @@ typedef struct WORDENTRY //   a dictionary entry  - starred items are written to
           unsigned short topicIndex;	//   for a ~topic or %systemVariable or plan, this is its id
 		  unsigned short codeIndex;		//   for a system function, its the table index for it
 		  unsigned short debugIndex;	//   for a :test function, its the table index for it
-		  unsigned short macroFlags;	//	 for a table, these bits signify special handling of its arguments (1 bit per argument for 16 argument limit)
     }x;
     unsigned short length;		//  length of the word
 	

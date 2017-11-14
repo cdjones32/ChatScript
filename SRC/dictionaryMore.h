@@ -1,12 +1,7 @@
 
 #define MAX_SYNLOOP	60
 
-#define MAX_HASH_BUCKETS 50000 
-#ifdef WIN32
-#define MAX_ENTRIES      0x000fffff 
-#else
-#define MAX_ENTRIES      (0x000affff)
-#endif
+#define MAX_HASH_BUCKETS 215127 
 
 #define ALLOCATESTRING_SIZE_PREFIX 3
 #define ALLOCATESTRING_SIZE_SAFEMARKER 2
@@ -58,7 +53,7 @@
 #define BUILD0					0x00100000		// comes from build0 data (marker on functions, concepts, topics)
 #define BUILD1					0x00200000		// comes from build1 data
 #define HAS_EXCLUDE				0x00400000		// concept/topic has keywords to exclude
-#define BUILD2					0x00800000		// comes from dynamic build2 data
+#define BUILD2					0x00800000		// comes from dynamic build layer data
 #define FUNCTION_NAME			0x01000000 	//   name of a ^function  (has non-zero ->x.codeIndex if system, else is user but can be patternmacro,outputmacro, or plan) only applicable to ^ words
 #define CONCEPT					0x02000000	// topic or concept has been read via a definition
 #define TOPIC					0x04000000	//  this is a ~xxxx topic name in the system - only applicable to ~ words
@@ -76,7 +71,7 @@
 #define FN_TIME_BITS ( MACRO_TIME | NOTIME_FN )
 
 ///   DEFINITION OF A MEANING 
-#define GETTYPERESTRICTION(x) ( ((x)>>TYPE_RESTRICTION_SHIFT) & TYPE_RESTRICTION)
+unsigned int GETTYPERESTRICTION(MEANING x);
 #define STDMEANING ( INDEX_BITS | MEANING_BASE | TYPE_RESTRICTION ) // no synset marker
 #define SIMPLEMEANING ( INDEX_BITS | MEANING_BASE ) // simple meaning, no type
 
@@ -90,9 +85,6 @@
 #define NOBURST 16		// dont burst (like for a quoted text string)
 
 #define FUNCTIONSTRING '^'
-
-
-#define MACRO_ARGUMENT_COUNT(D) ((unsigned char)(*D->w.fndefinition - 'A')) // for user macros not plans
 
 #define KINDS_OF_PHRASES ( CLAUSE | PHRASE | VERBAL | OMITTED_TIME_PREP | OMITTED_OF_PREP | QUOTATION_UTTERANCE )
 
@@ -145,42 +137,37 @@
 
 #define Index2Word(n) (dictionaryBase+n)
 #define Word2Index(D) ((uint64) (D-dictionaryBase))
-#define GetMeanings(D) ((MEANING*) Index2String(D->meanings))
-#define GetMeaning(D,k) GetMeanings(D)[k]
+#define GetMeanings(D) ((MEANING*) Index2Heap(D->meanings))
+MEANING GetMeaning(WORDP D, int index);
 #define GetMeaningsFromMeaning(T) (GetMeanings(Meaning2Word(T)))
-#define Meaning2Index(x) ((int)((x & INDEX_BITS) >> INDEX_OFFSET)) //   which dict entry meaning
+#define Meaning2Index(x) ((int)((x & INDEX_BITS) >> (int)INDEX_OFFSET)) //   which dict entry meaning
 
 unsigned char* GetWhereInSentence(WORDP D); // always skips the linking field at front
-
+extern unsigned int* hashbuckets;
 #define OOB_START '['
 #define OOB_END ']'
 void LockLevel();
-void UnlockLevel();
-
+void UnlockLayer(int layer);
+char* GetWord(char* word);
 WORDP GetPlural(WORDP D);
 void SetPlural(WORDP D,MEANING M);
 WORDP GetComparison(WORDP D);
 void SetComparison(WORDP D,MEANING M);
 WORDP GetTense(WORDP D);
 void SetTense(WORDP D,MEANING M);
-char* GetCanonical(WORDP D);
+WORDP GetCanonical(WORDP D);
+WORDP RawCanonical(WORDP D);
 void SetCanonical(WORDP D,MEANING M);
 uint64 GetTriedMeaning(WORDP D);
 void SetTriedMeaning(WORDP D,uint64 bits);
-void ReadSubstitutes(const char* name,const char* layer,unsigned int fileFlag,bool filegiven = false);
+void ReadSubstitutes(const char* name,unsigned int build,const char* layer,unsigned int fileFlag,bool filegiven = false);
 void Add2ConceptTopicList(int list[256], WORDP D,int start,int end,bool unique);
+void SuffixMeaning(MEANING T,char* at, bool withPos);
+int UTFCharSize(char* utf);
 
-extern unsigned int savedSentences;
 // memory data
 extern WORDP dictionaryBase;
-extern char* stringBase;
-extern char* stringFree;
-extern char* stringInverseFree;
-extern char* stringInverseStart;
-extern char* stringEnd;
 extern uint64 maxDictEntries;
-extern unsigned long maxStringBytes;
-extern unsigned long minStringAvailable;
 extern unsigned int userTopicStoreSize;
 extern unsigned int userTableSize;
 extern unsigned long maxHashBuckets;
@@ -193,8 +180,10 @@ extern uint64 adjectiveFormat;
 extern uint64 adverbFormat;
 extern MEANING posMeanings[64];
 extern MEANING sysMeanings[64];
-extern bool buildDictionary;
-extern char language[40];
+extern bool xbuildDictionary;
+extern unsigned int propertyRedefines;	// property changes on locked dictionary entries
+extern unsigned int flagsRedefines;		// systemflags changes on locked dictionary entries
+
 extern FACT* factLocked;
 extern char* stringLocked;
 
@@ -202,6 +191,7 @@ extern WORDP dictionaryPreBuild[NUMBER_OF_LAYERS+1];
 extern char* stringsPreBuild[NUMBER_OF_LAYERS+1];
 extern WORDP dictionaryFree;
 extern char dictionaryTimeStamp[20];
+extern bool primaryLookupSucceeded;
 
 // internal references to defined words
 extern WORDP Dplacenumber;
@@ -221,11 +211,6 @@ extern WORDP Dauxverb;
 extern WORDP Dchild,Dadult;
 extern WORDP Dtopic;
 extern MEANING Mmoney;
-extern MEANING Musd;
-extern MEANING Meur,Minr;
-extern MEANING Mgbp;
-extern MEANING Myen;
-extern MEANING Mcny;
 extern MEANING Mchatoutput;
 extern MEANING Mburst;
 extern MEANING Mpending;
@@ -236,16 +221,6 @@ extern MEANING MgambitTopics;
 extern MEANING MadjectiveNoun;
 extern MEANING Mnumber;
 extern bool dictionaryBitsChanged;
-extern char livedata[500];
-extern char englishFolder[500];
-extern char systemFolder[500];
-void ReleaseInverseString(char* word);
-char* expandAllocation(char* old, char* word,int size);
-char* AllocateString(char* word,size_t len = 0,int bytes= 1,bool clear = false,bool purelocal = false);
-char* AllocateInverseString(char* word, size_t len = 0, bool localvar = false);
-bool PreallocateString(size_t len);
-bool AllocateInverseSlot(char* variable);
-char* RestoreInverseSlot(char* variable,char* slot);
 WORDP StoreWord(int);
 void ClearWordMaps();
 bool TraceHierarchyTest(int x);
@@ -260,16 +235,15 @@ void ClearBacktracks();
 unsigned int* AllocateWhereInSentence(WORDP D);
 MEANING GetFactBack(WORDP D);
 void SetFactBack(WORDP D, MEANING M);
+bool ReadForeignPosTags(char* fname);
 int GetWords(char* word, WORDP* set,bool strict);
 void ReadQueryLabels(char* file);
 void ClearWordWhere(WORDP D,int at);
 void RemoveConceptTopic(int list[256],WORDP D, int at);
-char* reuseAllocation(char* old, char* word);
-char* reuseAllocation(char* old, char* word,int len);
 char* UseDictionaryFile(char* name);
-char* Index2String(unsigned int offset);
 void ClearWhereInSentence();
-inline unsigned int String2Index(char* str) {return (!str) ? 0 : (unsigned int)(stringBase - str);}
+void ClearTriedData();
+void ClearDictionaryFiles();
 inline unsigned int GlossIndex(MEANING M) { return M >> 24;}
 void ReadAbbreviations(char* file);
 void ReadLiveData();
@@ -292,7 +266,7 @@ WORDP ReadDWord(FILE* in);
 void AddCircularEntry(WORDP base, unsigned int field,WORDP entry);
 void SetWordValue(WORDP D, int x);
 int GetWordValue(WORDP D);
-
+void ReadForeign();
 inline int GetMeaningCount(WORDP D) { return (D->meanings) ? GetMeaning(D,0) : 0;}
 inline int GetGlossCount(WORDP D) 
 {
@@ -301,6 +275,7 @@ inline int GetGlossCount(WORDP D)
 char* GetGloss(WORDP D, unsigned int index);
 unsigned int GetGlossIndex(WORDP D,unsigned int index);
 void DictionaryRelease(WORDP until,char* stringUsed);
+WORDP BUILDCONCEPT(char* word);
 
 // startup and shutdown routines
 void InitDictionary();
@@ -309,7 +284,7 @@ void LoadDictionary();
 void ExtendDictionary();
 void WordnetLockDictionary();
 void ReturnDictionaryToWordNet();
-void LockLayer(int layer,bool boot);
+void LockLayer(bool boot);
 void ReturnToAfterLayer(int layer,bool unlocked);
 void ReturnBeforeLayer(int layer, bool unlocked);
 void DeleteDictionaryEntry(WORDP D);
@@ -320,7 +295,7 @@ void WriteDictionary(WORDP D, uint64 data);
 void DumpDictionaryEntry(char* word,unsigned int limit);
 bool ReadDictionary(char* file);
 char* ReadDictionaryFlags(WORDP D, char* ptr,unsigned int *meaningcount = NULL, unsigned int *glosscount = NULL);
-void WriteDictionaryFlags(WORDP D, FILE* out);
+char* WriteDictionaryFlags(WORDP D, char* out);
 void WriteBinaryDictionary();
 bool ReadBinaryDictionary();
 void Write32(unsigned int val, FILE* out);
@@ -345,12 +320,13 @@ bool IsPastHelper(char* word);
 MEANING MakeTypedMeaning(WORDP x, unsigned int y, unsigned int flags);
 MEANING MakeMeaning(WORDP x, unsigned int y = 0);
 WORDP Meaning2Word(MEANING x);
+WORDP Meaning2SmallerWord(MEANING x);
 MEANING AddMeaning(WORDP D,MEANING M);
 MEANING AddTypedMeaning(WORDP D,unsigned int type);
 void AddGloss(WORDP D,char* gloss,unsigned int index);
 void RemoveMeaning(MEANING M, MEANING M1);
 MEANING ReadMeaning(char* word,bool create=true,bool precreated = false);
-char* WriteMeaning(MEANING T,bool withPOS = false);
+char* WriteMeaning(MEANING T,bool withPOS = false,char* buffer = NULL);
 MEANING GetMaster(MEANING T);
 unsigned int GetMeaningType(MEANING T);
 MEANING FindSynsetParent(MEANING T,unsigned int which = 0);

@@ -1,7 +1,7 @@
 #ifndef _FACTSYSTEMH_
 #define _FACTSYSTEMH_
 #ifdef INFORMATION
-Copyright (C) 2011-2016 by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -56,6 +56,8 @@ FACTOID Fact2Index(FACT* F);
 FACT* Index2Fact(FACTOID e);
 inline FACTOID currentFactIndex() { return (currentFact) ? (FACTOID)((currentFact - factBase)) : 0;}
 FACT* FactTextIndex2Fact(char* word);
+void RipFacts(FACT* F,WORDP dictbase);
+void WeaveFacts(FACT* F);
 
 // fact system startup and shutdown
 void InitFacts();
@@ -74,8 +76,8 @@ void FreeFact(FACT* F);
 char* GetSetEnd(char* x);
 
 // fact reading and writing
-char* ReadField(char* ptr,char* field,char fieldkind,unsigned int& flags);
-char* EatFact(char* ptr,unsigned int flags = 0,bool attribute = false);
+char* ReadField(char* ptr,char* &field,char fieldkind,unsigned int& flags);
+char* EatFact(char* ptr,char* buffer,unsigned int flags = 0,bool attribute = false);
 FACT* ReadFact(char* &ptr,unsigned int build);
 void ReadFacts(const char* name,const char* layer,unsigned int build,bool user = false);
 char* WriteFact(FACT* F,bool comments,char* buffer,bool ignoreDead = false,bool eol = false);
@@ -118,7 +120,7 @@ inline void SetObjectHead(FACT* F, FACT* value){ F->objectHead = Fact2Index(valu
 typedef FACT* (*GetNextFact)(FACT* F);
 typedef void (*SetNextFact)(FACT* F,FACT* value);
 
-FACT* GetSubjectNondeadNext(FACT* F);
+FACT* GetSubjectNondeadNext(FACT* F,bool jsonaccept = true);
 FACT* GetVerbNondeadNext(FACT* F);
 FACT* GetObjectNondeadNext(FACT* F) ;
 FACT* GetSubjectNext(FACT* F);
@@ -132,7 +134,7 @@ inline FACT* GetSubjectHead(WORDP D) {return Index2Fact(D->subjectHead);}
 inline FACT* GetVerbHead(WORDP D) {return Index2Fact(D->verbHead);}
 inline FACT* GetObjectHead(WORDP D)  {return Index2Fact(D->objectHead);}
 
-FACT* GetSubjectNondeadHead(WORDP D);
+FACT* GetSubjectNondeadHead(WORDP D,bool jsonaccept = true);
 FACT* GetVerbNondeadHead(WORDP D);
 FACT* GetObjectNondeadHead(WORDP D);
 inline FACT* GetSubjectNondeadHead(MEANING M) {return GetSubjectNondeadHead(Meaning2Word(M));}

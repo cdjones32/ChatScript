@@ -9602,7 +9602,6 @@ Katie_Lee_Joel Top_Chef
 Ted_Allen Top_Chef
 Vadivelu Thevar_Magan
 Gary_Coleman The_Gary_Coleman_Show
-Claire_Skinner I_D
 Anastasia_Griffith The_Headsman
 Cassandra_Peterson Elvira_Mistress_Of_The_Dark
 John_Carradine Cains_Cutthroats
@@ -14720,7 +14719,7 @@ George_Chakiris Kings_Of_The_Sun
 Dilip_Kumar Saudagar
 Kati_Outinen Aikalainen
 Rahul_Dev Chinnodu
-Gary_Cooper You're_In_The_Navy_Now
+Gary_Cooper "You're In The Navy Now"
 George_Kourounis Angry_Planet
 Que_Haidar Bilut
 Soledad_Miranda Cuadecuc_Vampir
@@ -25119,11 +25118,14 @@ table: ~characters (^movie ^character )
 	createfact(^character character ^movie)
 DATA:
 "The Wizard of Oz" ("Wizard of Oz") ["Tin man" "Cowardly Lion" Toto Dorothy "Wizard of Oz" Glinda]
-Buffy_The_Vampire_Slayer Buffy
+Buffy_The_Vampire_Slayer [Buffy Angel Giles ]
 [Batman_Returns Batman_Forever] Batman
 The_Matrix Neo
-"Forrest_Gump" "Forrest_Gump"
+"Forrest_Gump" "Forrest Gump"
 "Star Wars" ["Princess Leia" "Han Solo" "Darth Vader" "Luke Skywalker" C-3PO Chewbacca Yoda]
+"Star Trek" [Bones]
+"Star Trek Voyager" ["No one"]
+"Star Trek Next Generation" [Data]
 ["The Matrix" "The Matrix Reloaded" "The Matrix Revolutions"] "Agent Smith"
 X-Men [Wolverine]
 Psycho "Norman Bates"
@@ -25952,7 +25954,7 @@ High_Sierra
 Dirty_Work
 Whats_The_Worst_That_Could_Happen
 Risky_Business
-The_Wizard_Of_Oz
+Wizard_Of_Oz
 I_Robot
 The_Yards
 The_Incredibles
@@ -35337,7 +35339,7 @@ Boogie_Nights
 Born_on_the_Fourth_of_July
 Le_Boucher
 Bound_for_Glory
-Boys_Don't_Cry
+"Boys Don't Cry"
 Boyz_N_the_Hood
 "Bread, Love and Dreams"
 Breaker_Morant
@@ -35438,7 +35440,7 @@ Dr._Strangelove_or_:_How_I_Learned_to_Stop_Worrying_and_Love_the_Bomb
 Doctor_Zhivago
 La_Dolce_Vita
 Donnie_Brasco
-Don't_Look_Back
+"Don't Look Back"
 Down_by_Law
 The_Dreamlife_of_Angels
 The_Dresser

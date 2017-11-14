@@ -1,7 +1,7 @@
 #ifndef _TESTINGH
 #define _TESTINGH
 #ifdef INFORMATION
-Copyright (C) 2011-2016 by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -37,6 +37,13 @@ void Sortit(char* name,int oneline);
 void SortTopic(WORDP D,uint64 junk);
 void SortTopic0(WORDP D,uint64 junk);
 void C_MemStats(char* input);
+int Debugger(char* x);
+void CheckBreak(char* name,bool in,char* code = NULL,FunctionResult result = NOPROBLEM_BIT);
+void CheckAssignment(char* name, char* value);
+void CheckAbort(char* msg);
+void InitDebugger();
+void CheckRuleOutput(int topic, char* label, char* code);
+int ProcessAction(char* before, char* after, char* output, FunctionResult result);
 #endif
 
 TestMode DoCommand(char* input,char* output,bool authorize=true);

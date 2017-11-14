@@ -1,7 +1,7 @@
 #ifndef _POSTGRESH
 #define _POSTGRESH
 #ifdef INFORMATION
-Copyright (C) 2011-2016 by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -18,7 +18,13 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 void PostgresShutDown();
 void PGUserFilesCode();
 void PGUserFilesCloseCode();
-extern char* postgresparams;
+extern char postgresparams[300];
+extern char postgresuserread[300];
+extern char postgresuserinsert[300];
+extern char postgresuserupdate[300];
+extern char *pguserread;
+extern char *pguserinsert;
+extern char *pguserupdate;
 FunctionResult DBInitCode(char* buffer);
 FunctionResult DBCloseCode(char* buffer);
 FunctionResult DBExecuteCode(char* buffer);

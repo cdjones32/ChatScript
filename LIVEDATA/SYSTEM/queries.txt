@@ -155,7 +155,6 @@ QUERY: directflag_v		"1vq: queue v : f"						# (? love ?)
 # 2. walk thru q, looking at facts were q item is verb
 # 3. fact must have flag on it from match argument
 
-
 # find facts given an object
 QUERY: direct_o		"1oq: queue o"							# (? ? cat)
 # 1. tag object with 1 and queue it
@@ -169,35 +168,35 @@ QUERY: directflag_o		"1oq: queue o : f"							# (? ? cat)
 # 3. there are no constraints to match, so all facts are accepted that have factflag on
 
 # find facts given subject and verb
-QUERY: direct_sv	"1sq 2vt: queue s: match v2"			# (dog love ?)
+QUERY: direct_sv	"1sq 2vT: queue s: match v2"			# (dog love ?)
 # 1. tag subject with 1 and queue it
 # 2. mark verb with 2 (no queuing)
 # 3. walk thru q, looking at facts where q item is subject
 # 4. accept facts where verb is marked with 2
 
 # find facts given subject and verb
-QUERY: directflag_sv	"1sq 2vt: queue s: match v2 f"			# (dog love ?)
+QUERY: directflag_sv	"1sq 2vT: queue s: match v2 f"			# (dog love ?)
 # 1. tag subject with 1 and queue it
 # 2. mark verb with 2 (no queuing)
 # 3. walk thru q, looking at facts where q item is subject
 # 4. accept facts where verb is marked with 2 and fact flag  is on
 
 # find facts given fact subject and verb
-QUERY: direct_Sv	"1Sq 2vt: queue s: match v2"			# (dog love ?)
+QUERY: direct_Sv	"1Sq 2vT: queue s: match v2"			# (dog love ?)
 # 1. tag subject with 1 and queue it
 # 2. mark verb with 2 (no queuing)
 # 3. walk thru q, looking at facts where q item is subject
 # 4. accept facts where verb is marked with 2
 
 # find facts given verb and object
-QUERY: direct_vo	"1oq 2vt: queue o: match v2"			# (? love cat)
+QUERY: direct_vo	"1oq 2vT: queue o: match v2"			# (? love cat)
 # 1. tag object with 1 and queue it
 # 2. mark verb with 2 (no queuing)
 # 3. walk thru q, looking at facts where q item is object
 # 4. accept facts where verb is marked with 2
 
 # find facts given verb and object and flag
-QUERY: directflag_vo	"1oq 2vt: queue o: match v2 f"			# (? love cat)
+QUERY: directflag_vo	"1oq 2vT: queue o: match v2 f"			# (? love cat)
 # 1. tag object with 1 and queue it
 # 2. mark verb with 2 (no queuing)
 # 3. walk thru q, looking at facts where q item is object
@@ -211,14 +210,14 @@ QUERY: direct_vO	"1Oq 2vt: queue o: match v2"			# (? love cat)
 # 4. accept facts where verb is marked with 2
 
 # find facts given subject and object
-QUERY: direct_so	"1sq 2ot: queue s: match o2"			# (dog ? cat)
+QUERY: direct_so	"1sq 2oT: queue s: match o2"			# (dog ? cat)
 # 1. tag subject with 1 and queue it
 # 2. mark object with 2 (no queuing)
 # 3. walk thru q, looking at facts where q item is subject
 # 4. accept facts where object is marked with 2
 
 # find facts given subject verb and object
-QUERY: direct_svo	"1oq 2vt 3st: queue o: match v2 s3"	# (dog love cat)
+QUERY: direct_svo	"1oq 2vT 3sT: queue o: match v2 s3"	# (dog love cat)
 # 1. tag object with 1 and queue it
 # 2. mark verb with 2 (no queuing)
 # 3. mark subject with 3 (no queuing)
@@ -226,7 +225,7 @@ QUERY: direct_svo	"1oq 2vt 3st: queue o: match v2 s3"	# (dog love cat)
 # 5. accept facts where verb is marked with 2 and subject is marked with 3
 
 # find facts given subject verb and object and flag
-QUERY: directflag_svo	"1oq 2vt 3st: queue o: match v2 s3  f"	# (dog love cat)
+QUERY: directflag_svo	"1oq 2vT 3sT: queue o: match v2 s3  f"	# (dog love cat)
 # 1. tag object with 1 and queue it
 # 2. mark verb with 2 (no queuing)
 # 3. mark subject with 3 (no queuing)

@@ -99,6 +99,12 @@
     <ClCompile Include="..\..\src\jsmn.cpp">
       <Filter>Source Files\chatbot</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\SRC\json.cpp">
+      <Filter>Source Files\chatbot</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\SRC\mysql.cpp">
+      <Filter>Source Files\chatbot</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\common.h">
@@ -184,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\jsmn.h">
       <Filter>Source Files\chatbot</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SRC\curl\curl.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -296,7 +296,8 @@ static bool AddWord2Scan(int flags,MEANING M,MEANING from,int depth,unsigned int
 			{
 				Log(STDTRACELOG,(char*)"\r\n");
 				Log(STDTRACETABLOG,(char*)"(%s=>) ",mean);
-				strcpy(last,mean);
+				if (strlen(mean) > 999) ReportBug("Scan insert > 1000")
+				else strcpy(last,mean);
 			}
 		}
 		Log(STDTRACELOG,(flags & QUEUE) ? (char*)" %s+" : " %s. ",WriteMeaning(M));
@@ -353,8 +354,13 @@ static void AddWordOrSet2Scan(unsigned int how, char* word,int depth)
 	}
 	else 
 	{
-		if (*word == '\'') ++word;
-		AddWord2Scan(how, ReadMeaning(word,true,true),0,depth,0);
+		if (*word == '\'')
+		{
+			// WORDP D = FindWord(word);
+			//if (!D) 
+			++word; // but dont harm 'tween_decks which is natural
+		}
+		AddWord2Scan(how, ReadMeaning(word, true, true), 0, depth, 0);
 	}
 }
 
@@ -636,7 +642,7 @@ nextsearch:  //   can do multiple searches, thought they have the same basemark 
 	int qMark = 0;
 	int mark = 0;
 	int whichset = 0;
-	fact = FindWord((char*)"fact");
+	fact = StoreWord((char*)"fact");// for foreign languages insure word is there
 
 	char maxmark = '0'; // deepest mark user has used
 	if (trace & TRACE_QUERY && CheckTopicTrace()) 
@@ -744,7 +750,8 @@ nextsearch:  //   can do multiple searches, thought they have the same basemark 
 		{
 			++control; // now see flags on the choice
 			unsigned int flags = baseFlags;
-			if (choice[0] == '\'')  //dont expand this beyond its first leve --   $$tmp would come in with its value, which if set would fan out.  '$$tmp gets just its value
+			// dont treat 'tween_decks as an originalword request
+			if (choice[0] == '\'' ) //  && !IsAlphaUTF8(choice[1]))  //dont expand this beyond its first leve --   $$tmp would come in with its value, which if set would fan out.  '$$tmp gets just its value
 			{
 				flags |= ORIGINALWORD;
 				++choice;
@@ -766,7 +773,7 @@ nextsearch:  //   can do multiple searches, thought they have the same basemark 
 				}
 				else choice = wildcardCanonicalText[wild];
 			}
-			else if (choice[0] == USERVAR_PREFIX) choice = GetUserVariable(choice);
+			else if (choice[0] == USERVAR_PREFIX && choice[1]) choice = GetUserVariable(choice);
 			else if (choice[0] == SYSVAR_PREFIX && choice[1]) choice = SystemVariable(choice,NULL);
 			else if (choice[0] == '@' )
 			{

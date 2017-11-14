@@ -1,7 +1,7 @@
 #ifndef _USERCACHEH
 #define _USERCACHEH
 #ifdef INFORMATION
-Copyright (C) 2011-2016 by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -25,7 +25,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define DEFAULT_VOLLEY_LIMIT 0 // write always and read always
 #define OVERFLOW_SAFETY_MARGIN 5000
 #define MAX_USERNAME 400
-
+extern unsigned int userTopicStoreSize,userTableSize; // memory used which we will display
 extern unsigned int userCacheCount,userCacheSize;
 extern bool cacheUsers;
 extern  int volleyLimit;
@@ -41,7 +41,7 @@ void FlushCache();
 void FreeAllUserCaches();
 char* FindUserCache(char* word);
 char* GetCacheBuffer(int cacheID);
-void InitCache(unsigned int dictStringSize);
+void InitCache();
 void CloseCache();
 char* GetUserFileBuffer();
 #endif

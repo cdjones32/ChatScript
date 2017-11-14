@@ -1,9 +1,9 @@
-﻿ 3d_radar ( meanings=1 NOUN NOUN_SINGULAR ) 
-    three-dimensional_radar~1n 
- 3-hitter ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
+﻿ 3-hitter ( meanings=1 NOUN NOUN_SINGULAR NOUN_NODETERMINER ) 
     three-hitter~1n 
  3TC ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     lamivudine~1n 
+ 3d_radar ( meanings=1 NOUN NOUN_SINGULAR ) 
+    three-dimensional_radar~1n 
  3-D ( meanings=2 NOUN NOUN_PROPER_SINGULAR ) 
     three-D~1n 
     three-D~2n 
@@ -14,7 +14,6 @@
     Orly_Group~1n 
  366_days ( meanings=1 NOUN NOUN_PLURAL ) 
     leap_year~1n 
- 30 ( NOUN ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER KINDERGARTEN posdefault:NOUN ) 
  3G ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 
     3G~1nz 
  3G_coverage ( meanings=1 NOUN NOUN_PROPER_SINGULAR NOUN_NODETERMINER ) 

@@ -41,6 +41,10 @@ char serverIP[100];
 #include "evserver.h"
 #endif
 
+#define WEBSOCKET 1
+#include "easywclient/easywsclient.hpp"
+#include "easywclient/easywsclient.cpp" 
+
 #define DOSOCKETS 1
 #endif
 #ifndef DISCARDCLIENT
@@ -134,7 +138,7 @@ void CSocket::setLocalPort(unsigned short localPort) throw(SocketException) {
 	localAddr.sin_family = AF_INET;
 	localAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	localAddr.sin_port = htons(localPort);
-	if (bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) throw SocketException((char*)"Set of local port failed (bind())", true);
+	if (::bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) throw SocketException((char*)"Set of local port failed (bind())", true);
 }
 
 void CSocket::setLocalAddressAndPort(const string &localAddress,
@@ -149,7 +153,7 @@ void CSocket::setLocalAddressAndPort(const string &localAddress,
 #else
 	setsockopt(sockDesc, SOL_SOCKET, SO_REUSEADDR, (void*) &off, sizeof(on));
 #endif
-	if (bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0)  throw SocketException((char*)"Set of local address and port failed (bind())", true);
+	if (::bind(sockDesc, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0)  throw SocketException((char*)"Set of local address and port failed (bind())", true);
 }
 
 void CSocket::cleanUp() throw(SocketException) {
@@ -248,8 +252,8 @@ void Client(char* login)// test client for a server
 {
 	char word[MAX_WORD_SIZE];
 	printf((char*)"%s",(char*)"\r\n\r\n** Client launched\r\n");
-	char* data = AllocateBuffer();
-	char* input = AllocateBuffer();
+	char* data = AllocateBuffer(); // limited size
+	char* input = AllocateBuffer(); // limited size
 	FILE* source = stdin;
 
 	char* from = login;
@@ -275,9 +279,11 @@ restart: // start with user
 	// message to server is 3 strings-   username, botname, null (start conversation) or message
 	char* ptr = data;
 	strcpy(ptr,from); // username
-	ptr += strlen(ptr) + 1;
+	ptr += strlen(ptr);
+	*ptr++ = 0; 
 	strcpy(ptr,bot);
-	ptr += strlen(ptr) + 1; // botname
+	ptr += strlen(ptr); // botname
+	*ptr++ = 0; 
 	strcpy(ptr,input);  // null message - start conversation or given message, user starts first
 	try 
 	{
@@ -297,7 +303,7 @@ SOURCE:
 			size_t len = (ptr-data) + 1 + strlen(ptr);
 			TCPSocket *sock = new TCPSocket(serverIP, (unsigned short)port);
 			sock->send(data, len );
-			printf((char*)"Sent %d bytes of data to port %d\r\n",len, port);
+			printf((char*)"Sent %d bytes of data to port %d\r\n",(int)len, port);
 
 			int bytesReceived = 1;              // Bytes read on each recv()
 			int totalBytesReceived = 0;         // Total bytes read
@@ -363,8 +369,7 @@ SOURCE:
 #ifndef DISCARDSERVER
 
 
-
-#define SERVERTRANSERSIZE 10000 // no more than 10K coming in
+#define SERVERTRANSERSIZE (4 + 100 + INPUT_BUFFER_SIZE)  // offset to output buffer
 #ifdef WIN32
   #pragma warning(push,1)
   #pragma warning(disable: 4290) 
@@ -505,15 +510,16 @@ void* RegressLoad(void* junk)// test load for a server
 
 void LogChat(clock_t starttime,char* user,char* bot,char* IP, int turn,char* input,char* output)
 {
-	char* date = GetTimeInfo(true)+SKIPWEEKDAY;
+	struct tm ptm;
+	char* date = GetTimeInfo(&ptm,true)+SKIPWEEKDAY;
 	date[15] = 0;	// suppress year
 	memmove(date+3,date+4,13); // compress out space
 	char* why = output + strlen(output) + 3; //skip terminator + 2 ctrl z end marker
 	char* activeTopic = why + strlen(why) + 1;
 	clock_t endtime = ElapsedMilliseconds(); 
 	char* nl = (LogEndedCleanly()) ? (char*) "" : (char*) "\r\n";
-	if (*input) Log(SERVERLOG,(char*)"%sRespond: user:%s bot:%s ip:%s (%s) %d %s  ==> %s  When:%s %dms %s\n", nl,user,bot,IP,activeTopic,turn,input,Purify(output),date,(int)(endtime - starttime),why);
-	else Log(SERVERLOG,(char*)"%sStart: user:%s bot:%s ip:%s (%s) %d ==> %s  When:%s %dms Version:%s Build0:%s Build1:%s %s\n",nl, user,bot,IP,activeTopic,turn,Purify(output),date,(int)(endtime - starttime),version,timeStamp[0],timeStamp[1],why);
+	if (*input) Log(SERVERLOG,(char*)"%sRespond: user:%s bot:%s ip:%s (%s) %d %s  ==> %s  When:%s %dms %s\r\n", nl,user,bot,IP,activeTopic,turn,input,Purify(output),date,(int)(endtime - starttime),why);
+	else Log(SERVERLOG,(char*)"%sStart: user:%s bot:%s ip:%s (%s) %d ==> %s  When:%s %dms Version:%s Build0:%s Build1:%s %s\r\n",nl, user,bot,IP,activeTopic,turn,Purify(output),date,(int)(endtime - starttime),version,timeStamp[0],timeStamp[1],why);
 }
 
 #ifndef EVSERVER // til end of file
@@ -810,15 +816,48 @@ void PrepareServer()
 	InitializeCriticalSection(&TestCriticalSection ) ;
 }
 
-void InternetServer()
+void handle_message(const std::string & message)
 {
-	_beginthread((void (__cdecl *)(void *) )AcceptSockets,0,0);	// the thread that does accepts... spinning off clients
-	MainChatbotServer();  // run the server from the main thread
-	CloseHandle( hChatLockMutex );
-	DeleteCriticalSection(&TestCriticalSection);
-	DeleteCriticalSection(&LogCriticalSection);
+	char* buffer = (char*)  message.c_str();
+	printf("received %s\r\n", buffer);
+	char* ascii1 = buffer;
+	while ((ascii1 = strchr(ascii1, 1))) *ascii1 = 0; // allow ascii 1 instead of 0 as separator for JavaScript conventions.
+	char* user = buffer;
+	char* bot = buffer + strlen(user) + 1;
+	char* input = buffer + strlen(bot) + 1;
+	int returnValue = PerformChat(user, bot, ourMainInputBuffer, "122.22.22.22", ourMainOutputBuffer);	// this takes however long it takes, exclusive control of chatbot.
 }
 
+void InternetServer()
+{
+	if (!*websocketParam)
+	{
+		_beginthread((void(__cdecl *)(void *))AcceptSockets, 0, 0);	// the thread that does accepts... spinning off clients
+		MainChatbotServer();  // run the server from the main thread
+		CloseHandle(hChatLockMutex);
+		DeleteCriticalSection(&TestCriticalSection);
+		DeleteCriticalSection(&LogCriticalSection);
+	}
+	else
+	{
+		using easywsclient::WebSocket;
+		WebSocket::pointer ws = WebSocket::from_url(websocketParam); //"ws://localhost:8126/foo"
+		if (!ws) myexit("unable to establish websocket\r\n");
+		assert(ws);
+
+		ws->send("{\"id\" : \"ai0\", \"secret\" : \"abc123\", \"status\":\"register\" }");
+		ws->send("{\"id\" : \"ai0\", \"secret\" : \"abc123\",\"status\":\"roundInformation\" }");
+
+		while (true) {
+			ws->poll(-1);
+			ws->dispatch(handle_message);
+			printf("sent %s\r\n", ourMainOutputBuffer);
+			ws->send(ourMainOutputBuffer);
+		}
+		ws->close();
+		delete ws;
+	}
+}
 #endif
 
 static void ServerTransferDataToClient()
@@ -836,7 +875,8 @@ static void* AcceptSockets(void*) // accepts incoming connections from users
    try {
         while(1)
         {  
-            char* time = GetTimeInfo(true)+SKIPWEEKDAY;
+			struct tm ptm;
+            char* time = GetTimeInfo(&ptm,true)+SKIPWEEKDAY;
             TCPSocket *sock = serverSocket->accept();
 			LaunchClient((void*)sock);
          }
@@ -865,7 +905,7 @@ static void* Done(TCPSocket * sock,char* memory)
 static void* HandleTCPClient(void *sock1)  // individual client, data on STACK... might overflow... // WINDOWS + LINUX
 {
 	clock_t starttime = ElapsedMilliseconds(); 
-	char* memory = (char*) malloc((2 * MAX_BUFFER_SIZE)+2); // our data in 1st chunk, his reply info in 2nd - 80k limit
+	char* memory = (char*) malloc(4 + 100 + INPUT_BUFFER_SIZE + outputsize + 8); // our data in 1st chunk, his reply info in 2nd - 80k limit
 	if (!memory) return NULL; // ignore him if we run out of memory
 	char* output = memory+SERVERTRANSERSIZE;
 	*output = 0;
@@ -900,31 +940,32 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 		{
 			int len1 = sock->recv(p, SERVERTRANSERSIZE-50); // leave ip address in front alone
 			len += len1; // total read in so far
+
 			if (len1 <= 0 || len >= (SERVERTRANSERSIZE - 100))  // error or too big a transfer. we dont want it
 			{
 				if (len1 < 0) 
 				{
-					ReportBug((char*)"TCP recv from %s returned error: %d\n", sock->getForeignAddress().c_str(), errno);
-					Log(SERVERLOG,(char*)"TCP recv from %s returned error: %d\n", sock->getForeignAddress().c_str(), errno);
+					ReportBug((char*)"TCP recv from %s returned error: %d\r\n", sock->getForeignAddress().c_str(), errno);
+					Log(SERVERLOG,(char*)"TCP recv from %s returned error: %d\r\n", sock->getForeignAddress().c_str(), errno);
 				}
 				else if ( len >= (SERVERTRANSERSIZE - 100))
 				{
-					ReportBug((char*)"Refusing overly long input from %s\n", sock->getForeignAddress().c_str());
-					Log(SERVERLOG,(char*)"Refusing overly long input from %s\n", sock->getForeignAddress().c_str());
+					ReportBug((char*)"Refusing overly long input from %s\r\n", sock->getForeignAddress().c_str());
+					Log(SERVERLOG,(char*)"Refusing overly long input from %s\r\n", sock->getForeignAddress().c_str());
 				}
 				else 
 				{
-					ReportBug((char*)"TCP %s closed connection prematurely\n", sock->getForeignAddress().c_str());
-					Log(SERVERLOG,(char*)"TCP %s closed connection prematurely\n", sock->getForeignAddress().c_str());
+					ReportBug((char*)"TCP %s closed connection prematurely\r\n", sock->getForeignAddress().c_str());
+					Log(SERVERLOG,(char*)"TCP %s closed connection prematurely\r\n", sock->getForeignAddress().c_str());
 				}
 				delete sock;
 				free(memory);
 				return NULL;
 			} 
+			p[len1] = 0;  // force extra string end at end of buffer
 
 			// break apart the data into its 3 strings
 			p += len1; // actual end of read buffer
-			*p = 0; // force extra string end at end of buffer
 			char* nul = p; // just a loop starter
 			while (nul && strs < 3) // find nulls in data
 			{
@@ -948,7 +989,6 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 				return Done(sock,memory);
 			}
 
-			//ReportBug((char*)"%s %s bot: %s msg: %s  NO USER ID \r\n",IP,GetTimeInfo(true)+SKIPWEEKDAY,bot,msg)
 			strcpy(output,(char*)"[you have no user id]\r\n"); 
 			return Done(sock,memory);
 		}
@@ -973,7 +1013,8 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 
 	  } catch (...)  
 	  {
-			ReportBug((char*)"***%s client presocket failed %s\r\n",IP,GetTimeInfo(true)+SKIPWEEKDAY)
+			struct tm ptm;
+			ReportBug((char*)"***%s client presocket failed %s\r\n",IP,GetTimeInfo(&ptm,true)+SKIPWEEKDAY)
  			return Done(sock,memory);
 	  }
 
@@ -998,14 +1039,15 @@ static void* HandleTCPClient(void *sock1)  // individual client, data on STACK..
 		size_t len = strlen(output);
 		if (outputLength) len = OutputLimit((unsigned char*) output);
 		if (serverctrlz) len += 3; // send end marker for positive confirmation of completion
+
 		sock->send(output, len);
 } catch (...)  {
 		printf((char*)"%s",(char*)"client socket fail\r\n");
-		ReportBug((char*)"***%s client socket failed %s \r\n",IP,GetTimeInfo(true)+SKIPWEEKDAY)}
+		}
 
 	delete sock;
 
-	if (serverLog)  LogChat(starttime,user,bot, IP,*((int*)memory),msg,output);
+	if (serverLog && msg)  LogChat(starttime,user,bot, IP,*((int*)memory),msg,output);
 	
 	// do not delete memory til after server would have given up
 	free(memory);
@@ -1037,11 +1079,10 @@ static void* MainChatbotServer()
 	ServerStartup(); //   get initial control over the mutex so we can start. - on linux if thread dies, we must reacquire here 
 	// we now own the chatlock
 	clock_t lastTime = ElapsedMilliseconds(); 
-
 	if (setjmp(scriptJump[SERVER_RECOVERY])) // crashes come back to here
 	{
-		printf((char*)"%s",(char*)"***Server exception\r\n");
-		ReportBug((char*)"***Server exception\r\n")
+		printf((char*)"%s",(char*)"***Server exception0\r\n");
+		ReportBug((char*)"***Server exception0\r\n")
 #ifdef WIN32
 		char* bad = GetUserVariable((char*)"$cs_crashmsg");
 		if (*bad) strcpy(ourMainOutputBuffer,bad);
@@ -1061,7 +1102,7 @@ static void* MainChatbotServer()
 	while (1)
 	{
 #ifdef WIN32
-	_try { // catch crashes in windows
+	_try  { // catch crashes in windows
 #else
 	try {
 #endif
@@ -1077,7 +1118,7 @@ RESTART_RETRY:
 		// We will send back his answer in clientBuffer, overwriting it.
 		char user[MAX_WORD_SIZE];
 		char bot[MAX_WORD_SIZE];
-		char* ip = clientBuffer + sizeof(unsigned int); // skip fileread data buffer id(not used)
+		char* ip = clientBuffer + 4; // skip fileread data buffer id(not used)
 		char* returnData = clientBuffer+SERVERTRANSERSIZE;
 		char* ptr = ip;
 		// incoming is 4 strings together:  ip, username, botname, message
@@ -1087,10 +1128,15 @@ RESTART_RETRY:
 		strcpy(bot,ptr);
 		ptr += strlen(ptr) + 1; // ptr to message
 		size_t test = strlen(ptr);
-		if (test >= (MAX_BUFFER_SIZE - 100)) strcpy(ourMainInputBuffer,(char*)"too much data");
+		if (test >= (INPUT_BUFFER_SIZE - 100)) 
+		{
+			ReportBug("Too much input to server %d",test);
+			strcpy(ourMainInputBuffer,(char*)"too much data");
+		}
 		else strcpy(ourMainInputBuffer,ptr); // xfer user message to our incoming feed
 		echo = false;
-        char* dateLog = GetTimeInfo(true)+SKIPWEEKDAY;
+		struct tm ptm;
+        char* dateLog = GetTimeInfo(&ptm,true)+SKIPWEEKDAY;
 		if (serverPreLog)  Log(SERVERLOG,(char*)"ServerPre: %s (%s) %s %s\r\n",user,bot,ourMainInputBuffer, dateLog);
 
 		returnValue = PerformChat(user,bot,ourMainInputBuffer,ip,ourMainOutputBuffer);	// this takes however long it takes, exclusive control of chatbot.
@@ -1112,7 +1158,7 @@ RESTART_RETRY:
 #else
 	catch (...) 
 #endif
-	{ ReportBug((char*)"Server exception\r\n") Crash();}
+	{ ReportBug((char*)"Catch Server exception\r\n") Crash();}
 
 #ifdef WIN32
 	_try { // catch crashes in windows

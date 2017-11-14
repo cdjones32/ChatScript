@@ -13,6 +13,10 @@ t: ( %input<%userfirstline )
 
 #!x issued only once, then erased
 t: Have you been here before?
+	#! yes
+	a: (~yes) Welcome back!
+	#! no
+	a: (~no) Then welcome to your first time.
 
 #! what is your name 
 u: ( what is your name ) My name is Harry.

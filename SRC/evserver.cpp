@@ -1,6 +1,6 @@
 #ifdef INFORMATION
 Copyright (C) 2011-2012 by Outfit7
-Further modifed by Bruce Wilcox 2014
+Further modifed by Bruce Wilcox 2014-2106
 
 Released under Bruce Wilcox License as follows:
 
@@ -54,6 +54,7 @@ Handling client:
 
 #include <vector>
 #include <algorithm>
+extern char serverLogfileName[200];
 extern bool serverctrlz;
 #define CLIENT_CHUNK_LENGTH 4*1024
 #define HIDDEN_OVERLAP 103	// possible concealed data
@@ -71,6 +72,7 @@ ev_io ev_accept_r_g;
 ev_timer tt_g;
 
 bool postgresInited = false;
+bool mysqlInited = false;
 	   
 #ifdef EVSERVER_FORK
 // child monitors
@@ -106,21 +108,22 @@ struct Client_t
     char* bot;
     char* message;
     char* user;
-    char data[MAX_BUFFER_SIZE];
+    char* data = NULL;
 
     Client_t(int fd, struct ev_loop *l_p) : fd(fd), l(l_p), requestValid(false)
     {
         strcpy(this->magic, "deadbeef");
         ev_io_init(&this->ev_r, client_read, this->fd, EV_READ);
         ev_io_init(&this->ev_w, client_write, this->fd, EV_WRITE);
-
         this->ev_r.data = this;
         this->ev_w.data = this;
         ev_io_start(this->l, &this->ev_r);
     }
 
-    ~Client_t()
+    ~Client_t() // if child dies, this destructor is not called
     {
+		if (this->data) free(this->data); 
+		this->data = NULL;
         if (ev_is_active(&this->ev_r))  ev_io_stop(this->l, &this->ev_r);
         if (ev_is_active(&this->ev_w))  ev_io_stop(this->l, &this->ev_w);
         close(this->fd);
@@ -133,7 +136,7 @@ struct Client_t
         this->bot = 0;
         this->message = 0;
         this->user = 0;
-        *this->data = 0;
+        if (this->data) *this->data = 0;
         if (!ev_is_active(&this->ev_r))  ev_io_start(this->l, &this->ev_r);
         if (ev_is_active(&this->ev_w))   ev_io_stop(this->l, &this->ev_w);
     }
@@ -185,7 +188,8 @@ struct Client_t
             }
 
             Log(SERVERLOG, "evserver: send_data() could not send, errno: %s", strerror(errno));
-            return -1;
+			printf( "evserver: send_data() could not send, errno: %s", strerror(errno));
+			return -1;
         }
 
         if (r < (int)len) 
@@ -203,12 +207,13 @@ struct Client_t
 
     int prepare_for_chat()
     {
-        *this->data = 0;
+        if (this->data) *this->data = 0;
         this->ip = this->get_foreign_address();
         if (this->ip.length() == 0) 
 		{
             Log(SERVERLOG, "evserver: prepare_for_chat() could not get ip for client: %d\r\n", this->fd);
-            return -1;
+			printf("evserver: prepare_for_chat() could not get ip for client: %d\r\n", this->fd);
+			return -1;
         }
 
         return 1;
@@ -216,23 +221,19 @@ struct Client_t
 
     int received_request() {
         int nulls = count(this->incomming.begin(), this->incomming.end(), 0);
-
-        if (nulls < 3)  return 0;
-
-        if (nulls > 3)   return -1;
+		if ((nulls) < 3)  return 0;
+        if ((nulls) > 3)   return -1;
 
         this->requestValid = true;
         user = &this->incomming[0];
 
         if (strlen(user) == 0)  return -1;
 
-        Buffer_t::iterator next_null;
-        next_null = find(this->incomming.begin(), this->incomming.end(), 0);
-
-        bot = ITER_TO_OFFSET(this->incomming, next_null + 1);
-
-        next_null = find(next_null + 1, this->incomming.end(), 0);
-        message = ITER_TO_OFFSET(this->incomming, next_null + 1);
+		Buffer_t::iterator next_null;
+		next_null = find(this->incomming.begin(), this->incomming.end(), 0);
+		bot = ITER_TO_OFFSET(this->incomming, next_null + 1);
+		next_null = find(next_null + 1, this->incomming.end(), 0);
+		message = ITER_TO_OFFSET(this->incomming, next_null + 1);
 
         // since we received complete request, we will stop reading from client socket until we process it
         ev_io_stop(this->l, &this->ev_r);
@@ -257,12 +258,14 @@ static int setnonblocking(int fd)
     int flags = fcntl(fd, F_GETFL, 0);
     if (flags == -1) {
         Log(SERVERLOG, "evserver: setnonblocking() fcntl(F_GETFL) failed, errno: %s\r\n", strerror(errno));
-        return -1;
+		printf( "evserver: setnonblocking() fcntl(F_GETFL) failed, errno: %s\r\n", strerror(errno));
+		return -1;
     }
     if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1) 
 	{
         Log(SERVERLOG, "evserver: setnonblocking() fcntl(F_SETFL) failed, errno: %s\r\n", strerror(errno));
-        return -1;
+		printf( "evserver: setnonblocking() fcntl(F_SETFL) failed, errno: %s\r\n", strerror(errno));
+		return -1;
     }
     return 1;
 }
@@ -276,7 +279,8 @@ int fork_child(ev_child *child_watcher = 0)
     pid = fork();
     if (pid < 0) {
 		Log(SERVERLOG, "evserver: fork failed, errno %d\r\n", errno);
-        return -1;
+		printf( "evserver: fork failed, errno %d\r\n", errno);
+		return -1;
     }
  
     if (pid > 0) {
@@ -306,10 +310,24 @@ int fork_child(ev_child *child_watcher = 0)
 }
 
 static void evsrv_child_died(EV_P_ ev_child *w, int revents) {
-    Log(SERVERLOG, "evserver: evsrv_child_died [pid: %d]\r\n", w->pid);
-    int r = fork_child(w);
-    if (r < 0)  Log(SERVERLOG, "  evserver: could not re-spawn child after it died [pid: %d]\r\n", w->pid);
-    else if (r == 1)   Log(SERVERLOG, "  evserver child: re-spawned [pid: %d]\r\n", getpid());
+	Log(SERVERLOG, "evserver: evsrv_child_died [pid: %d]\r\n", w->pid);
+	printf("evserver: evsrv_child_died [pid: %d]\r\n", w->pid);
+
+	int r = fork_child(w);
+	if (r < 0)
+	{
+		Log(SERVERLOG, "  evserver: could not re-spawn child after it died [pid: %d]\r\n", w->pid);
+		printf("  evserver: could not re-spawn child after it died [pid: %d]\r\n", w->pid);
+	}
+
+	else if (r == 1)
+	{
+		// socket listener
+		ev_io_init(&ev_accept_r_g, evsrv_accept, srv_socket_g, EV_READ);
+		ev_io_start(l_g, &ev_accept_r_g);
+		Log(SERVERLOG, "  evserver child: re-spawned [pid: %d]\r\n", getpid());
+		printf("  evserver child: re-spawned [pid: %d]\r\n", getpid());
+	}
 }
 #endif
 
@@ -404,7 +422,7 @@ int evsrv_init(const string &interfaceKind, int port, char* arg) {
     }
 	localAddr.sin_port = htons(port_g);
     
-	if (bind(srv_socket_g, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) 
+	if (::bind(srv_socket_g, (sockaddr *) &localAddr, sizeof(sockaddr_in)) < 0) 
 	{
  		return -1; // typical when server is already running and cron tries to start
 	}
@@ -452,6 +470,8 @@ int evsrv_init(const string &interfaceKind, int port, char* arg) {
     ev_io_init(&ev_accept_r_g, evsrv_accept, srv_socket_g, EV_READ);
     ev_io_start(l_g, &ev_accept_r_g);
 	Log(SERVERLOG, "  evserver: running pid: %d\r\n",getpid());
+	printf( "  evserver: running pid: %d\r\n", getpid());
+	if (forkcount > 1) sprintf(serverLogfileName, (char*)"%s/serverlog%d-%d.txt", logs, port, getpid());
 
     return 1;
 }
@@ -540,6 +560,12 @@ static void client_read(EV_P_ ev_io *w, int revents)
     }
 
     r = client->send_data();
+	if (client->data)
+	{
+		free(client->data);
+		client->data = NULL;
+	}
+
     if (r < 0) {
         Log(SERVERLOG, "evserver: could not sent data to client: %d\r\n", client->fd);
         delete client;
@@ -574,20 +600,31 @@ int evsrv_do_chat(Client_t *client)
  	clock_t starttime = ElapsedMilliseconds(); 
     client->prepare_for_chat();
 	size_t len = strlen(client->message);
-	if (len >= MAX_BUFFER_SIZE - 100) client->message[MAX_BUFFER_SIZE-1] = 0;
+	if (len >= INPUT_BUFFER_SIZE - 100) client->message[INPUT_BUFFER_SIZE-1] = 0; // limit user input
 	echo = false;
 	bool restarted = false;
 #ifndef DISCARDPOSTGRES
-	if (postgresparams && !postgresInited)  
+	if (*postgresparams && !postgresInited)  
 	{
 		PGUserFilesCode(); //Forked must hook uniquely AFTER forking
 		postgresInited = true;
 	}
 #endif
+#ifndef DISCARDMYSQL
+	if (mysqlconf && !mysqlInited)
+	{
+		MySQLUserFilesCode(); //Forked must hook uniquely AFTER forking
+		mysqlInited = true;
+	}
+#endif
+
+	if (!client->data) 	client->data = (char*) malloc(outputsize);
+	if (!client->data) printf("Malloc failed for child data\r\n");
 
 RESTART_RETRY:
 	strcpy(ourMainInputBuffer,client->message);
-    char* dateLog = GetTimeInfo(true)+SKIPWEEKDAY;
+	struct tm ptm;
+    char* dateLog = GetTimeInfo(&ptm,true)+SKIPWEEKDAY;
 	if (serverPreLog && restarted)  Log(SERVERLOG,(char*)"ServerPre: retry pid: %d %s (%s) %s %s\r\n",getpid(),client->user,client->bot,ourMainInputBuffer, dateLog);
  	else if (serverPreLog)  Log(SERVERLOG,(char*)"ServerPre: pid: %d %s (%s) %s %s\r\n",getpid(),client->user,client->bot,ourMainInputBuffer, dateLog);
 	int turn = PerformChat(
@@ -617,7 +654,7 @@ RESTART_RETRY:
 	}
 	
 #ifndef DISCARDPOSTGRES
-		if (false && postgresparams && postgresInited)  // try to keep going per child
+		if (false && *postgresparams && postgresInited)  // try to keep going per child
 		{
 			PostgresShutDown(); // any script connection
 			PGUserFilesCloseCode();	// filesystem

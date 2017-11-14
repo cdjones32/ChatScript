@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -14,17 +14,20 @@
     <ProjectGuid>{19C8C023-05AF-437A-879A-8B9EE0853B8A}</ProjectGuid>
     <RootNamespace>loebner_chatbot</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <UseOfMfc>false</UseOfMfc>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -38,14 +41,20 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\BINARIES</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\BINARIES\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</LinkIncremental>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">loebner_chatbot</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">loebner_chatbot_debug</TargetName>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)../src/curl-libs-for-win32/;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>Loebner</TargetName>
+    <IncludePath>c:\chatscript/privatesrc;$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..SRC/;../SRC/curl;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(VCInstallDir)atlmfc\src\mfc;$(VCInstallDir)atlmfc\src\mfcm;$(VCInstallDir)atlmfc\src\atl;$(VCInstallDir)crt\src;</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -64,7 +73,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>Ws2_32.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>c:\chatscript\loebner_chatbot.exe</OutputFile>
+      <OutputFile>c:\chatscript\BINARIES\loebner_chatbot_debug.exe</OutputFile>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>Nafxcwd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -76,21 +85,23 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>c:\AR\MYSQL5\include;c:\AR\link\s;c:\AR\link\src\linkparser;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_NDEBUG;_WINDOWS;_LOEBNER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\lib\libev;..\SRC\curl;..\SRC\mongo\bson;..\SRC\mongo\mongoc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>LOEBNER;WIN32;_NDEBUG;_WINDOWS;_LOEBNER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <FunctionLevelLinking>false</FunctionLevelLinking>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>mysqlclient.lib;Ws2_32.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>loebner.exe</OutputFile>
-      <AdditionalLibraryDirectories>C:\AR\link\MySQL;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Ws2_32.lib;Winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(SolutionDir)..\BINARIES\Loebner.exe</OutputFile>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>Nafxcwd.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -109,8 +120,10 @@
     <ClCompile Include="..\..\src\functionExecute.cpp" />
     <ClCompile Include="..\..\src\infer.cpp" />
     <ClCompile Include="..\..\src\jsmn.cpp" />
+    <ClCompile Include="..\..\SRC\json.cpp" />
     <ClCompile Include="..\..\src\mainSystem.cpp" />
     <ClCompile Include="..\..\src\markSystem.cpp" />
+    <ClCompile Include="..\..\SRC\mysql.cpp" />
     <ClCompile Include="..\..\src\os.cpp" />
     <ClCompile Include="..\..\src\outputSystem.cpp" />
     <ClCompile Include="..\..\src\patternSystem.cpp" />
@@ -132,6 +145,7 @@
     <ClInclude Include="..\..\src\common.h" />
     <ClInclude Include="..\..\src\constructCode.h" />
     <ClInclude Include="..\..\src\csocket.h" />
+    <ClInclude Include="..\..\SRC\curl\curl.h" />
     <ClInclude Include="..\..\src\dictionarySystem.h" />
     <ClInclude Include="..\..\src\english.h" />
     <ClInclude Include="..\..\src\factSystem.h" />

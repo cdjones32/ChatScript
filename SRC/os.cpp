@@ -1,16 +1,38 @@
 #include "common.h"
-static char logLastCharacter = 0;
 
+#ifdef SAFETIME // some time routines are not thread safe (not relevant with EVSERVER)
+#include <mutex>
+static std::mutex mtx;
+#endif 
+
+int loglimit = 0;
+static char encryptUser[200];
+static char encryptLTM[200];
+static char logLastCharacter = 0;
+#define MAX_STRING_SPACE 100000000  // transient+heap space 100MB
+unsigned long maxHeapBytes = MAX_STRING_SPACE;
+char* heapBase;					// start of heap space (runs backward)
+char* heapFree;					// current free string ptr
+char* stackFree;
+char* infiniteCaller = "";
+char* stackStart;
+char* heapEnd;
+static bool infiniteStack = false;
+bool userEncrypt = false;
+bool ltmEncrypt = false;
+unsigned long minHeapAvailable;
 bool showDepth = false;
 char serverLogfileName[200];				// file to log server to
 char logFilename[MAX_WORD_SIZE];			// file to user log to
 bool logUpdated = false;					// has logging happened
-char logmainbuffer[MAX_BUFFER_SIZE];					// where we build a log line
+int logsize = MAX_BUFFER_SIZE;
+int outputsize = MAX_BUFFER_SIZE;
+char* logmainbuffer = NULL;					// where we build a log line
 static bool pendingWarning = false;			// log entry we are building is a warning message
 static bool pendingError = false;			// log entry we are building is an error message
-struct tm* ptm;
 int userLog = LOGGING_NOT_SET;				// do we log user
 int serverLog = LOGGING_NOT_SET;			// do we log server
+char hide[4000];							// dont log this json field 
 bool serverPreLog = true;					// show what server got BEFORE it works on it
 bool serverctrlz = false;					// close communication with \0 and ctrlz
 bool echo = false;							// show log output onto console as well
@@ -21,13 +43,13 @@ bool showmem = false;
 int filesystemOverride = NORMALFILES;
 bool inLog = false;
 char* testOutput = NULL;					// testing commands output reroute
-static char encryptServer[200];
-static char decryptServer[200];
+static char encryptServer[1000];
+static char decryptServer[1000];
 
 // buffer information
-#define MAX_BUFFER_COUNT 30
-unsigned int maxInverseString = 0;
-unsigned int maxInverseStringGap = 0xffffffff;
+#define MAX_BUFFER_COUNT 80
+unsigned int maxReleaseStack = 0;
+unsigned int maxReleaseStackGap = 0xffffffff;
 
 unsigned int maxBufferLimit = MAX_BUFFER_COUNT;		// default number of system buffers for AllocateBuffer
 unsigned int maxBufferSize = MAX_BUFFER_SIZE;		// how big std system buffers from AllocateBuffer should be
@@ -38,12 +60,13 @@ char* buffers = 0;							//   collection of output buffers
 #define MAX_OVERFLOW_BUFFERS 20
 static char* overflowBuffers[MAX_OVERFLOW_BUFFERS];	// malloced extra buffers if base allotment is gone
 
-unsigned char memDepth[512];				// memory usage at depth
-char* inverseStringDepth[512];				// inverseString at start of depth
-static unsigned int stringDepth[512];				// string at start of depth
-char* nameDepth[512];				// who are we?
-char* ruleDepth[512];				// current rule
-char* tagDepth[512][25];			// topicid.toplevelid.rejoinderid (5.5.5)
+unsigned char memDepth[MAX_GLOBAL];				// memory usage at depth
+char* releaseStackDepth[MAX_GLOBAL];				// ReleaseStack at start of depth
+static unsigned int heapDepth[MAX_GLOBAL];				// string at start of depth
+char* nameDepth[MAX_GLOBAL];				// who are we?
+char* ruleDepth[MAX_GLOBAL];				// current rule
+char* tagDepth[MAX_GLOBAL][25];			// topicid.toplevelid.rejoinderid (5.5.5)
+static unsigned int argumentDepth[MAX_GLOBAL];		// references to call argument index
 
 static unsigned int overflowLimit = 0;
 unsigned int overflowIndex = 0;
@@ -72,6 +95,11 @@ unsigned int oldRandIndex = 0;
 #include <sys/stat.h>
 
 #endif
+
+void Bug()
+{
+	int xx = 0; // a hook to debug bug reports
+}
 
 /////////////////////////////////////////////////////////
 /// KEYBOARD
@@ -106,6 +134,20 @@ bool KeyReady()
 /// EXCEPTION/ERROR
 /////////////////////////////////////////////////////////
 
+void SafeLock()
+{
+#ifdef SAFETIME
+	mtx.lock();
+#endif
+}
+
+void SafeUnlock()
+{
+#ifdef SAFETIME
+	mtx.unlock();
+#endif
+}
+
 void JumpBack()
 {
 	if (jumpIndex < 0) return;	// not under handler control
@@ -115,8 +157,13 @@ void JumpBack()
 
 void myexit(char* msg, int code)
 {	
+
+#ifndef DISCARDTESTING
+	CheckAbort(msg);
+#endif
+
 #ifndef DISCARDPOSTGRES
-	if (postgresparams)  
+	if (*postgresparams)  
 	{
 		PostgresShutDown(); // any script connection
 		PGUserFilesCloseCode();	// filesystem
@@ -127,7 +174,8 @@ void myexit(char* msg, int code)
 	FILE* in = FopenUTF8WriteAppend(name);
 	if (in) 
 	{
-		fprintf(in,(char*)"%s %d - called myexit at %s\r\n",msg,code,GetTimeInfo(true));
+		struct tm ptm;
+		fprintf(in,(char*)"%s %d - called myexit at %s\r\n",msg,code,GetTimeInfo(&ptm,true));
 		FClose(in);
 	}
 	if (code == 0) exit(0);
@@ -135,15 +183,19 @@ void myexit(char* msg, int code)
 }
 
 void mystart(char* msg)
-{	
+{
 	char name[MAX_WORD_SIZE];
-	sprintf(name,(char*)"%s/startlog.txt",logs);
+	sprintf(name, (char*)"%s/startlog.txt", logs);
 	FILE* in = FopenUTF8WriteAppend(name);
-	if (in) 
+	char word[MAX_WORD_SIZE];
+	struct tm ptm;
+	sprintf(word, (char*)"System startup %s %s\r\n", msg, GetTimeInfo(&ptm, true));
+	if (in)
 	{
-		fprintf(in,(char*)"System startup %s %s\r\n",msg,GetTimeInfo(true));
+		fprintf(in, (char*)"%s", word);
 		FClose(in);
 	}
+	if (server) Log(SERVERLOG, word);
 }
 
 /////////////////////////////////////////////////////////
@@ -155,7 +207,10 @@ void ResetBuffers()
 	globalDepth = 0;
 	bufferIndex = baseBufferIndex;
 	memset(memDepth,0,sizeof(memDepth)); 
-	memset(inverseStringDepth,0,sizeof(inverseStringDepth)); 
+	memset(releaseStackDepth,0,sizeof(releaseStackDepth)); 
+	outputNest = oldOutputIndex = 0;
+	currentRuleOutputBase = currentOutputBase = ourMainOutputBuffer;
+	currentOutputLimit = outputsize;
 }
 
 void CloseBuffers()
@@ -169,10 +224,9 @@ void CloseBuffers()
 	buffers = 0;
 }
 
-char* AllocateBuffer()
+char* AllocateBuffer(char* name)
 {// CANNOT USE LOG INSIDE HERE, AS LOG ALLOCATES A BUFFER
 	char* buffer = buffers + (maxBufferSize * bufferIndex); 
-	if (showmem) Log(STDTRACELOG,(char*)"New BUff alloc %d\r\n",bufferIndex+1);
 	if (++bufferIndex >= maxBufferLimit ) // want more than nominally allowed
 	{
 		if (bufferIndex > (maxBufferLimit+2) || overflowIndex > 20) 
@@ -200,24 +254,309 @@ char* AllocateBuffer()
 		buffer = overflowBuffers[overflowIndex++];
 	}
 	else if (bufferIndex > maxBufferUsed) maxBufferUsed = bufferIndex;
+	if (showmem) Log(STDTRACELOG,(char*)"Buffer alloc %d %s\r\n",bufferIndex,name);
 	*buffer++ = 0;	//   prior value
 	*buffer = 0;	//   empty string
 	return buffer;
 }
 
-char* AllocateAlignedBuffer()
+void FreeBuffer(char* name)
 {
-	return AllocateBuffer() - 1;
-}
-
-void FreeBuffer()
-{
+	if (showmem) Log(STDTRACELOG,(char*)"Buffer free %d %s\r\n",bufferIndex,name);
 	if (overflowIndex) --overflowIndex; // keep the dynamically allocated memory for now.
 	else if (bufferIndex)  --bufferIndex; 
 	else ReportBug((char*)"Buffer allocation underflow")
-	if (showmem) Log(STDTRACELOG,(char*)"Buffer free %d\r\n",bufferIndex);
 }
 
+void InitStackHeap()
+{
+	int size = maxHeapBytes / 64;
+	size = (size * 64) + 64; // 64 bit align both ends
+	heapEnd = ((char*) malloc(size));	// point to end
+	if (!heapEnd)
+	{
+		printf((char*)"Out of  memory space for text space %d\r\n",(int)size);
+		ReportBug((char*)"FATAL: Cannot allocate memory space for text %d\r\n",(int)size)
+	}
+	heapFree = heapBase = heapEnd + size; // allocate backwards
+	stackFree = heapEnd;
+	minHeapAvailable = maxHeapBytes;
+	stackStart = stackFree;
+	ClearNumbers();
+}
+
+void FreeStackHeap()
+{
+	if (heapEnd)
+	{
+		free(heapEnd);
+		heapEnd = NULL;
+	}
+}
+
+char* AllocateStack(char* word, size_t len,bool localvar,bool align4) // call with (0,len) to get a buffer
+{
+	if (infiniteStack) 
+		ReportBug("Allocating stack while InfiniteStack in progress from %s\r\n",infiniteCaller);
+	if (len == 0)
+	{
+		if (!word ) return NULL;
+		len = strlen(word);
+	}
+	if (align4)
+	{
+		stackFree += 3;
+		uint64 x = (uint64)stackFree;
+		x &= 0xfffffffffffffffc;
+		stackFree = (char*)x;
+	}
+
+	if ((stackFree + len + 1) >= heapFree - 30000000) // dont get close
+	{
+		int xx = 0;
+	}
+	if ((stackFree + len + 1) >= heapFree - 5000) // dont get close
+    {
+		ReportBug((char*)"Out of stack space stringSpace:%d ReleaseStackspace:%d \r\n",heapBase-heapFree,stackFree - stackStart);
+		return NULL;
+    }
+	char* answer = stackFree;
+	if (localvar) // give hidden data
+	{
+		*answer = '`';
+		answer[1] = '`';
+		answer += 2;
+	}
+	if (word) strncpy(answer,word,len);
+	else *answer = 0;
+	answer[len++] = 0;
+	answer[len++] = 0;
+	if (localvar) len += 2;
+	stackFree += len;
+	len = stackFree - stackStart;	// how much stack used are we?
+	len = heapBase - heapFree;		// how much heap used are we?
+	len = heapFree - stackFree;		// size of gap between
+	if (len < maxReleaseStackGap) maxReleaseStackGap = len;
+	return answer;
+}
+
+void ReleaseStack(char* word)
+{
+	stackFree = word;
+}
+
+bool AllocateStackSlot(char* variable)
+{
+	WORDP D = StoreWord(variable);
+
+	unsigned int len = sizeof(char*);
+    if ((stackFree + len + 1) >= (heapFree - 5000)) // dont get close
+    {
+		ReportBug((char*)"Out of stack space\r\n")
+		return false;
+    }
+	char* answer = stackFree;
+	memcpy(answer,&D->w.userValue,sizeof(char*));
+	if (D->word[1] == LOCALVAR_PREFIX) D->w.userValue = NULL; // autoclear local var
+	stackFree += sizeof(char*);
+	len = heapFree - stackFree;
+	if (len < maxReleaseStackGap) maxReleaseStackGap = len;
+	return true;
+}
+
+char* RestoreStackSlot(char* variable,char* slot)
+{
+	WORDP D = FindWord(variable);
+	if (!D) return slot; // should never happen, we allocate dict entry on save
+	memcpy(&D->w.userValue,slot,sizeof(char*));
+	return slot + sizeof(char*);
+}
+
+char* InfiniteStack(char*& limit,char* caller)
+{
+	if (infiniteStack) ReportBug("Allocating InfiniteStack from %s while one already in progress from %s\r\n",caller, infiniteCaller);
+	infiniteCaller = caller;
+	infiniteStack = true;
+	limit = heapFree - 5000; // leave safe margin of error
+	*stackFree = 0;
+	return stackFree;
+}
+
+char* InfiniteStack64(char*& limit,char* caller)
+{
+	if (infiniteStack) ReportBug("Allocating InfiniteStack from %s while one already in progress from %s\r\n",caller, infiniteCaller);
+	infiniteCaller = caller;
+	infiniteStack = true;
+	limit = heapFree - 5000; // leave safe margin of error
+	uint64 base = (uint64) (stackFree+63);
+	base &= 0xFFFFFFFFFFFFFFC0ULL;
+	return (char*) base; // slop may be lost when allocated finally, but it can be reclaimed later
+}
+
+void ReleaseInfiniteStack()
+{
+	infiniteStack = false;
+	infiniteCaller = "";
+}
+
+void CompleteBindStack64(int n,char* base)
+{
+	stackFree =  base + ((n+1) * sizeof(FACT*)); // convert infinite allocation to fixed one given element count
+	size_t len = heapFree - stackFree;
+	if (len < maxReleaseStackGap) maxReleaseStackGap = len;
+	infiniteStack = false;
+}
+
+void CompleteBindStack()
+{
+	stackFree += strlen(stackFree) + 1; // convert infinite allocation to fixed one
+	size_t len = heapFree - stackFree;
+	if (len < maxReleaseStackGap) maxReleaseStackGap = len;
+	infiniteStack = false;
+}
+
+char* Index2Heap(unsigned int offset) 
+{ 
+	if (!offset) return NULL;
+	char* ptr = heapBase - offset;
+	if (ptr < heapFree)  
+	{
+		ReportBug((char*)"String offset into free space\r\n")
+		return NULL;
+	}
+	if (ptr > heapBase)  
+	{
+		ReportBug((char*)"String offset before heap space\r\n")
+		return NULL;
+	}
+	return ptr;
+}
+
+bool PreallocateHeap(size_t len) // do we have the space
+{
+	char* used = heapFree - len;
+	if (used <= ((char*)stackFree + 2000)) 
+	{
+		ReportBug("Heap preallocation fails");
+		return false;
+	}
+	return true;
+}
+
+bool InHeap(char* ptr)
+{
+	return (ptr >= heapFree && ptr <= heapBase);
+}
+
+bool InStack(char* ptr)
+{
+	return (ptr < heapFree && ptr >= stackStart);
+}
+
+void ShowMemory(char* label)
+{
+	printf("%s: HeapUsed: %d Gap: %d\r\n", label, heapBase - heapFree,heapFree - stackFree);
+}
+
+char* AllocateHeap(char* word,size_t len,int bytes,bool clear, bool purelocal) // BYTES means size of unit
+{ //   string allocation moves BACKWARDS from end of dictionary space (as do meanings)
+/* Allocations during setup as :
+2 when setting up cs using current dictionary and livedata for extensions (plurals, comparatives, tenses, canonicals) 
+3 preserving flags or properties when removing them or adding them while  the dictionary is unlocked - only during builds 
+4 reading strings during dictionary setup
+5 assigning meanings or glosses or posconditionsfor the dictionary
+6 reading in postag information
+---
+Allocations happen during volley processing as
+1 adding a new dictionary word - all the time on user input
+2. saving plan backtrack data
+3 altering concepts[] and topics[] lists as a result of a mark operation or normal behavior
+4. temps information
+5 spellcheck adjusted word in sentence list
+6 tokenizing words and quoted stuff adjustments
+7. assignment onto user variables
+8. JSON reading
+*/
+	len *= bytes; // this many units of this size
+	if (len == 0)
+	{
+		if (!word ) return NULL;
+		len = strlen(word);
+	}
+	if (word) ++len;	// null terminate string
+	if (purelocal) len += 2;	// for `` prefix
+	size_t allocationSize = len;
+	if (bytes == 1 && dictionaryLocked && !compiling && !loading) 
+	{
+		allocationSize += ALLOCATESTRING_SIZE_PREFIX + ALLOCATESTRING_SIZE_SAFEMARKER; 
+		// reserve space at front for allocation sizing not in dict items though (variables not in plannning mode can reuse space if prior is big enough)
+		// initial 2 test area
+	}
+
+	//   always allocate in word units
+	unsigned int allocate = ((allocationSize + 3) / 4) * 4;
+	heapFree -= allocate; // heap grows lower, stack grows higher til they collide
+ 	if (bytes > 4) // force 64bit alignment alignment
+	{
+		uint64 base = (uint64) heapFree;
+		base &= 0xFFFFFFFFFFFFFFC0ULL;
+		heapFree = (char*) base;
+	}
+ 	else if (bytes == 4) // force 32bit alignment alignment
+	{
+		uint64 base = (uint64) heapFree;
+		base &= 0xFFFFFFFFFFFFFFF0ULL;
+		heapFree = (char*) base;
+	}
+ 	else if (bytes == 2) // force 16bit alignment alignment
+	{
+		uint64 base = (uint64) heapFree;
+		base &= 0xFFFFFFFFFFFFFFF8ULL;
+		heapFree = (char*) base;
+	}
+	else if (bytes != 1) 
+		ReportBug((char*)"Allocation of bytes is not std unit %d", bytes);
+
+	// create marker
+	if (bytes == 1  && dictionaryLocked && !compiling && !loading) 
+	{
+		heapFree[0] = ALLOCATESTRING_MARKER; // we put ff ff  just before the sizing data
+		heapFree[1] = ALLOCATESTRING_MARKER;
+	}
+
+	char* newword =  heapFree;
+	if (bytes == 1 && dictionaryLocked && !compiling && !loading) // store size of allocation to enable potential reuse by $var assign and by wordStarts tokenize
+	{
+		newword += ALLOCATESTRING_SIZE_SAFEMARKER;
+		allocationSize -= ALLOCATESTRING_SIZE_PREFIX + ALLOCATESTRING_SIZE_SAFEMARKER; // includes the end of string marker
+		if (ALLOCATESTRING_SIZE_PREFIX == 3)		*newword++ = (unsigned char)(allocationSize >> 16); 
+		*newword++ = (unsigned char)(allocationSize >> 8) & 0x000000ff;  
+		*newword++ = (unsigned char) (allocationSize & 0x000000ff);
+	}
+	
+	int nominalLeft = maxHeapBytes - (heapBase - heapFree);
+	if ((unsigned long) nominalLeft < minHeapAvailable) minHeapAvailable = nominalLeft;
+	if ((heapBase-heapFree) > 50000000) // when heap has used up 50Mb
+	{
+		int xx = 0;
+	}
+	char* used = heapFree - len;
+	if (used <= ((char*)stackFree + 2000) || nominalLeft < 0) 
+		ReportBug((char*)"FATAL: Out of transient heap space\r\n")
+    if (word) 
+	{
+		if (purelocal) // never use clear true with this
+		{
+			*newword++ = LCLVARDATA_PREFIX;
+			*newword++ = LCLVARDATA_PREFIX;
+			len -= 2;
+		}
+		memcpy(newword,word,--len);
+		newword[len] = 0;
+	}
+	else if (clear) memset(newword,0,len);
+    return newword;
+}
 /////////////////////////////////////////////////////////
 /// FILE SYSTEM
 /////////////////////////////////////////////////////////
@@ -243,34 +582,116 @@ void InitUserFiles()
 	filesystemOverride = NORMALFILES;
 }
 
-#ifndef DISCARDJSON 
-FunctionResult JSONOpenCode(char* buffer);
-
-static size_t CleanupCryption(char* buffer)
+static size_t CleanupCryption(char* buffer,bool decrypt,char* filekind)
 {
-	// clean up answer data
-	char* answer = strchr(buffer,'x');
+	// clean up answer data: {"datavalues": {"USER": xxxx }} 
+	char* answer = strstr(buffer,filekind);
 	if (!answer) 
 	{
 		*buffer = 0;
 		return 0;
 	}
-	int realsize = jsonOpenSize - 4 - (answer-buffer);
-	memmove(buffer,answer+4,realsize); // drop head data {"datavalues":{"x":"hello world"}}
-	realsize -= 3;
+	answer += strlen(filekind) + 2; // skip USER":
+	int realsize = jsonOpenSize - (answer-buffer) - 2; // the closing two }
+	memmove(buffer,answer,realsize); // drop head data 
 	buffer[realsize] = 0;	// remove trailing data
+
+	// legal json doesnt allow control characters, but we cannot change our file system ones to \r\n because
+	// we cant tell which are ours and which are users. So we changed to 7f7f coding.
+	if (decrypt)
+	{
+		char* at = buffer-1;
+		while (*++at) 
+		{
+			if (*at == 0x7f && at[1] == 0x7f)
+			{
+				*at = '\r';
+				at[1] = '\n';
+			}
+		}
+	}
 	return realsize;
 }
 
-static int JsonOpenCryption(char* buffer, size_t size, char* server)
+void ProtectNL(char* buffer) // save ascii \r\n in json - only comes from userdata write using them
 {
-	// prepare body for transfer to server to look like this:
-	// {"datavalues": {"x": "..."}} 
-	sprintf(buffer+size,"\"}}"); // add suffix to data
-	char url[50];
-	sprintf(url,"{\"datavalues\": {\"");
+	char* at = buffer;
+	while ((at = strchr(at,'\r'))) // legal convert
+	{
+		if (at[1] == '\n' ) // legal convert
+		{
+			*at++ = 0x7f;
+			*at++ = 0x7f;
+		}
+	}
+}
+
+bool notcrypting = false;
+static int JsonOpenCryption(char* buffer, size_t size, char* xserver, bool decrypt,char* filekind)
+{
+	if (size == 0) return 0;
+	if (notcrypting) return size;
+	if (decrypt && size > 50) return size; // it was never encrypted, this is original material
+	char server[1000];
+	char* id = loginID;
+	if (*id == 'b' && !id[1]) id = "u-8b02518d-c148-5d45-936b-491d39ced70c"; // cheat override to test outside of kore logins
+	if (decrypt) sprintf(server, "%s%s/datavalues/decryptedtokens", xserver, id);
+	else sprintf(server, "%s%s/datavalues/encryptedtokens", xserver, id);
+
+//loginID
+	// for decryption, the value we are passed is a quoted string. We need to avoid doubling those
+	
+#ifdef INFORMATION
+	// legal json requires these characters be escaped, but we cannot change our file system ones to \r\n because
+	// we cant tell which are ours and which are users. So we change to 7f7f coding for /r/n.
+	// and we change to 0x31 for double quote.
+	\b  Backspace (ascii code 08) -- never seeable
+	\f  Form feed (ascii code 0C) -- never seable
+	\n  New line -- only from our user topic write
+	\r  Carriage return -- only from our user topic write
+	\t  Tab -- never seeable
+	\"  Double quote -- seeable in user data
+	\\  Backslash character -- ??? not expected but possible
+	UserFile encoding responsible for normal JSON safe data.
+
+	Note MongoDB code also encrypts \r\n the same way. but we dont know HERE that mongo is used
+	and we don't know THERE that encryption was used. That is redundant but minor.
+#endif
+	if (!decrypt) ProtectNL(buffer); // should not alter size
+	else // remember what we decrypt so we can overwrite it later when we save
+	{
+		if (!stricmp(filekind, "USER")) strcpy(encryptUser,buffer);
+		else strcpy(encryptLTM, buffer);
+	}
+	// prepare body for transfer to server to look like this for encryption:
+	// {"datavalues":{"user": {"data": {"userdata1":"abc"}}}
+	// or  {"datavalues":{"ltm": {"data": {"userdata1":"abc"}}}
+	// or   "{datavalues":{ "user": {"data": {"userdata1":"abc", "token" : "Sy4KoML_e"}}}
+	// FOR decryption: {"datavalues":{"USER": "HkD_r-KFl"}}
+	if (decrypt) sprintf(buffer + size, "}}"); // add suffix to data - no quote
+	else // encrypt gives a token if reusing
+	{
+		char* at = buffer + size;
+		char* which = NULL;
+		if (!stricmp(filekind, "USER")) which = encryptUser;
+		else which = encryptLTM;
+		if (which && *which)
+		{
+			sprintf(at,"\",\"token\": %s",which);
+			at += strlen(at); 
+		}
+		else
+		{
+			*at++ = '"';
+		}
+		sprintf(at, "}}}"); // add suffix to data
+	}
+	size += strlen(buffer+size);
+	char url[500];
+	if (decrypt) sprintf(url, "{\"datavalues\":{\"%s\": ", filekind);
+	else sprintf(url, "{\"datavalues\":{\"%s\": {\"data\": \"", filekind);
 	int headerlen = strlen(url);
-	memmove(buffer+headerlen,buffer,size+3);
+	memmove(buffer+headerlen,buffer,size+1); // move the data over to put in the header
 	strncpy(buffer,url,headerlen);
 
 	// set up call to json open
@@ -279,72 +700,75 @@ static int JsonOpenCryption(char* buffer, size_t size, char* server)
 	int oldArgumentIndex = callArgumentIndex;
 	int oldArgumentBase = callArgumentBase;
 	callArgumentBase = callArgumentIndex - 1;
-	callArgumentList[callArgumentIndex++] =   "direct";
+	callArgumentList[callArgumentIndex++] =   "direct"; // get the text of it gives us, dont make facts out of it
 	callArgumentList[callArgumentIndex++] =    "POST";
-	sprintf(url,server,loginID);
+	strcpy(url,server);
 	callArgumentList[callArgumentIndex++] =    url;
 	callArgumentList[callArgumentIndex++] =    (char*) buffer;
 	callArgumentList[callArgumentIndex++] =    header;
-
-	// do it
-	trace = (unsigned int)-1;
-	echo = true;
-	FunctionResult result = JSONOpenCode((char*) buffer); 
+	callArgumentList[callArgumentIndex++] =    ""; // timer override
+	FunctionResult result = FAILRULE_BIT;
+#ifndef DISCARDJSONOPEN
+	result = JSONOpenCode((char*) buffer); 
+#endif
 	callArgumentIndex = oldArgumentIndex;	 
 	callArgumentBase = oldArgumentBase;
-	if (result != NOPROBLEM_BIT) return 0;
-	return CleanupCryption((char*) buffer);
+	if (http_response != 200 || result != NOPROBLEM_BIT) 
+	{
+		ReportBug("Encrpytion/decryption server failed %s doing %s\r\n",buffer,decrypt ? (char*) "decrypt" : (char*) "encrypt");
+		return 0;
+	}
+	return CleanupCryption((char*) buffer,decrypt,filekind);
 }
 
-static size_t Decrypt(void* buffer,size_t size, size_t count, FILE* file)
+static size_t Decrypt(void* buffer,size_t size, size_t count, FILE* file,char* filekind)
 {
-	return JsonOpenCryption((char*) buffer, size * count,decryptServer);
+	return JsonOpenCryption((char*) buffer, size * count,decryptServer,true,filekind);
 }
 
-static size_t Encrypt(const void* buffer, size_t size, size_t count, FILE* file)
+static size_t Encrypt(const void* buffer, size_t size, size_t count, FILE* file,char* filekind)
 {
-	return JsonOpenCryption((char*) buffer, size * count,encryptServer);
+	return JsonOpenCryption((char*) buffer, size * count,encryptServer,false,filekind);
 }
-#endif
 
 void EncryptInit(char* params) // required
 {
 	*encryptServer = 0;
-	if (params) strcpy(encryptServer,params);
-#ifndef DISCARDJSON 
+	if (*params) strcpy(encryptServer,params);
 	if (*encryptServer) userFileSystem.userEncrypt = Encrypt;
-#endif
+}
+
+void ResetEncryptTags()
+{
+	encryptUser[0] = 0;
+	encryptLTM[0] = 0;
 }
 
 void DecryptInit(char* params) // required
 {
 	*decryptServer = 0;
-	if (params) strcpy(decryptServer,params);
-#ifndef DISCARDJSON 
+	if (*params)  strcpy(decryptServer,params);
 	if (*decryptServer) userFileSystem.userDecrypt = Decrypt;
-#endif
 }
 
 void EncryptRestart() // required
 {
-#ifndef DISCARDJSON
 	if (*encryptServer) userFileSystem.userEncrypt = Encrypt; // reestablish encrypt/decrypt bindings
 	if (*decryptServer) userFileSystem.userDecrypt = Decrypt; // reestablish encrypt/decrypt bindings
-#endif
 }
 
-size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file)
+size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file,bool decrypt,char* filekind)
 {
 	size_t len = userFileSystem.userRead(buffer,size,count,file);
-	if (userFileSystem.userDecrypt) return userFileSystem.userDecrypt(buffer,1,len,file); // can revise buffer
+	if (userFileSystem.userDecrypt && decrypt) return userFileSystem.userDecrypt(buffer,1,len,file,filekind); // can revise buffer
 	return len;
 }
 
-size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file)
+size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file,bool encrypt,char* filekind)
 {
-	if (userFileSystem.userEncrypt) 
+	if (userFileSystem.userEncrypt && encrypt) 
 	{
-		size_t msgsize = userFileSystem.userEncrypt(buffer,size,count,file); // can revise buffer
+		size_t msgsize = userFileSystem.userEncrypt(buffer,size,count,file,filekind); // can revise buffer
 		return userFileSystem.userWrite(buffer,1,msgsize,file);
 	}
 	else return userFileSystem.userWrite(buffer,size,count,file);
@@ -516,7 +940,7 @@ FILE* FopenBinaryWrite(const char* name) // writeable file path
 	else strcpy(path,name);
 	FILE* out = fopen(path,(char*)"wb");
 	if (out == NULL && !inLog) 
-		ReportBug((char*)"Error opening binary write file %s: %s\n",path,strerror(errno));
+		ReportBug((char*)"Error opening binary write file %s: %s\r\n",path,strerror(errno));
 	return out;
 }
 
@@ -544,7 +968,7 @@ FILE* FopenUTF8Write(const char* filename) // insure file has BOM for UTF8
 		bom[2] = 0xBF;
 		fwrite(bom,1,3,out);
 	}
-	else ReportBug((char*)"Error opening utf8 write file %s: %s\n",path,strerror(errno));
+	else ReportBug((char*)"Error opening utf8 write file %s: %s\r\n",path,strerror(errno));
 	return out;
 }
 
@@ -565,8 +989,8 @@ FILE* FopenUTF8WriteAppend(const char* filename,const char* flags)
 		bom[2] = 0xBF;
 		fwrite(bom,1,3,out);
 	}
-	else if (!out && !inLog) 
-		ReportBug((char*)"Error opening utf8writeappend file %s: %s\n",path,strerror(errno));
+	else if (!out && !inLog)
+		ReportBug((char*)"Error opening utf8writeappend file %s: %s\r\n",path,strerror(errno));
 	return out;
 }
 
@@ -576,7 +1000,7 @@ int getdir (string dir, vector<string> &files)
     DIR *dp;
     struct dirent *dirp;
     if((dp  = opendir(dir.c_str())) == NULL) {
- 		ReportBug((char*)"No such directory %s\n",strerror(errno));
+ 		ReportBug((char*)"No such directory %s\r\n",strerror(errno));
 		return errno;
     }
     while ((dirp = readdir(dp)) != NULL) files.push_back(string(dirp->d_name));
@@ -611,7 +1035,7 @@ void WalkDirectory(char* directory,FILEWALK function, uint64 flags)
 
 	if (hFind == INVALID_HANDLE_VALUE) 
 	{
-		ReportBug((char*)"No such directory %s: %s\n",DirSpec);
+		ReportBug((char*)"No such directory %s\r\n",DirSpec);
 		return;
 	} 
 	else 
@@ -716,16 +1140,32 @@ char* GetUserPath(char* login)
 /// TIME FUNCTIONS
 /////////////////////////////////////////////////////////
 
-char* GetTimeInfo(bool nouser,bool utc) //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm the month in letters, dd the day of the month, hh:mm:ss the time, and yyyy the year. Sat May 20 15:21:51 2000
+void mylocaltime (const time_t * timer,struct tm* ptm)
+{
+	SafeLock();
+	*ptm = *localtime(timer); // copy data across so not depending on it outside of lock
+	SafeUnlock();
+}
+
+void myctime(time_t * timer,char* buffer)//	Www Mmm dd hh:mm:ss yyyy
+{
+	SafeLock();
+	strcpy(buffer,ctime(timer));
+	SafeUnlock();
+}
+
+char* GetTimeInfo(struct tm* ptm, bool nouser,bool utc) //   Www Mmm dd hh:mm:ss yyyy Where Www is the weekday, Mmm the month in letters, dd the day of the month, hh:mm:ss the time, and yyyy the year. Sat May 20 15:21:51 2000
 {
     time_t curr = time(0); // local machine time
     if (regression) curr = 44444444; 
-	ptm = localtime (&curr);
+	mylocaltime (&curr,ptm);
 	char* utcoffset = (nouser) ? (char*)"" : GetUserVariable((char*)"$cs_utcoffset");
 	if (utc) utcoffset = (char*)"+0";
 	if (*utcoffset) // report UTC relative time - so if time is 1PM and offset is -1:00, time reported to user is 12 PM.  
 	{
-		ptm = gmtime (&curr); 
+		SafeLock();
+ 		*ptm = *gmtime (&curr); // this library call is not thread safe, copy its data
+		SafeUnlock();
 
 		// determine leap year status
 		int year = ptm->tm_year + 1900;
@@ -842,15 +1282,18 @@ char* GetTimeInfo(bool nouser,bool utc) //   Www Mmm dd hh:mm:ss yyyy Where Www 
 			ptm->tm_year += 1; // on to next year
 		}
 	}
-	char *mytime = asctime (ptm);
-    mytime[strlen(mytime)-1] = 0; //   remove newline
+	SafeLock();
+	char *mytime = asctime (ptm); // not thread safe
+	SafeUnlock();
+	mytime[strlen(mytime)-1] = 0; //   remove newline
 	if (mytime[8] == ' ') mytime[8] = '0';
     return mytime;
 }
 
 char* GetMyTime(time_t curr)
 {
-	char *mytime = ctime(&curr); //	Www Mmm dd hh:mm:ss yyyy
+	char mytime[100];
+	myctime(&curr,mytime); //	Www Mmm dd hh:mm:ss yyyy
 	static char when[40];
 	strncpy(when,mytime+4,3); // mmm
 	if (mytime[8] == ' ') mytime[8] = '0';
@@ -992,19 +1435,52 @@ uint64 X64_Table[256] = //   hash table randomizer
 uint64 Hashit(unsigned char * data, int len,bool & hasUpperCharacters, bool & hasUTF8Characters)
 {
 	hasUpperCharacters = hasUTF8Characters = false;
-	uint64 crc = 0;
+	uint64 crc = 5381;
 	while (len-- > 0)
 	{ 
 		unsigned char c = *data++;
-		if (!c) break;
-		if (c & 0x80) hasUTF8Characters = true;
-		else if (IsUpperCase(c)) 
+		if (c >= 0x41 && c <= 0x5a) // ordinary ascii upper case
 		{
 			c += 32;
 			hasUpperCharacters = true;
 		}
+		else if (c & 0x80) // some kind of utf8 extended char
+		{
+			hasUTF8Characters = true;
+			if (c == 0xc3 && *data >= 0x80 && *data <= 0x9e && *data != 0x97)
+			{
+				hasUpperCharacters = true;
+				crc = ((crc << 5) + crc) + c;
+				//crc = X64_Table[(crc >> 56) ^ c] ^ (crc << 8);
+				c = *data++; // get the cap form
+				c -= 0x80;
+				c += 0xa0; // get lower case form
+				--len;
+			}
+			else if (c >= 0xc4 && c <= 0xc9 && !(c & 1))
+			{
+				hasUpperCharacters = true;
+				crc = ((crc << 5) + crc) + c;
+				//crc = X64_Table[(crc >> 56) ^ c] ^ (crc << 8);
+				c = *data++; // get the cap form
+				c |= 1;  // get lower case form
+				--len;
+			}
+			else // other utf8, do all but last char
+			{
+				int size = UTFCharSize((char*)data - 1);
+				while (--size)
+				{
+					crc = ((crc << 5) + crc) + c;
+					//crc = X64_Table[(crc >> 56) ^ c] ^ (crc << 8);
+					c = *data++;
+					--len;
+				}
+			}
+		}
 		if (c == ' ') c = '_';	// force common hash on space vs _
-		crc = X64_Table[(crc >> 56) ^ c ] ^ (crc << 8 );
+	//better but slower	crc = X64_Table[(crc >> 56) ^ c ] ^ (crc << 8 );
+		crc = ((crc << 5) + crc) + c;
 	}
 	return crc;
 } 
@@ -1021,66 +1497,99 @@ unsigned int random(unsigned int range)
 /////////////////////////////////////////////////////////
 uint64 logCount = 0;
 
+bool TraceFunctionArgs(FILE* out, char* name, int start, int end)
+{
+	if (name[0] == '~') return false;
+	WORDP D = FindWord(name);
+	if (!D) return false;		// like fake ^ruleoutput
+
+	unsigned int args = end - start;
+	char arg[MAX_WORD_SIZE];
+	fprintf(out, "( ");
+	for (int i = 0; i < args; ++i)
+	{
+		strncpy(arg, callArgumentList[start + i], 50); // may be name and not value?
+		arg[50] = 0;
+		fprintf(out, "%s  ", arg);
+	}
+	fprintf(out, ")");
+	return true;
+}
+
 void BugBacktrace(FILE* out)
 {
-	int i = globalDepth +1;
+	int i = globalDepth;
 	char rule[MAX_WORD_SIZE];
+	if (nameDepth[i]) 
+	{
+		rule[0] = 0;
+		if (currentRule) {
+			strncpy(rule, currentRule, 50);
+			rule[50] = 0;
+		}
+		fprintf(out,"Finished %d: heapusedOnEntry: %d heapUsedNow: %d buffers:%d stackused: %d stackusedNow:%d %s ",
+			i,heapDepth[i],(int)(heapBase-heapFree),memDepth[i],(int)(heapFree - releaseStackDepth[i]), (int)(stackFree-stackStart),nameDepth[i]);
+		if (!TraceFunctionArgs(out, nameDepth[i], (i > 0) ? argumentDepth[i-1] : 0, argumentDepth[i])) fprintf(out, " - %s", rule);
+		fprintf(out, "\r\n");
+	}
 	while (--i > 0) 
 	{
 		strncpy(rule,ruleDepth[i],50);
 		rule[50] = 0;
-		fprintf(out,"BugDepth %d: stringused: %d buffers:%d inverseused: %d %s - %s\r\n",
-			i,stringDepth[i],memDepth[i],stringFree - inverseStringDepth[globalDepth], nameDepth[i],rule);
+		fprintf(out,"BugDepth %d: heapusedOnEntry: %d buffers:%d stackused: %d %s ",
+			i,heapDepth[i],memDepth[i],(int)(heapFree - releaseStackDepth[i]), nameDepth[i]);
+		if (!TraceFunctionArgs(out, nameDepth[i], argumentDepth[i-1], argumentDepth[i])) fprintf(out, " - %s", rule);
+		fprintf(out, "\r\n");
 	}
 }
 
-void ChangeDepth(int value,char* where)
+void ChangeDepth(int value,char* name,bool nostackCutback,char* code,FunctionResult result)
 {
 	if (value < 0)
 	{
+#ifndef DISCARDTESTING
+		CheckBreak(name,false,NULL,result); // debugger hook
+#endif
 		if (memDepth[globalDepth] != bufferIndex)
 		{
-			ReportBug((char*)"depth %d not closing bufferindex correctly at %s bufferindex now %d was %d\r\n",globalDepth,where,bufferIndex,memDepth[globalDepth]);
+			ReportBug((char*)"depth %d not closing bufferindex correctly at %s bufferindex now %d was %d\r\n",globalDepth,name,bufferIndex,memDepth[globalDepth]);
 			memDepth[globalDepth] = 0;
 		}
-		stringInverseFree = inverseStringDepth[globalDepth]; // deallocoate ARGUMENT space
+		// engine functions that are streams should not destroy potential local adjustments
+		if (!nostackCutback) 
+			stackFree = releaseStackDepth[globalDepth]; // deallocoate ARGUMENT space
 		globalDepth += value;
-		if (showDepth) Log(STDTRACELOG,(char*)"-depth %d after %s bufferindex %d\r\n", globalDepth,where, bufferIndex);
+		if (showDepth) Log(STDTRACELOG,(char*)"-depth %d after %s bufferindex %d heapused:%d\r\n", globalDepth,name, bufferIndex,(int)(heapBase-heapFree));
 	}
 	if (value > 0) 
 	{
-		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d stringused: %d inverseused:%d\r\n",globalDepth, where, bufferIndex,stringBase - stringFree,stringInverseFree - stringInverseStart);
+		if (showDepth) Log(STDTRACELOG,(char*)"+depth %d before %s bufferindex %d heapused: %d stackused:%d gap:%d\r\n",globalDepth, name, bufferIndex,(int)(heapBase - heapFree),(int)(stackFree - stackStart),(int)(heapFree-stackFree));
 		globalDepth += value;
 		memDepth[globalDepth] = (unsigned char) bufferIndex;
-		nameDepth[globalDepth] = where;
+		nameDepth[globalDepth] = name;
 		ruleDepth[globalDepth] = (currentRule) ? currentRule : (char*) "" ;
 		sprintf((char*)tagDepth[globalDepth],"%d.%d.%d",currentTopicID,TOPLEVELID(currentRuleID),REJOINDERID(currentRuleID));
-		inverseStringDepth[globalDepth] = stringInverseFree; // define argument start space
-		stringDepth[globalDepth] =  stringBase - stringFree;		
+		releaseStackDepth[globalDepth] = stackFree; // define argument start space - release back to here on exit
+		heapDepth[globalDepth] =  heapBase - heapFree;	 // used on entry
+		argumentDepth[globalDepth] = callArgumentIndex;
+
+#ifndef DISCARDTESTING
+		CheckBreak(name,true,code); // debugger hook
+#endif
 	}
-	if (globalDepth < 0) {ReportBug((char*)"bad global depth in %s",where); globalDepth = 0;}
-	if (globalDepth >= 511) ReportBug((char*)"FATAL: globaldepth too deep at %s\r\n",where);
+	if (globalDepth < 0) {ReportBug((char*)"bad global depth in %s",name); globalDepth = 0;}
+	if (globalDepth >= (MAX_GLOBAL-1)) ReportBug((char*)"FATAL: globaldepth too deep at %s\r\n",name);
+	if (globalDepth > maxGlobalSeen) maxGlobalSeen = globalDepth;
 }
 
 bool LogEndedCleanly()
 {
-	return (logLastCharacter == '\n' || !logLastCharacter);
+	return (logLastCharacter == '\n' || !logLastCharacter); // legal
 }
 
 unsigned int Log(unsigned int channel,const char * fmt, ...)
 {
-	int channelID;
-	if (channel == SERVERLOG) channelID = 2;
-	else channelID = 1;
-
-	bool tracing = false;
-	if (channel == STDTRACELOG)
-	{
-		tracing = true;
-		channel = STDUSERLOG;
-	}
-	else if (channel == STDTRACETABLOG || channel == STDTRACEATTNLOG) tracing = true;
-
+	if (channel == STDTRACELOG) channel = STDUSERLOG;
 	static unsigned int id = 1000;	
 	if (quitting) return id;
 	logged = true;
@@ -1106,6 +1615,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 
 	static int priordepth = 0;
 	char* logbase = logmainbuffer;
+	if (!logbase) logmainbuffer = logbase = (char*) malloc(logsize);
 
 	// start writing normal data here
     char* at = logbase;
@@ -1135,19 +1645,18 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		if (logLastCharacter == 1 && globalDepth == priordepth) {} // we indented already
 		else if (logLastCharacter == 1 && globalDepth > priordepth) // we need to indent a bit more
 		{
-			for (int i = priordepth; i < globalDepth; i++)
+			for (i = priordepth; i < globalDepth; i++)
 			{
 				*at++ = (i == 4 || i == 9) ? ',' : '.';
-				//*at++ = ' ';
 			}
 			priordepth = globalDepth;
 		}
 		else 
 		{
-			if (logLastCharacter != '\n') 
+			if (logLastCharacter != '\n') // log legal
 			{
 				*at++ = '\r'; //   close out this prior thing
-				*at++ = '\n';
+				*at++ = '\n'; // log legal
 			}
 			while (ptr[1] == '\n' || ptr[1] == '\r') // we point BEFORE the format
 			{
@@ -1156,11 +1665,10 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 
 			int n = globalDepth;
 			if (n < 0) n = 0; //   just in case
-			for (int i = 0; i < n; i++)
+			for (i = 0; i < n; i++)
 			{
 				if (channel == STDTRACEATTNLOG) *at++ = (i == 1) ? '*' : ' ';
 				else *at++ = (i == 4 || i == 9) ? ',' : '.';
-				// *at++ = ' ';
 			}
 			priordepth = globalDepth;
 		}
@@ -1199,7 +1707,7 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
             else if (*ptr == 'p') sprintf(at,(char*)"%p",va_arg(ap,char*)); // ptr
             else if (*ptr == 'f') 
 			{
-				float f = (float)va_arg(ap,double);
+				double f = (double)va_arg(ap,double);
 				sprintf(at,(char*)"%f",f); // float
 			}
             else if (*ptr == 's') // string
@@ -1238,10 +1746,68 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 
         at += strlen(at);
 		if (!ptr) break;
-		if ((at-logbase) >= (MAX_BUFFER_SIZE - SAFE_BUFFER_MARGIN)) break; // prevent log overflow
+		if ((at-logbase) >= (logsize - SAFE_BUFFER_MARGIN)) break; // prevent log overflow
     }
     *at = 0;
     va_end(ap); 
+
+	// implement unlogged data
+	if (hide)
+	{
+		char* hidden = hide; // multiple hiddens separated by spaces, presumed covered by quotes in real data
+		char* next = hidden; // start of next field name
+		char word[MAX_WORD_SIZE]; // thing we search for
+		*word = '"';
+		while (next)
+		{
+			char* begin = next; 
+			next = strchr(begin, ' '); // example is  "authorized" or authorized or "authorized": or whatever
+			if (next) *next = 0;
+			strcpy(word+1, begin);
+			if (next) *next++ = ' ';
+			size_t len = strlen(word);
+			word[len++] = '"';
+			word[len] = 0; // key now in quotes
+
+			char* found = strstr(logbase, word); // find instance of key (presumed only one)
+			if (found) // is this item in our output to log? assume only 1 occurrence per output
+			{
+				// this will json field name, not requiring quotes but JSON will probably have them.
+				// value will be simple string, not a structure
+				char* after = found + len;	// immediately past item is what?
+				while (*after == ' ') ++after; // skip past space after
+				if (*after == ':') ++after; // skip a separator
+				else break;	 // illegal, not a field name
+				while (*after == ' ') ++after; // skip past space after
+				if (*after == '"') // string value to skip
+				{
+					char* quote = after + 1;
+					while ((quote = strchr(quote, '"'))) // find closing quote - MUST BE FOUND
+					{
+						if (*(quote - 1) == '\\') ++quote;	// escaped quote ignore
+						else // ending quote
+						{
+							++quote;
+							while (*quote == ' ') ++quote;	// skip trailing space
+							if (*quote == ',') ++quote;	// skip comma
+							at -= (quote - found);	// move the end point by the number of characters skipped
+							memmove(found, quote, strlen(found));
+							break;
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	if (channel == STDDEBUGLOG) // debugger output
+	{
+		if (debugOutput) (*debugOutput)(logbase);
+		else printf("%s",logbase);
+		inLog = false;
+		return ++id;
+	}
 
 	logLastCharacter = (at > logbase) ? *(at-1) : 0; //   ends on NL?
 	if (fmt && !*fmt) logLastCharacter = 1; // special marker 
@@ -1290,15 +1856,17 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 			if (*currentFilename) fprintf(bug,(char*)"BUG in %s at %d: %s ",currentFilename,currentFileLine,readBuffer);
 			if (!compiling && !loading && channel == BUGLOG && *currentInput)  
 			{
-				char* buffer = AllocateBuffer();
-				if (buffer) fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s in sentence: %s\r\n",GetTimeInfo(true),volleyCount,logbase,loginID,computerID,located,currentInput);
-				else fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s\r\n",GetTimeInfo(true),volleyCount,logbase,loginID,computerID,located);
+				char* buffer = AllocateBuffer(); // transient - cannot insure not called from context of InfiniteStack
+				struct tm ptm;
+				if (buffer) fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s in sentence: %s\r\n",GetTimeInfo(&ptm,true),volleyCount,logbase,loginID,computerID,located,currentInput);
+				else fprintf(bug,(char*)"\r\nBUG: %s: input:%d %s caller:%s callee:%s at %s\r\n",GetTimeInfo(&ptm,true),volleyCount,logbase,loginID,computerID,located);
 				FreeBuffer();
 			}
 			fwrite(logbase,1,bufLen,bug);
-			if (!compiling && !loading) 
+			fprintf(bug,(char*)"\r\n");
+			if (!compiling && !loading && !strstr(logbase, "No such bot"))
 			{
-				fprintf(bug,(char*)"MinInverseStringGap %dMB MinStringAvailable %dMB\r\n",maxInverseStringGap/1000000,minStringAvailable/1000000);
+				fprintf(bug,(char*)"MinReleaseStackGap %dMB MinHeapAvailable %dMB\r\n",maxReleaseStackGap/1000000,(int)(minHeapAvailable/1000000));
 				fprintf(bug,(char*)"MaxBuffers used %d of %d\r\n\r\n",maxBufferUsed,maxBufferLimit);
 				BugBacktrace(bug);
 			}
@@ -1307,8 +1875,9 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		}
 		if ((echo||localecho) && !silent && !server)
 		{
+			struct tm ptm;
 			if (*currentFilename) fprintf(stdout,(char*)"\r\n   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
-			else if (*currentInput) fprintf(stdout,(char*)"\r\n%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(true),currentInput);
+			else if (*currentInput) fprintf(stdout,(char*)"\r\n%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(&ptm,true),currentInput);
 		}
 		strcat(logbase,(char*)"\r\n");	//   end it
 
@@ -1316,12 +1885,13 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		{
 			if (!compiling && !loading) 
 			{
-				char name[100];
-				sprintf(name,(char*)"%s/exitlog.txt",logs);
-				FILE* out = FopenUTF8WriteAppend(name);
+				char fname[100];
+				sprintf(fname,(char*)"%s/exitlog.txt",logs);
+				FILE* out = FopenUTF8WriteAppend(fname);
 				if (out) 
 				{
-					fprintf(out,(char*)"\r\n%s: input:%s caller:%s callee:%s\r\n",GetTimeInfo(true),currentInput,loginID,computerID);
+					struct tm ptm;
+					fprintf(out,(char*)"\r\n%s: input:%s caller:%s callee:%s\r\n",GetTimeInfo(&ptm,true),currentInput,loginID,computerID);
 					BugBacktrace(bug);
 					fclose(out);
 				}
@@ -1332,35 +1902,83 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 	}
 
 	if (server){} // dont echo  onto server console 
-    else if ((!noecho && (echo || localecho || trace & TRACE_ECHO) && channel == STDUSERLOG) || channel == STDDEBUGLOG  ) 
+    else if ((!noecho && (echo || localecho || trace & TRACE_ECHO) && channel == STDUSERLOG) ) 
 		fwrite(logbase,1,bufLen,stdout);
 	bool doserver = true;
 
     FILE* out = NULL;
 	
 	if (server && trace && !userLog) channel = SERVERLOG;	// force traced server to go to server log since no user log
-
+	char fname[MAX_WORD_SIZE];
     if (logFilename[0] != 0 && channel != SERVERLOG)  
 	{
-		out =  FopenUTF8WriteAppend(logFilename); 
+		strcpy(fname, logFilename);
+		out =  FopenUTF8WriteAppend(fname);
  		if (!out) // see if we can create the directory (assuming its missing)
 		{
 			char call[MAX_WORD_SIZE];
 			sprintf(call,(char*)"mkdir %s",users);
 			system(call);
-			out = userFileSystem.userCreate(logFilename);
-			if (!out && !inLog) ReportBug((char*)"unable to create user logfile %s",logFilename);
+			out = userFileSystem.userCreate(fname);
+			if (!out && !inLog) ReportBug((char*)"unable to create user logfile %s", fname);
 		}
 	}
     else // do server log 
 	{
-		out = FopenUTF8WriteAppend(serverLogfileName); 
+		strcpy(fname, serverLogfileName); // one might speed up forked servers by having mutex per pid instead of one common one
+		out = FopenUTF8WriteAppend(fname);
  		if (!out) // see if we can create the directory (assuming its missing)
 		{
 			char call[MAX_WORD_SIZE];
 			sprintf(call,(char*)"mkdir %s",logs);
 			system(call);
-			out = userFileSystem.userCreate(serverLogfileName);
+			out = userFileSystem.userCreate(fname);
+		}
+
+		if (loglimit)
+		{ 
+			// roll log if it is too big
+			int64 size;
+			int r = fseek(out, 0, SEEK_END);
+	#ifdef WIN32
+			size = _ftelli64(out);
+	#else
+			size = ftello(out);
+	#endif
+			// get MB count of it roughly
+			size /= 1000000;  // MB bytes
+			if (size >= loglimit)
+			{
+				fclose(out);
+				time_t curr = time(0);
+				char* when = GetMyTime(curr); // now
+				char newname[MAX_WORD_SIZE];
+				char* old = strrchr(fname, '/');
+				strcpy(newname, old+1); // just the name, no directory path
+				char* at = strrchr(newname, '.');
+				sprintf(at, "-%s.txt",when);
+				at = strchr(newname, ':');
+				*at = '-';
+				at = strchr(newname, ':');
+				*at = '-';
+
+#ifdef WIN32
+				SetCurrentDirectory((char*)"LOGS"); 
+#else
+				chdir((char*)"LOGS");
+#endif
+				int result = rename(old+1, newname); // some renames cant handle directory spec
+				if (result != 0) 
+					perror("Error renaming file");
+
+#ifdef WIN32
+				SetCurrentDirectory((char*)"..");
+#else
+				chdir((char*)"..");
+#endif
+
+				out = FopenUTF8WriteAppend(fname);
+			}
 		}
 	}
 
@@ -1369,9 +1987,10 @@ unsigned int Log(unsigned int channel,const char * fmt, ...)
 		if (doserver)
 		{
 			fwrite(logbase,1,bufLen,out);
+			struct tm ptm;
 			if (!bugLog);
  			else if (*currentFilename) fprintf(out,(char*)"   in %s at %d: %s\r\n    ",currentFilename,currentFileLine,readBuffer);
-			else if (*currentInput) fprintf(out,(char*)"%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(true),currentInput);
+			else if (*currentInput) fprintf(out,(char*)"%d %s in sentence: %s \r\n    ",volleyCount,GetTimeInfo(&ptm,true),currentInput);
 		}
 		fclose(out); // dont use FClose
 		if (channel == SERVERLOG && echoServer)  printf((char*)"%s",logbase);

@@ -9,12 +9,7 @@
 </head>
 <body>
 <h1 id="chatscript-finalizing-a-bot-manual">ChatScript Finalizing a Bot Manual</h1>
-<blockquote>
-<p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
-</blockquote>
-<blockquote>
-<p>Revision 1/21/2016 cs6.1a</p>
-</blockquote>
+<p>© Bruce Wilcox, mailto:gowilcox@gmail.com www.brilligunderstanding.com <br>Revision 4/8/2017 cs7.31</p>
 <p>OK. You've written a bot. It sort of seems to work. Now, before releasing it, you should polish it. There are a bunch of tools to do this.</p>
 <h2 id="verification-verify">Verification (<code>:verify</code>)</h2>
 <p>When I write a topic, before every rejoinder and every responder, I put a sample input comment. This has #! as a prefix. E.g.,</p>
@@ -128,9 +123,39 @@ u: (what are you) I am a robot</code></pre>
 <p>To insure the outputs don't have spelling errors, I do a <code>:build</code> like this: <code>:build Harry</code> outputspell and then fix any spelling complaints that should be fixed.</p>
 <h2 id="sizing">Sizing</h2>
 <p>We generally adhere to a tweet limit (140 characters) and run <code>:abstract 140</code> to warn us of lines that are longer.</p>
-<h3 id="topicinfo-topic-how"><code>:topicinfo</code> ~topic how</h3>
+<h3 id="topicinfo-topic-how"><code>:topicinfo ~topic how</code></h3>
 <p>This displays all sorts of information about a topic including its keywords, how they overlap with other topics, what rules exist and whether they are erased or not. You either name the topic or you can just you <code>~</code>, which means the current rejoinder topic (if there is one). You can also wildcard the name like <code>~co*</code> to see all topics that start with <code>~co</code>.</p>
-<p>If how is omitted, you get everything. You can restrict things with a collection of how keywords. These include &quot;keys&quot;, to display the keywords, &quot;overlap&quot; to display the overlap with other topics' keywords, &quot;gambits&quot;, &quot;rejoinders&quot;, &quot;responders&quot; or &quot;all&quot; to limit rules to some of those, &quot;used&quot; and &quot;available&quot; to see only those rules meeting that criteria.</p>
+<p>If how is omitted, you get everything. You can restrict things with a collection of how keywords. These include:</p>
+<table style="width:21%;">
+<colgroup>
+<col width="8%" />
+<col width="12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>how</th>
+<th>meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>keys</code></td>
+<td>to display the keywords</td>
+</tr>
+<tr class="even">
+<td><code>overlap</code></td>
+<td>to display the overlap with other topics'</td>
+</tr>
+<tr class="odd">
+<td><code>keywords</code><br><code>gambits</code><br><code>rejoinders</code><br><code>responders</code><br><code>all</code></td>
+<td>to limit rules to some of those</td>
+</tr>
+<tr class="even">
+<td><code>used</code><br><code>available</code></td>
+<td>to see only those rules meeting that criteria.</td>
+</tr>
+</tbody>
+</table>
 <p>Of particular importance in finalization is the key overlap map. Keyword overlap is particularly interesting. As you assign keywords to topics, at times you will probably get excessive. Some topics will share keywords with other topics. For some things, this is reasonable. &quot;quark&quot; is a fine keyword for a topic on cheese and one on astronomy. But odds are &quot;family&quot; is not a great keyword for a topic on money.</p>
 <p>Often an extraneous keyword won't really matter, but if the system is looking for a topic to gambit based on &quot;family&quot;, you really don't want it distracted by a faulty reference to money. That is, you want to know what keywords are shared across topics and then you can decide if that's appropriate. Sometimes you are told a word but don't see it in the topic keywords. Use <code>:up</code> on that word to see how it intersects.</p>
 <p>I use <code>:topicinfo</code> keys to generate a map across all topics. I then read the first column list of keywords for each topic to see if they obviously should be in that topic or if they don't really strongly imply that topic. If not, I try to remove them from it.</p>
@@ -141,20 +166,23 @@ u: (what are you) I am a robot</code></pre>
 <p>will list the documented kinds of items (you name which ones you want, could be just $) and for variables it will list be documented and undocumented.</p>
 <h2 id="abstract"><code>:abstract</code></h2>
 <p>There are several useful :abstract calls to do during finalization.</p>
-<h3 id="abstract-100"><code>:abstract</code> 100</h3>
-<p>If you want to adjust output of yours that would be too long for something like a phone screen, you can ask :abstract to show you all rules whose output would likely exceed some limit (here 100). Without a topic name it does the entire system. With a topic name e.g., <code>:abstract 100 ~topicname</code>, it is restricted to that topic. You can also use a wildcard like <code>~top*</code> to do all topics with <code>~top</code> at the start of the name. You can also provide a list of topics, like <code>:abstract ~topic1 ~topic2</code>.</p>
-<h3 id="abstract-censor-mywords"><code>:abstract</code> censor ~mywords</h3>
+<h3 id="abstract-100"><code>:abstract 100</code></h3>
+<p>If you want to adjust output of yours that would be too long for something like a phone screen, you can ask :abstract to show you all rules whose output would likely exceed some limit (here 100). Without a topic name it does the entire system. With a topic name e.g.</p>
+<pre><code>:abstract 100 ~topicname</code></pre>
+<p>it is restricted to that topic. You can also use a wildcard like <code>~top*</code> to do all topics with <code>~top</code> at the start of the name. You can also provide a list of topics, like</p>
+<pre><code>:abstract ~topic1 ~topic2</code></pre>
+<h3 id="abstract-censor-mywords"><code>:abstract censor ~mywords</code></h3>
 <p>will note all output which contains any words in mywords. Of course regular uses may also appear. The censor command looks for any words referred to by the concept given.</p>
-<h3 id="abstract-spell"><code>:abstract</code> spell</h3>
-<p>will examine the outputs of all topics (or topic given) to find words whose spelling might be faulty. It's not a guarantee it is, but it can warn you about potential mistakes. And :abstract is handy just to print out a human-readable copy of your bot, without all the ChatScript scripting mess. As part of that, you can add header comments that will appear in the abstract. These are done as:</p>
+<h3 id="abstract-spell"><code>:abstract spell</code></h3>
+<p>will examine the outputs of all topics (or topic given) to find words whose spelling might be faulty. It's not a guarantee it is, but it can warn you about potential mistakes. And <code>:abstract</code> is handy just to print out a human-readable copy of your bot, without all the ChatScript scripting mess. As part of that, you can add header comments that will appear in the abstract. These are done as:</p>
 <pre><code>#!x whatever</code></pre>
 <p>I often subset gambits and responders in a topic by section, e.g.,</p>
 <pre><code>#!x*** FAMILY COMPOSITION
-…
+...
 #!x*** FAMILY RELATIONSHIPS</code></pre>
-<h3 id="abstract-story"><code>:abstract</code> story</h3>
+<h3 id="abstract-story"><code>:abstract story</code></h3>
 <p>will display just topics and their gambits (+ rejoinders of them).</p>
-<h3 id="abstract-responder"><code>:abstract</code> responder</h3>
+<h3 id="abstract-responder"><code>:abstract responder</code></h3>
 <p>will display topics and their responders (+ rejoinders of them).</p>
 <h3 id="permanentvariables"><code>:permanentvariables</code></h3>
 <p>This gives you a list of all permanent variables found in your source. Not only is documenting them a good idea, but you might want to confirm they are all legit (correctly spelled) and reinitialized as appropriate.</p>

@@ -1,1 +1,3 @@
- pandoc ChatScript-Advanced-User-Manual.md -s -o ../PDFDOCUMENTATION/ChatScript-Advanced-User-Manual.pdf
+
+pandoc ESOTERIC-CHATSCRIPT/ChatScript-Engine.md -s -o ../PDFDOCUMENTATION/ESOTERIC-CHATSCRIPT/ChatScript-Engine.pdf
+pause

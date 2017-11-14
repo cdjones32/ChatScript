@@ -13,7 +13,7 @@
 <p>© Bruce Wilcox, gowilcox@gmail.com brilligunderstanding.com</p>
 </blockquote>
 <blockquote>
-<p>Revision 1/21/2016 cs6.1a</p>
+<p>Revision 1/1/2017 cs7.0</p>
 </blockquote>
 <p>ChatScript is fine for a chatbot that does not depend on the outer world. But if you need to control an avatar or grab information from sensors or the Internet, you need a way to communicate externally from ChatScript. There are three mechanisms: embedding ChatScript inside another main program which will do the machine-specific actions, calling programs on the OS from ChatScript where ChatScript remains in control, and getting services via the Interet from ChatScript.</p>
 <h2 id="calling-outside-routines-from-chatscript">Calling Outside Routines from ChatScript</h2>
@@ -24,7 +24,7 @@
 <p>The command string is a string to pass the os shell to execute. That will return output strings that will be sent to the declared function, which must be an output macro or system function name. The function can do whatever it wants.</p>
 <h3 id="jsonopen-kind-url-postdata-header"><code>^jsonopen</code>( kind url postdata header )</h3>
 <p>this function queries a website and returns a JSON datastructure as facts.</p>
-<h3 id="jsonprint-name"><code>^jsonprint</code>( name )</h3>
+<h3 id="jsontree-name"><code>^jsontree</code>( name )</h3>
 <p>It prints out a tree of elements, one per line, where depth is represented as more deeply indented.</p>
 <h3 id="jsonparse-string"><code>^jsonparse</code>( string )</h3>
 <p>this parses into facts exactly as ^JSONOPEN would do, just not retrieving the string from the web.</p>

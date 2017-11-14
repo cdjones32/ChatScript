@@ -1,19 +1,18 @@
 #ifndef DISCARDJAVASCRIPT
-#include "duktape/duktape.c"
-//#include "duktape/duk_config.h"
-//#include "duktape/duktape.h"
+#include "duktape/duktape.h"
+//#include "duktape/duktape.cpp"
 
 duk_context *ctxPermanent = NULL;
 duk_context *ctxTransient = NULL;
 duk_context *ctx;
 
 #endif
-
 #include "common1.h"
 #ifndef WIN32
 #define stricmp strcasecmp 
 #define strnicmp strncasecmp 
 #endif
+void ChangeSpecial(char* buffer);
 
 // there are 2 contexts:  a permanently resident one for the system and a transient one per volley.
 
@@ -53,6 +52,7 @@ FunctionResult RunJavaScript(char* definition, char* buffer, unsigned int args)
 	char returnType[MAX_WORD_SIZE];
 	char* callbase = NULL;
 	char* code = definition;
+	
 	if (!stricmp(word,"call")) // skip over the description for now
 	{
 		definition = ReadCompiledWord(definition,returnType); 
@@ -77,10 +77,13 @@ FunctionResult RunJavaScript(char* definition, char* buffer, unsigned int args)
 	}
 	else if (!stricmp(word,"eval")) 
 	{
-		code = ReadCompiledWord(code,word);
 		if (!*code) return FAILRULE_BIT; // require some code
 	}
 	else if (!*name) return FAILRULE_BIT;	// need to define someting, be it a compile or a call
+	
+	char* terminator = strchr(code,'`');
+	*terminator = 0; // hide this from javascript
+	
 	if (*code && !inited) // code was supplied, handle it if not yet executed
 	{
 		*defstart = '.';
@@ -119,69 +122,79 @@ FunctionResult RunJavaScript(char* definition, char* buffer, unsigned int args)
 		if (!found)
 		{
 			duk_pop(ctx); // discard context
+			*terminator = '`';
 			return FAILRULE_BIT;
 		}
 		unsigned int index = 0;
 		FunctionResult result = NOPROBLEM_BIT;
 		while (index < args)
 		{
-			char word[MAX_WORD_SIZE];
 			char type[MAX_WORD_SIZE];
-			if ((result = JavascriptArgEval(index,word)) != NOPROBLEM_BIT)
+			*buffer = 0;
+			if ((result = JavascriptArgEval(index,buffer)) != NOPROBLEM_BIT)
 			{
 				for (unsigned int i = 0; i < index; ++i) duk_pop(ctx); // discard saved args
 				duk_pop(ctx); // discard context
+				*terminator = '`';
 				return FAILRULE_BIT;
 			}
 			callbase = ReadCompiledWord(callbase,type);
 			if (!stricmp(type,"string"))
 			{
-				duk_push_string(ctx, word);
+				duk_push_string(ctx, buffer);
 			}
 			else if (!stricmp(type,"int" )) 
 			{
-				if (!(*word >= '0' && *word <= '9') && *word != '-' && *word != '+')
+				if (!(*buffer >= '0' && *buffer <= '9') && *buffer != '-' && *buffer != '+')
 				{
 					result = FAILRULE_BIT;
 					break;
 				}
-				duk_push_int(ctx, atoi(word));
+				duk_push_int(ctx, atoi(buffer));
 			}
 			else if (!stricmp(type,"float" )) 
 			{
-				if (!(*word >= '0' && *word <= '9') && *word != '.')
+				if (!(*buffer >= '0' && *buffer <= '9') && *buffer != '.')
 				{
 					result = FAILRULE_BIT;
 					break;
 				}
-				duk_push_number(ctx, (double)atof(word));
+				duk_push_number(ctx, (double)atof(buffer));
 			}
 			else break;
 			++index;
 		}
+		*buffer = 0;
 		if (result != NOPROBLEM_BIT) // abandon the call
 		{				
 			for (unsigned int i = 0; i < index; ++i) duk_pop(ctx); // discard saved args
 			duk_pop(ctx); // discard context
+			*terminator = '`';
 			return FAILRULE_BIT;
 		}
 
 		if (duk_pcall(ctx, args) != 0) // call failed
 		{
-			printf("Javascript Error: %s\n", duk_safe_to_string(ctx, -1));
+			printf("Javascript Error: %s\r\n", duk_safe_to_string(ctx, -1));
 			duk_pop(ctx);
+			*terminator = '`';
 			return FAILRULE_BIT;
 		} 
 		else 
 		{
-			if (!stricmp(returnType,"string")) 	strcpy(buffer,duk_safe_to_string(ctx, -1)); // assumes there is a return string!
+			if (!stricmp(returnType,"string")) 	
+			{
+				strcpy(buffer,duk_safe_to_string(ctx, -1)); // assumes there is a return string!
+				if (strchr(buffer,'\n') || strchr(buffer,'\r') || strchr(buffer,'\t')) ChangeSpecial(buffer); // do not allow special characters in string
+			}
 			else if (!stricmp(returnType,"int")) strcpy(buffer,duk_safe_to_string(ctx, -1)); // assumes there is a return string!
 			else if (!stricmp(returnType,"float")) strcpy(buffer,duk_safe_to_string(ctx, -1)); // assumes there is a return string!
 			duk_pop(ctx);
+			*terminator = '`';
 			return NOPROBLEM_BIT;
 		}
 	}
-
+	*terminator = '`';
 	return NOPROBLEM_BIT;
 #else
 	return FAILRULE_BIT; // if javascript not compiled into engine

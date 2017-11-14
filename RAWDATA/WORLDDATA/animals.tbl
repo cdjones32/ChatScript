@@ -1,7 +1,5 @@
 table: ~adultchild(^child ^adult)
 createfact(^child child ^adult)
-^addproperty(^child NOUN NOUN_SINGULAR)
-^addproperty(^adult NOUN NOUN_SINGULAR)
 
 DATA:
 calf cow
@@ -104,8 +102,6 @@ DATA:
 table: ~lcthings1 (^animal ^home)
 ^createfact(^home member ~animal_homes)
 ^createfact(^home habitat ^animal)
-^addproperty(^animal NOUN NOUN_SINGULAR)
-^addproperty(^home NOUN NOUN_SINGULAR)
 
 DATA:
 rabbit hutch

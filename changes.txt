@@ -1,4 +1,181 @@
-version 6.91
+version 7.61
+1. ^pos(canonical xx all)  get all canonical forms (for foreign use)
+2. ^mark(_0 value  single)  dont mark the entire implication chain, just the argument given
+3. Advanced manual now has a section on advanced tokenization
+
+
+version 7.6 10/22/2017
+1. ~capacronym -  acronyms that are  all caps, all letters
+2. :trim now supports optional quoted first param :trim "keepname"
+	which instead of dumping all files it sees into a single tmp/tmp.txt file
+	keeps the names of the files it sees separated into tmp/*.txt
+3. you can now specify db name to postgres
+4, ^pos(isalluppercase xxx)
+5. implicit concept set for [] and {} in patterns when simple words/phrases/concepts
+6. :dedupe  filepath, outputs into tmp/filename just unique lines from the input
+7. command line parameter defaultbot=name gives the name of the default bot to use, overriding the defaultbot table value.
+8. ^timeinfofromseconds now returns 2 more values, the months index and the dayofweek index
+
+Version 7.55 9/24/2017
+1. new PDF document: ChatScript Coding Standards
+2. RESPONSE_CURLYQUOTES converts on output plain quotes to curly ones
+
+
+Version 7.54 8/27/2017
+1. limit on arguments to outputmacros raised to 31 from 15
+2. ^setresponse(index message) # revises existing response to this (can be used in postprocessing)
+3. CS server protocol allows a single null-terminated string, with user and bot components separated by ascii 1 instead of ascii 0.
+4. ^pos(canonical xxx yyy) takes optional 3rd argument yyy, the pos-tag of the word (since words using foreign dictionaries may have
+	different canonical values based on pos-tag).
+
+Version 7.53 8/12/2017
+1. :tsv  convert tsv to table form (putting quotes around things without it)
+2. %externaltagging
+3. improved control script manual
+
+Version 7.52 7/8/2017
+1. ^respond(~xxx TEST) conditional execution of a topic to see if a match would occur (no output)
+2. revision of german noun pos tags in dictionary
+
+version 7.51  6/25/2017
+1. ^pos(isuppercase xx)  does it begin with uppercase letter
+2. $cs_proxycredentials  // "myname:thesecret"
+   $cs_proxyserver    // "http://local.example.com:1080"
+   $cs_proxymethod   1 is most common value to use- see https://curl.haxx.se/libcurl/c/CURLOPT_HTTPAUTH.html
+3 tmp= command line  -- reassign location of TMP directory
+4. ^jsonopen allows json composite reference to be postdata argument, will write it into text as the data for you
+5. :quotelines file, reads lines and puts doublequotes around them
+6. Spanish concepts (ontology) and Livedata
+
+version 7.5  6/18/2017
+1 :dualupper - list words that have more than one uppercase form
+2. hidefromlog param - list json fields not to save into user or server log
+3. ^jsonparse autoconverts \unnnn into corresponding utf8 characters
+4: :trim 12 - put out rule label then input then output 
+5. $cs_saveusedJson - destory any json not referred to via a user variable when saving user
+6. new spelling-marking manual
+
+Version 7.43  5/28/2017
+1. Numeric Substitutions -  replace ?_km kilomenters  converts 1.2km into 1.2 kilometers
+2. tokenization of 65' and 65" changed to leave token as is.
+    before it became 65 feet and 65 inches. You can get that same effect
+    by adding into your script somewhere:  
+    replace: ?_" inches
+    replace: ?_' feet
+3. $cs_topicretrylimit (default 30) allows you change when error occurs with too many topic retries.
+4. $$topic_retry_limit_exceeded set if limit is hit
+
+
+Version 7.42 5/7/2017
+1.  *~8b  for bidirectional search
+2. ^burst($val digitsplit)  splits into two pieces a word part and a digit part (dd12 => dd  12) and
+	(12dd => dd 12) - if it starts with digit, gets all consecutive digits as second value and all the
+	rest as first. Otherwise if ends with digit, gets all consecutive rear digits as second value and
+ 	rest of word before as first value.
+3. may now call outputmacros from patterns, it protects match variables across the call
+
+
+Version 7.411  5/7/2017
+1. fixing numeric bugs
+
+Version 7.41 4/30/2017
+1. ^setposition now allows a wildcard id as the second and last argument
+2. the ? operator can now check for value in json array.
+3. ^format( integer/float  formatstring value) does format of doublefloat or int64 integer
+4. ^clearmatch() resets all match variables to unmatched
+5. ^wordatindex() now support ranges, allows optional 3 argument end. Or second argument can be "_0"
+6. $cs_numbers =  french, indian, american or other
+
+Version 7.4 4/24/2017
+1. $x.y[] = 1  autogenerates a json array
+2. $cs_fullfloat & 64bit float & e-notation means the system gives you full precision, not 2 digit
+3. JSONOPen now performs urlencoding automatically
+4. servertrace command line param - forces all users to trace
+5. erasename command parameter - full user reset if found in input
+6. compile outputmacros in any order (but must already be defined if used by a table)
+7. ^pos(IsModelNumber x) and ^isInteger and ^isFloat
+
+Version 7.31  4/8/2017 --- NEED TO RECOMPILE YOUR BOT! format has changed in TOPIC folder
+1. ^wordAtIndex({original, canonical} n) retrieves word at index either original or canonical
+2. ^cs_reboot and ^reboot
+3. $x.y = 1  autogenerates
+4. replace:  now takes quoted expressions on the right side, decoding to x+y
+5. Livedata- internalconcepts.top is a concept listing all internal non-enumerated concepts
+6. Livedata- numbers.txt (per language) describes canonical numeric value of numerically oriented words
+7. Previously undocumented ^makereal function changed and documented to take an argument. It allows to make transient facts
+in a factset permanent (or such facts created after a given fact)
+
+Version 7.3 3-4-2017
+1. topic files of user stored by language as well as user id and bot name if not english
+2. NO_CONDITIONAL_IDIOM
+3. ^tokenize(WORD xxx ) and tokenize(FULL)
+4. MemoryGC
+5. ?$var  pattern test
+6. %timeout
+7. ^isnormalword(value)   ^isnumber(value)
+8. string comparison in IF or pattern now supports < >  <= >= for string ordering (case insensitive)
+9:  :redo FILE filename xxxxx -- to name file to open instead of std backup of last turn
+10: loglimit=n   where n is number of MB  log rolling
+11. ^removeproperty supports HAS_SUBSTITUTE to turn off a substitution from LIVEDATA
+
+version 7.2  2-9-2017
+1. ^jsonreadcvs takes optional 3rd argument - function to invoke with the fields instead of returning json
+2. ^tokenize($_text) returns facts of (sentence ^tokenize ^tokenize)
+3: :mixedcase - lists all words which have multiple case forms
+4. %language returns current dictionary language
+5. engine concept ~model_number marks words with both alpha and digit in them
+6. command line buildfiles=xxxx to tell where filesxxx.txt are
+7. French, German, Spanish dictionarys and utf8 spellcheck support
+
+version 7.12 1-28-2017  -- recompile your bot. TOPIC format has changed slightly  
+1. ^jsonreadcvs  to read spreadsheet files
+2. fixed concurrency bug  -- CHANGING to VS2015 since source using C++11 no longer compiles in VS2010 and you cant easily
+ get that compiler version any more.
+3. :trim 11 shows when exchange happened, and noob argument can now control input and/or output trimming
+4. Command line parameter manual split off from system concepts and variables
+5. topic=  command line parameter
+6. renamed $cs_factowner to $cs_botid
+7. Moved and expanded discussion of multiple bots from advanced manual to new ChatScript Multiple Bots manual
+
+version 7.111   1/15/2017
+1. fixed major bug in concept reading I introduced in 7.11
+
+version 7.11   1/15/2017
+1. allowing @ and . in user file names at login
+2. bot: 1  harry    -- sets bot fact owner at same time (see $cs_factowner)
+3. allow bot: command as a line in the filesxxx.txt build file to change bot restrictions from there
+
+version 7.1   1/7/2017
+1. command line parameter apikey for :translateconcept
+2. :translateconcept to use google translate on concepts from english
+3. conditional block comments now supported:  
+	##<<German .....  
+		..  
+	##>>
+4. noboot command line param
+5. cyclomatic complexity listed in map file (described in Debugger manual)
+6. command line parameter userencrypt enables encrypting user topic file if encrypt= and decrypt= is set
+7. command line parmater config= (default is cs_init.txt)
+8: optional {} around output macro
+9. consolidated all command line parameter descriptions into ChatScript System Variables and Engine-defined Concepts 
+10. new manual ESTORIC/ChatScript-Foreign-Languages
+
+version 7.01 1/1/2017
+1. fixing $_variables in topics where changing rules destroys the value assigned
+
+version 7.0 12/30/2016
+1. logsize - bytes for the log buffer to use (see advanced manual)
+2. outputsize - bytes for main output buffer to use (see advanced manual)
+3. autoinitfile:  username-init.txt at top level (see advanced manual)
+4. new manual- ChatScript Debugger and corresponding :debug command described within
+5. @_10 anchor pattern element (see advanced manual)
+6. ~integer, ~float, ~positiveinteger, ~negativeinteger refine ~number
+7.  RESPONSE_NOCONVERTSPECIAL on $cs_ response or as flag to ^log will block conversion of escaped n,r,t into their ascii counterparts
+8. conditional compilation per line supported- see advanced manual conditional build
+9. language= command line param (defaults english) revised DICT/LIVEDATA data access per language-  
+	WARNING: data organization within LIVEDATA has changed. If you are running your own copy, mimic the new structure.
+
+version 6.91 12/3/2016
 1. autodelete and USER_flag1...4 for json
 2. :trace -userfact
 3. deleting a json fact will recurse and delete the object referred to UNLESS it has some other reference to it still on another json fact.

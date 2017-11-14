@@ -32,7 +32,7 @@ the documentation.
 
 # Contents
 
-* [Speaking (topic: , t:)](ChatScript-Tutorial.md#speaking-topic--t)
+* [Speaking (topic: , t:)](ChatScript-Tutorial-md#speaking-topic--t)
 * [Saying more (^keep, random selection [], ^repeat)](ChatScript-Tutorial.md#saying-more-keep-random-selection--repeat)
 * [Listening (u:, ^reuse)](ChatScript-Tutorial.md#listening-u-reuse)
 * [Short-term memory (* _)](ChatScript-Tutorial.md#short-term-memory--_)

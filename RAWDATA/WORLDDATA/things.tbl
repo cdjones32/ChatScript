@@ -274,7 +274,8 @@ DATA:
   Viacom  *
   Walmart *
   CVS  *
-  Lowe's  *
+  "Lowe's"  *
+  Lowes  *
   Electronic_Data_Systems (EDS)  *
   Caterpillar  *
   Oceanit  *
@@ -305,6 +306,11 @@ DATA:
   Microsoft computer
   "International Business Machines" (IBM) computer
   Apple_Computer  computer
+  Apple computer
+  SAP_Labs computer
+  SAP computer
+  Intel computer
+  Oracle computer
   Lockheed_Martin aircraft
   Boeing aircraft
   Motorola communication
@@ -317,7 +323,8 @@ DATA:
   United_Parcel_Service (UPS) "mail"
   Federal_Express (FEDEX) "mail"
   Foodland grocery
-  Albertson's grocery
+  "Albertson's" grocery
+  Albertsons grocery
   "Whole Foods" grocery
   Kroger grocery
   Safeway grocery
@@ -359,7 +366,7 @@ DATA:
   Exxon_Mobil energy
   Enron energy
   Conoco energy
-  "Hawai'n Electric" (HECO) energy
+  "Hawaiian Electric" (HECO) energy
   Coca-Cola (Coke) "soft drink"
   Pepsi-Cola (Pepsi PepsiCo) "soft drink"
   Wachovia bank

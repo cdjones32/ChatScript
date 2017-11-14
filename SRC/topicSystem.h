@@ -2,7 +2,7 @@
 #define _TOPICSYSTEMH
 
 #ifdef INFORMATION
-Copyright (C) 2011-2016 by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -11,9 +11,15 @@ copies of the Software, and to permit persons to whom the Software is furnished 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
 WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
+
+#define LAYER_KERNEL -1
+#define LAYER_0 0
+#define LAYER_1 1
+#define LAYER_BOOT 2
+#define LAYER_USER 3
 
 #define MAX_LABEL_SIZE 100
 
@@ -59,16 +65,17 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define NOMORERULES 0x0fffffff		// finished walking a rule index map
 
 #define MAX_TOPIC_STACK 50
-
+extern int currentBeforeLayer;
 extern bool stats;
 extern unsigned int ruleCount;
 
 extern char timeStamp[NUMBER_OF_LAYERS][20];
 extern char compileVersion[NUMBER_OF_LAYERS][20];
 extern char buildStamp[NUMBER_OF_LAYERS][150];
-
+extern char* howTopic;
 extern bool ruleErased;
-	
+extern bool hypotheticalMatch;
+
 extern unsigned int duplicateCount;
 extern unsigned int xrefCount;
 extern bool norejoinder;
@@ -128,7 +135,7 @@ extern int pendingTopicList[MAX_TOPIC_STACK+1];
 extern int originalPendingTopicList[MAX_TOPIC_STACK+1];
 void SetSampleFile(int topic);
 void ResetContext();
-FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer);
+FunctionResult ProcessRuleOutput(char* rule, unsigned int id,char* buffer, bool refine = false);
 FunctionResult TestRule(int responderID,char* ptr,char* buffer,bool refine=false);
 FunctionResult PerformTopic(int active,char* buffer,char* rule = NULL,unsigned int id = 0);
 bool Repeatable(char* rule);
@@ -145,11 +152,11 @@ int PushTopic(int topic);
 void PopTopic();
 bool CheckTopicTrace();
 bool CheckTopicTime();
-FunctionResult DoOutput(char* buffer,char* rule, unsigned int id);
+FunctionResult DoOutput(char* buffer,char* rule, unsigned int id, bool refine = false);
 unsigned int EstablishTopicTrace();
 char* GetRuleIDFromText(char* ptr, int & id);
 char* GetVerify(char* tag,int & topicid, int &id);//  ~topic.#.#=LABEL<~topic.#.#  is a maximally complete why
-void UnwindLayer2Protect();
+void UnwindUserLayerProtect();
 void InitKeywords(const char* name,const char* layer,unsigned int build,bool mark=false,bool concept=true);
 extern unsigned int currentTopicDisplay;
 bool AreDebugMarksSet();

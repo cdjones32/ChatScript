@@ -194,9 +194,6 @@
     <ClCompile Include="..\src\os.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\englishtagger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\secure.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -213,6 +210,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\SRC\mysql.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SRC\mongodb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SRC\postgres.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SRC\englishTagger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SRC\duktape\duktape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

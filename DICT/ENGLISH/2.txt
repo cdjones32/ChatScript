@@ -2,7 +2,6 @@
     two-hitter~1n 
  2_Samuel ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     II_Samuel~1n 
- 2 ( NOUN ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER posdefault:NOUN ) 
  2_Kings ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     II_Kings~1n 
  2_Chronicles ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -30,4 +29,3 @@
  2-star ( meanings=1 ADJECTIVE ADJECTIVE_NORMAL ) 
     2-star~1az 
  2/3 ( NOUN NOUN_NUMBER KINDERGARTEN ) 
- 20 ( NOUN ADJECTIVE ADJECTIVE_NUMBER NOUN_NUMBER posdefault:NOUN ) 

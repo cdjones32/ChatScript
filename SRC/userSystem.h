@@ -1,7 +1,7 @@
 #ifndef _USERSYSTEMH
 #define _USERSYSTEMH
 #ifdef INFORMATION
-Copyright (C) 2011-2016 by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -22,7 +22,7 @@ extern char humanSaid[MAX_USED+1][SAID_LIMIT+3]; //   last n messages read from 
 extern int humanSaidIndex;
 extern int chatbotSaidIndex;
 extern char timeturn15[100];
-extern char ipAddress[50];
+extern char ipAddress[ID_SIZE];
 extern char timeturn0[20];
 extern char timePrior[20];
 extern int userFirstLine;
@@ -42,8 +42,8 @@ extern bool serverRetryOK;
 // process user
 void ReadNewUser();
 void ReadUserData();
-void WriteUserData(time_t curr);
-char* WriteUserVariables(char* ptr,bool sharefile, bool compiling);
+void WriteUserData(time_t curr,bool nobackup);
+char* WriteUserVariables(char* ptr,bool sharefile, bool compiling,char* saveJSON);
 void RecoverUser();
 void CopyUserTopicFile(char* newname);
 // login

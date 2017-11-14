@@ -270,7 +270,7 @@ EndingInfo adjective2[] =
 		{ (char*)"al",ADJECTIVE|ADJECTIVE_NORMAL,0},  // pertaining to
 		{ (char*)"en",ADJECTIVE|ADJECTIVE_NORMAL,0}, 
 		{ (char*)"an",ADJECTIVE|ADJECTIVE_NORMAL,0}, // relating to
-	{0},
+	{0}
 };
 EndingInfo adjective1[] = 
 {
@@ -278,8 +278,349 @@ EndingInfo adjective1[] =
 	{0},
 };
 
+static int64 ProcessNumber(int at, char* original, WORDP& revise, WORDP &entry, WORDP &canonical, uint64& sysflags, uint64 &cansysflags, bool firstTry, bool nogenerate, int start, int kind) // case sensitive, may add word to dictionary, will not augment flags of existing words
+{
+	size_t len = strlen(original);
+
+	char* slash = strchr(original, '/');
+	if (!slash) slash = strchr(original, '-');
+
+	if (IsDate(original))
+	{
+		uint64 properties = NOUN | NOUN_SINGULAR;
+		canonical = entry = StoreWord(original, properties, TIMEWORD);
+		cansysflags = sysflags = entry->systemFlags | TIMEWORD;
+		return properties;
+	}
+	if (kind == NOT_A_NUMBER) return 0; // not a date after all
+
+	// hyphenated word which is number on one side:   Cray-3  3-second
+	char* hyphen = strchr(original, '-');
+	if (hyphen && !hyphen[1]) hyphen = NULL; // not real
+	int64 properties = 0;
+	if ((IsDigit(*original) || IsDigit(original[1]) || *original == '\'') && (kind || hyphen))
+	{
+		// DATE IN 2 DIGIT OR 4 DIGIT NOTATION
+		char word[MAX_WORD_SIZE];
+		*word = 0;
+		// 4digit year 1990 and year range 1950s and 1950's
+		if (IsDigit(*original) && IsDigit(original[1]) && IsDigit(original[2]) && IsDigit(original[3]) &&
+			(!original[4] || (original[4] == 's' && !original[5]) || (original[4] == '\'' && original[5] == 's' && !original[6]))) sprintf(word, (char*)"%d", atoi(original));
+		//  2digit year and range '40 and '40s
+		if (*original == '\'' && IsDigit(original[1]) && IsDigit(original[2]) &&
+			(!original[3] || (original[3] == 's' && !original[4]) || (original[3] == '\'' && original[4] == 's' && !original[5]))) sprintf(word, (char*)"19%d", atoi(original + 1));
+		if (*word)
+		{
+			properties = NOUN | NOUN_NUMBER | ADJECTIVE | ADJECTIVE_NUMBER;
+			entry = StoreWord(original, properties, TIMEWORD);
+			canonical = StoreWord(word, properties, TIMEWORD);
+			sysflags = entry->systemFlags | TIMEWORD;
+			cansysflags = canonical->systemFlags | TIMEWORD;
+			return properties;
+		}
+
+		// handle time like 4:30
+		if (len > 3 && len < 6 && IsDigit(original[len - 1]) && (original[1] == ':' || original[2] == ':')) // 18:32
+		{
+			properties = NOUN | NOUN_NUMBER | ADJECTIVE | ADJECTIVE_NUMBER;
+			entry = canonical = StoreWord(original, properties); // 18:32
+			sysflags = entry->systemFlags | TIMEWORD;
+			cansysflags = canonical->systemFlags | TIMEWORD;
+			return properties;
+		}
+
+		// handle number range data like 120:129 
+		char* at = original;
+		int colon = 0;
+		while (*++at && (IsDigit(*at) || *at == ':'))
+		{
+			if (*at == ':') ++colon;
+		}
+		if (!*at && colon == 1) // was completely digits and a single colon
+		{
+			properties = NOUN | NOUN_NUMBER | ADJECTIVE | ADJECTIVE_NUMBER;
+			entry = canonical = StoreWord(original, properties);
+			return properties;
+		}
+
+		// handle date range like 1920-22 or 1920-1955  or any number range
+		if (hyphen && hyphen != original)
+		{
+			char* at = original - 1;
+			while (*++at)
+			{
+				if (IsDigit(*at)) continue;
+				if (*at == '-' && at == hyphen) continue;
+				break;
+			}
+			if (!*at)
+			{
+				properties = NOUN | NOUN_NUMBER | ADJECTIVE | ADJECTIVE_NUMBER;
+				entry = canonical = StoreWord(original, properties);
+				if ((hyphen - original) == 4)
+				{
+					sysflags = entry->systemFlags | TIMEWORD;
+					cansysflags = canonical->systemFlags | TIMEWORD;
+				}
+				return properties;
+			}
+		}
+
+		// mark numeric fractions
+		char* fraction = strchr(original, '/');
+		if (fraction)
+		{
+			long basenumber = 0;
+			// if we have piece before fraction
+			if (hyphen) // we have prepart composite number like 3-1/2
+			{
+				*hyphen = 0;
+				basenumber = atoi(original); // part before the - 
+				*hyphen = '-';
+				original = hyphen + 1; // piece before fraction
+			}
+			char number[MAX_WORD_SIZE];
+			strcpy(number, original); // the number before the -
+			if (IsNumber(number, numberStyle) != NOT_A_NUMBER  && IsNumber(fraction + 1, numberStyle))
+			{
+				int x = atoi(number);
+				int y = atoi(fraction + 1);
+				double val = (double)((double)x / (double)y);
+				val += basenumber;
+				WriteFloat(number, val);
+				properties = ADJECTIVE | NOUN | ADJECTIVE_NUMBER | NOUN_NUMBER;
+				if (!entry) entry = StoreWord(original, properties);
+				canonical = FindWord(number, 0, PRIMARY_CASE_ALLOWED);
+				if (canonical) properties |= canonical->properties;
+				else canonical = StoreWord(number, properties);
+				sysflags = entry->systemFlags;
+				cansysflags = entry->systemFlags;
+				return properties;
+			}
+		}
+	}
+
+	// cannot be a text number if upper case not at start
+	// unless the word only exists as upper case, e.g. Million in German
+	// penn numbers as words do not go to change their entry value -- DO NOT TREAT "once" as a number, though canonical can be 1
+	if (kind != ROMAN_NUMBER) {
+		WORDP X = FindWord(original, 0, UPPERCASE_LOOKUP);
+		if (!X || FindWord(original, 0, LOWERCASE_LOOKUP) || IS_NEW_WORD(X))
+		{
+			MakeLowerCase(original);
+		}
+	}
+	entry = StoreWord(original);
+	char number[MAX_WORD_SIZE];
+	char* value;
+	uint64 baseflags = (entry) ? entry->properties : 0;
+	if (kind == ROMAN_NUMBER) baseflags = 0; // ignore other meanings
+	char* br = hyphen;
+	if (!br) br = strchr(original, '_');
+
+	if (kind == PLACETYPE_NUMBER)
+	{
+		entry = StoreWord(original, properties);
+		if (at > 1 && start != at && IsNumber(wordStarts[at - 1], numberStyle) != NOT_A_NUMBER && !strstr(original, (char*)"second")) // fraction not place
+		{
+			double val = 1.0 / Convert2Integer(original, numberStyle);
+			WriteFloat(number,val);
+		}
+		else sprintf(number, (char*)"%d", (int)Convert2Integer(original, numberStyle));
+		sysflags |= ORDINAL;
+		properties |= ADVERB | ADJECTIVE | ADJECTIVE_NORMAL | ADJECTIVE_NUMBER | NOUN | NOUN_NUMBER | (baseflags & TAG_TEST); // place numbers all all potential adverbs:  "*first, he wept"  but not in front of an adjective or noun, only as verb effect
+	}
+	else if (kind == FRACTION_NUMBER && strchr(original, '%'))
+	{
+		int64 val1 = atoi(original);
+		double val = (double)(val1 / 100.0);
+		WriteFloat(number,  val);
+		properties = ADJECTIVE | NOUN | ADJECTIVE_NUMBER | NOUN_NUMBER;
+		entry = StoreWord(original, properties);
+		canonical = StoreWord(number, properties);
+		properties |= canonical->properties;
+		sysflags = entry->systemFlags;
+		cansysflags = canonical->systemFlags;
+		return properties;
+	}
+	else if (kind == FRACTION_NUMBER && br) // word fraction
+	{
+		char c = *br;
+		*br = 0;
+		int64 val1 = Convert2Integer(original, numberStyle);
+		int64 val2 = Convert2Integer(br + 1, numberStyle);
+		double val;
+		if (IsNumber(original, numberStyle) == FRACTION_NUMBER) // half-dozen
+		{
+			val = (double)(1.0 / (double)val1);
+			val *= (double)val2; // one-half
+		}
+		else val = (double)((double)val1 / (double)val2); // one-half
+		WriteFloat(number, val);
+		properties = ADJECTIVE | NOUN | ADJECTIVE_NUMBER | NOUN_NUMBER;
+		*br = c;
+		entry = StoreWord(original, properties);
+		canonical = StoreWord(number, properties);
+		properties |= canonical->properties;
+		sysflags = entry->systemFlags;
+		cansysflags = canonical->systemFlags;
+		return properties;
+	}
+	else if (kind == CURRENCY_NUMBER) // money
+	{
+		char copy[MAX_WORD_SIZE];
+		strcpy(copy, original);
+		unsigned char* currency = GetCurrency((unsigned char*)copy, value);
+		if (currency > (unsigned char*)value) *currency = 0; // remove trailing currency
+		int64 n = Convert2Integer(value, numberStyle);
+		double fn = Convert2Float(value, numberStyle);
+		if ((double)n == fn)
+		{
+#ifdef WIN32
+			sprintf(number, (char*)"%I64d", n);
+#else
+			sprintf(number, (char*)"%lld", n);
+#endif
+		}
+		else if (strchr(value, numberPeriod) || strchr(value,'e') || strchr(value,'E')) WriteFloat(number, fn);
+		else
+		{
+#ifdef WIN32
+			sprintf(number, (char*)"%I64d", n);
+#else
+			sprintf(number, (char*)"%lld", n);
+#endif
+		}
+		properties = NOUN | NOUN_NUMBER;
+		AddProperty(entry, CURRENCY);
+	}
+	else if (kind == FRACTION_NUMBER)
+	{
+		int64 val = Convert2Integer(original, numberStyle);
+		double val1 = (double)1.0 / (double)val;
+		sprintf(number, (char*)"%f", val1);
+		properties = ADJECTIVE | NOUN | ADJECTIVE_NUMBER | NOUN_NUMBER | (baseflags & (PREDETERMINER | DETERMINER));
+	}
+	else // ordinary int, double and percent
+	{
+		len = strlen(original);
+		bool percent = original[len - 1] == '%';
+		if (percent) original[len - 1] = 0;
+		char* exponent = strchr(original, 'e');
+		if (!exponent) exponent = strchr(original, 'E');
+		if (exponent && !IsDigit(exponent[-1]) && exponent[-1] != '.') exponent = NULL; // no digit or period before
+		if (exponent && !IsDigit(exponent[1]) && exponent[1] != '+' && exponent[1] != '-') exponent = NULL; // no digit or period before
+
+		if (strchr(original, numberPeriod) || exponent) // floating
+		{
+			double val = Convert2Float(original, numberStyle);
+			if (percent) val /= 100;
+			WriteFloat(number,  val);
+		}
+		else if (percent)
+		{
+			int64 val = Convert2Integer(original, numberStyle);
+			double val1 = ((double)val) / 100.0;
+			WriteFloat(number,val1);
+		}
+		else
+		{
+			int64 val = Convert2Integer(original, numberStyle);
+#ifdef WIN32
+			sprintf(number, (char*)"%I64d", val);
+#else
+			sprintf(number, (char*)"%lld", val);
+#endif
+		}
+		properties = ADJECTIVE | NOUN | ADJECTIVE_NUMBER | NOUN_NUMBER | (baseflags & (PREDETERMINER | DETERMINER));
+		if (percent) original[len - 1] = '%';
+	}
+	canonical = StoreWord(number, properties, sysflags);
+	cansysflags |= sysflags;
+
+	// other data already existing on the number
+
+	if (entry->properties & PART_OF_SPEECH)
+	{
+		uint64 val = entry->properties; // numbers we "know" in some form should be as we know them. like "once" is adverb and adjective, not cardinal noun
+		if (entry->properties & NOUN && !(entry->properties & NOUN_BITS)) // we dont know its typing other than as noun... figure it out
+		{
+			if (IsUpperCase(*entry->word)) val |= NOUN_PROPER_SINGULAR;
+			else val |= NOUN_SINGULAR;
+		}
+		if (val & ADJECTIVE_NORMAL) // change over to known number
+		{
+			properties ^= ADJECTIVE_NORMAL;
+			properties |= ADJECTIVE_NUMBER | ADJECTIVE;
+		}
+		if (val & NOUN_SINGULAR) // change over to known number
+		{
+			properties ^= NOUN_SINGULAR;
+			properties |= NOUN_NUMBER | NOUN;
+			if (tokenControl & TOKEN_AS_IS && !canonical) canonical = entry;
+		}
+		if (val & ADVERB)
+		{
+			properties |= entry->properties & (ADVERB);
+			if (tokenControl & TOKEN_AS_IS && !canonical) canonical = entry;
+		}
+		if (val & PREPOSITION)
+		{
+			properties |= PREPOSITION; // like "once"
+			if (tokenControl & TOKEN_AS_IS && !canonical) canonical = entry;
+		}
+		if (val & PRONOUN_BITS)  // in Penntags this is CD always but "no one is" is NN or PRP
+		{
+			properties |= entry->properties & PRONOUN_BITS;
+			//if (at > 1 && !stricmp(wordStarts[at-1],(char*)"no"))
+			//{
+			//properties |= val & PRONOUN_BITS; // like "one"
+			if (tokenControl & TOKEN_AS_IS && !canonical) canonical = entry;
+			//}
+		}
+		if (val & VERB)
+		{
+			properties |= entry->properties & (VERB_BITS | VERB); // like "once"
+			if (tokenControl & TOKEN_AS_IS && !canonical) canonical = FindWord(GetInfinitive(original, false), 0, LOWERCASE_LOOKUP);
+		}
+		if (val & POSSESSIVE && tokenControl & TOKEN_AS_IS && !stricmp(original, (char*)"'s") && at > start) // internal expand of "it 's" and "What 's" and capitalization failures that contractions.txt wouldn't have handled 
+		{
+			properties |= AUX_BE | POSSESSIVE | VERB_PRESENT_3PS | VERB;
+			entry = FindWord((char*)"'s", 0, PRIMARY_CASE_ALLOWED);
+		}
+	}
+	entry = StoreWord(original, properties, sysflags);
+	sysflags |= entry->systemFlags;
+	cansysflags |= canonical->systemFlags;
+	return properties;
+}
+
+bool KnownUsefulWord(WORDP entry)
+{
+	bool known = (entry) ? ((entry->properties & PART_OF_SPEECH) != 0) : false;
+	if (!known && entry && entry->systemFlags & PATTERN_WORD) known = true; // script knows it to match
+	if (!known && entry) // do we know it as concept or topic keyword?
+	{
+		FACT* F = GetSubjectNondeadHead(entry);
+		while (F)
+		{
+			if (F->verb == Mmember)
+			{
+				known = true;
+				break;
+			}
+			F = GetSubjectNondeadNext(F);
+		}
+	}
+	return known;
+}
+
+
 uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &canonical,uint64& sysflags,uint64 &cansysflags,bool firstTry,bool nogenerate, int start) // case sensitive, may add word to dictionary, will not augment flags of existing words
 { // this is not allowed to write properties/systemflags/internalbits if the word is preexisting
+	uint64 properties = 0;
+	sysflags = cansysflags = 0;
+	canonical = 0;
 	if (start == 0) start = 1;
 	if (revise) revise = NULL;
 	if (*original == 0) // null string
@@ -306,7 +647,24 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			return 0;
 		}
 	}
-	if (*original == '~' || (*original == USERVAR_PREFIX && !IsDigit(original[1])) || *original == '^' || (*original == SYSVAR_PREFIX && original[1]))
+
+	bool csEnglish = (externalTagger && stricmp(language, "english")) ? false : true;
+	bool isGerman = (!stricmp(language, "german")) ? true : false;
+
+	// number processing has happened
+	int kind = IsNumber(original, numberStyle);
+	if (firstTry && (kind != NOT_A_NUMBER || IsDate(original )))
+		properties = ProcessNumber(at, original, revise, entry, canonical, sysflags, cansysflags, firstTry, nogenerate, start,kind); // case sensitive, may add word to dictionary, will not augment flags of existing wordskind);
+	if (canonical && (IsDigit(*canonical->word) || IsNonDigitNumberStarter(*canonical->word))) return properties;
+	entry = FindWord(original, 0, PRIMARY_CASE_ALLOWED);
+
+	if (!csEnglish)
+	{
+		if (!entry) entry = FindWord(original, 0, SECONDARY_CASE_ALLOWED); // Try harder to find the foreign word, e.g. German wochentag -> Wochentag
+		if (entry) canonical = GetCanonical(entry);
+	}
+	if (*original == '$' && !original[1]) { ; } // $
+	else if (*original == '~' || (*original == USERVAR_PREFIX && !IsDigit(original[1])) || *original == '^' || (*original == SYSVAR_PREFIX && original[1]))
 	{
 		char copy[MAX_WORD_SIZE];
 		MakeLowerCopy(copy,original);
@@ -321,23 +679,19 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		while (--x >= start) if (*wordStarts[x] == '"') break;
 		if (x > 0 && wordStarts[x] && *wordStarts[x] != '"') start = at; // there is no quote before us so we are starting quote (or ending quote on new sentence)
 	}
-	if (wordStarts[start] && (*wordStarts[start] == '"' || *wordStarts[start] == '(')) ++start; // skip over any quotes or paren starter -- consider next thing a starter
-	uint64 properties = 0;
-	sysflags = cansysflags = 0;
-	canonical = 0;
+	if (at > 0 && wordStarts[start] && (*wordStarts[start] == '"' || *wordStarts[start] == '(')) ++start; // skip over any quotes or paren starter -- consider next thing a starter
 	if (at == 0) at = 1; //but leave <0 alone, means dont look at neighbors
-	if (at > 0 && !wordStarts[at-1]) wordStarts[at-1] = reuseAllocation(wordStarts[at-1],(char*)""); // protection
-	if (at > 0 && !wordStarts[at+1]) wordStarts[at+1] = reuseAllocation(wordStarts[at+1],(char*)"");	// protection
+	if (at > 0 && !wordStarts[at-1]) wordStarts[at-1] = AllocateHeap((char*)""); // protection
+	if (at > 0 && !wordStarts[at+1]) wordStarts[at+1] = AllocateHeap((char*)"");	// protection
 
-	if (tokenControl & ONLY_LOWERCASE && IsUpperCase(*original) && (*original != 'I' || original[1])) MakeLowerCase(original);
+	if (tokenControl & ONLY_LOWERCASE && IsUpperCase(*original) && ((csEnglish && *original != 'I') || original[1])) MakeLowerCase(original);
 
-	entry = FindWord(original,0,PRIMARY_CASE_ALLOWED);
 	if (entry && entry->systemFlags & CONDITIONAL_IDIOM) 
 	{
 		char* script = entry->w.conditionalIdiom;
 		if (script[1] != '=') return entry->properties; // has conditions, is not absolute and may be overruled
 	}
-	if (entry && entry->properties == 0) entry = 0; // not a word we actually know (might be phrase starter like Wait)
+	if (entry && !KnownUsefulWord(entry)) entry = 0; // not a word we actually know (might be phrase starter like Wait)
 
 	///////////// PUNCTUATION
 
@@ -369,108 +723,58 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 
 	///////// WORD REWRITES particularly from pennbank tokenization
 
-	if (*original == '@' && !original[1])
+	if (csEnglish && *original == '@' && !original[1])
 	{
 		strcpy(original,(char*)"at");
 		entry = canonical = FindWord(original,0,PRIMARY_CASE_ALLOWED);
-		original = reuseAllocation(original,entry->word); 
+		original = AllocateHeap(entry->word); 
 		if (revise) revise = entry;
 	}
 
 	WORDP ZZ = FindWord(original,0,LOWERCASE_LOOKUP);
 	if (!ZZ) {;}
-	else if (!stricmp(original,(char*)"the") || !stricmp(original,(char*)"a") || !stricmp(original,(char*)"this") || !stricmp(original,(char*)"these") || !stricmp(original,(char*)"an")  ) // force lower case on these determiners regardless
-	{
-		entry =  canonical = ZZ;
-		original = reuseAllocation(original,entry->word);
-		if (revise) revise = entry;
-	}
 	else if (ZZ->properties & (PRONOUN_SUBJECT|PRONOUN_OBJECT))
 	{
 		entry =  canonical = ZZ;
-		original = reuseAllocation(original,entry->word);
-		if (revise) revise = entry;
-	}
-	else if (!stricmp(original,(char*)"His") || !stricmp(original,(char*)"Then") || !stricmp(original,(char*)"Thus"))
-	{
-		entry =  canonical = ZZ; //force lower case - dont want "His" as plural of HI nor thi's
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	else if (start != at && tokenControl & STRICT_CASING) {;} // believe all upper case items not at sentence start when using strict casing
-	else if (ZZ->properties & (DETERMINER|PREPOSITION|PRONOUN_POSSESSIVE|PRONOUN_BITS|AUX_VERB) && !IsNumber(original)) // prep and determiner are ALWAYS considered lowercase for parsing (which happens later than proper name extraction)
+	else if (ZZ->properties & (DETERMINER|PREPOSITION|PRONOUN_POSSESSIVE|PRONOUN_BITS|AUX_VERB) && IsNumber(original, numberStyle) == NOT_A_NUMBER ) // prep and determiner are ALWAYS considered lowercase for parsing (which happens later than proper name extraction)
 	{
 		entry =  canonical = ZZ;
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 		if (ZZ->properties & (MORE_FORM|MOST_FORM)) canonical = NULL;	// we dont know yet
 	}
 	else if (at > 0 && ZZ->properties & (DETERMINER_BITS|PREPOSITION|CONJUNCTION|AUX_VERB) && strcmp(original,(char*)"May") && (*wordStarts[at-1] == '-' || *wordStarts[at-1] == ':' || *wordStarts[at-1] == '"' || at == startSentence || !(STRICT_CASING  & tokenControl))) // not the month
 	{
 		entry =  canonical = ZZ; //force lower case on all determiners and such
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	else if (at == start && ZZ->properties & VERB_INFINITIVE && !entry) // upper case start has no meaning but could be imperative verb, be that
 	{
 		entry = canonical = ZZ;
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	
-	if (!stricmp(original,(char*)"yes") )
+	if (csEnglish && !stricmp(original,(char*)"yes") )
 	{
 		entry =  canonical = FindWord(original,0,LOWERCASE_LOOKUP); //force lower case pronoun, dont want "yes" to be Y's
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
-	else if (!stricmp(original,(char*)"p.m") )
-	{
-		entry =  canonical = FindWord((char*)"p.m.",0,LOWERCASE_LOOKUP);
-		original = reuseAllocation(original,entry->word);
-		if (revise) revise = entry;
-	}
-	else if (!stricmp(original,(char*)"a.m") )
-	{
-		entry =  canonical = FindWord((char*)"a.m.",0,LOWERCASE_LOOKUP);
-		original = reuseAllocation(original,entry->word);
-		if (revise) revise = entry;
-	}
-	else if (at > 0 && !stricmp(original,(char*)"ca") &&  !stricmp(wordStarts[at+1],(char*)"not"))
-	{
-		entry = canonical = FindWord((char*)"can",0,LOWERCASE_LOOKUP); // casing irrelevant with not after it was "can't" split by pennbank to ca n't
-		original = reuseAllocation(original,entry->word);
-		if (revise) revise = entry;
-	}
-	else if (at > 0 && !stricmp(original,(char*)"wo") &&  !stricmp(wordStarts[at+1],(char*)"not"))
-	{
-		entry = canonical = FindWord((char*)"will",0,LOWERCASE_LOOKUP); // casing irrelevant with not after it was "can't" split by pennbank to ca n't
-		cansysflags = sysflags = entry->systemFlags; // probably nothing here
-		original = reuseAllocation(original,entry->word);
-		if (revise) revise = entry;
-	}
-	else if (!stricmp(original,(char*)"n'") )
-	{
-		entry = canonical = FindWord((char*)"and",0,LOWERCASE_LOOKUP);
-		original = reuseAllocation(original,entry->word);
-		if (revise) revise = entry;
-	}
-	else if (!stricmp(original,(char*)"'re") )
-	{
-		entry = canonical = FindWord((char*)"are",0,LOWERCASE_LOOKUP);
-		original = reuseAllocation(original,entry->word);
-		if (revise) revise = entry;
-	}
-	else if (at > 0 && !stricmp(original,(char*)"'s") && (!stricmp(wordStarts[at-1],(char*)"there") || !stricmp(wordStarts[at-1],(char*)"it") || !stricmp(wordStarts[at-1],(char*)"who") || !stricmp(wordStarts[at-1],(char*)"what")  || !stricmp(wordStarts[at-1],(char*)"that") )) //there 's and it's  who's what's
+	else if (csEnglish && at > 0 && !stricmp(original,(char*)"'s") && (!stricmp(wordStarts[at-1],(char*)"there") || !stricmp(wordStarts[at-1],(char*)"it") || !stricmp(wordStarts[at-1],(char*)"who") || !stricmp(wordStarts[at-1],(char*)"what")  || !stricmp(wordStarts[at-1],(char*)"that") )) //there 's and it's  who's what's
 	{
 		entry = canonical = FindWord((char*)"is",0,LOWERCASE_LOOKUP);
-		original = reuseAllocation(original,entry->word);
+		original = AllocateHeap(entry->word);
 		if (revise) revise = entry;
 	}
 	size_t len = strlen(original);
-	unsigned int kind =  IsNumber(original);
 
-	if (IsUpperCase(*original) && firstTry && kind != ROMAN_NUMBER) // someone capitalized things we think of as ordinary.
+	if (csEnglish && IsUpperCase(*original) && firstTry && kind != ROMAN_NUMBER) // someone capitalized things we think of as ordinary.
 	{
 		if (tokenControl & STRICT_CASING && at != start)  // we MUST believe him
 		{
@@ -494,7 +798,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		if (check && check->properties & (PREPOSITION|DETERMINER_BITS|CONJUNCTION|PRONOUN_BITS|POSSESSIVE_BITS)) 
 		{
 			entry =  canonical = FindWord(original,0,LOWERCASE_LOOKUP); //force lower case pronoun, dont want "His" as plural of HI nor thi's
-			original = reuseAllocation(original,entry->word);
+			original = AllocateHeap(entry->word);
 			if (revise) revise = entry;
 		}
 	}
@@ -503,7 +807,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 	len = strlen(original);
 
 	// ILLEGAL STUFF that our tokenization wouldn't provide
-	if (len > 2 && original[len-2] == '\'')  // "it's  and other illegal words"
+	if (csEnglish && len > 2 && original[len-2] == '\'')  // "it's  and other illegal words"
 	{
 		canonical = entry = StoreWord(original,0);
 		cansysflags = sysflags = entry->systemFlags; // probably nothing here
@@ -513,336 +817,43 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 	// hyphenated word which is number on one side:   Cray-3  3-second
 	char* hyphen = strchr(original,'-');
 	if (hyphen && !hyphen[1]) hyphen = NULL; // not real
-	char* slash = strchr(original,'/');
 
-	// 1/1/1990 year
-	if (IsDigit(*original) && slash && IsDigit(slash[1])) // 1/1/21 time word?
-	{
-		char* slash1 = strrchr(original,'/');
-		if (IsDigit(slash1[1]) && slash1[2] && slash1[3] && slash1[4] && !slash1[5] && atoi(slash1+1) > 1100) // finding 4 digit year
-		{
-			properties = NOUN|NOUN_NUMBER|ADJECTIVE|ADJECTIVE_NUMBER;
-			canonical = entry = StoreWord(original,properties,TIMEWORD);
-			cansysflags = sysflags = entry->systemFlags | TIMEWORD;
-			return properties;
-		}
-	}
-
-	if ((IsDigit(*original) || IsDigit(original[1]) || *original == '\'') && (kind || hyphen))
-	{
-		// DATE IN 2 DIGIT OR 4 DIGIT NOTATION
-		char word[MAX_WORD_SIZE];
-		*word = 0;
-		// 4digit year 1990 and year range 1950s and 1950's
-		if (IsDigit(*original) && IsDigit(original[1])   && IsDigit(original[2]) && IsDigit(original[3])  &&
-			(!original[4] || (original[4] == 's' && !original[5]) || (original[4] == '\'' && original[5] == 's' && !original[6] ))) sprintf(word,(char*)"%d",atoi(original));
-		//  2digit year and range '40 and '40s
-		if (*original == '\'' && IsDigit(original[1]) && IsDigit(original[2]) &&
-			(!original[3] || (original[3] == 's' && !original[4]) || (original[3] == '\'' && original[4] == 's' && !original[5] ))) sprintf(word,(char*)"19%d",atoi(original+1));
-		if (*word)
-		{
-			properties = NOUN|NOUN_NUMBER|ADJECTIVE|ADJECTIVE_NUMBER;
-			entry = StoreWord(original,properties,TIMEWORD);
-			canonical = StoreWord(word,properties,TIMEWORD);
-			sysflags = entry->systemFlags | TIMEWORD;
-			cansysflags = canonical->systemFlags | TIMEWORD;
-			return properties;
-		}
-	
-		// handle time like 4:30
-		if (len > 3 && len < 6 && IsDigit(original[len-1]) && (original[1] == ':' || original[2] == ':')) // 18:32
-		{
-			properties = NOUN|NOUN_NUMBER|ADJECTIVE|ADJECTIVE_NUMBER;
-			entry = canonical = StoreWord(original,properties); // 18:32
-			sysflags = entry->systemFlags | TIMEWORD;
-			cansysflags = canonical->systemFlags | TIMEWORD;
-			return properties;
-		}
-
-		// handle number range data like 120:129 
-		char* at = original;
-		int colon = 0;
-		while (*++at && (IsDigit(*at)|| *at == ':')) 
-		{
-			if (*at == ':') ++colon;
-		}
-		if (!*at && colon == 1) // was completely digits and a single colon
-		{
-			properties = NOUN|NOUN_NUMBER|ADJECTIVE|ADJECTIVE_NUMBER;
-			entry = canonical = StoreWord(original,properties); 
-			return properties;
-		}
-
-		// handle date range like 1920-22 or 1920-1955  or any number range
-		if (hyphen && hyphen != original)
-		{
-			char* at = original-1;
-			while (*++at)
-			{
-				if (IsDigit(*at)) continue;
-				if (*at == '-' && at == hyphen) continue;
-				break;
-			}
-			if (!*at)
-			{
-				properties = NOUN|NOUN_NUMBER|ADJECTIVE|ADJECTIVE_NUMBER;
-				entry = canonical = StoreWord(original,properties); 
-				if ((hyphen-original) == 4)
-				{
-					sysflags = entry->systemFlags | TIMEWORD;
-					cansysflags = canonical->systemFlags | TIMEWORD;
-				}
-				return properties;
-			}
-		}
-
-		// mark numeric fractions
-		char* fraction = strchr(original,'/');
-		if (fraction)
-		{
-			long basenumber = 0;
-			// if we have piece before fraction
-			char* hyphen = strchr(original,'-');
-			if (hyphen) // we have prepart composite number like 3-1/2
-			{
-				*hyphen = 0;
-				basenumber = atoi(original);
-				*hyphen = '-';
-				original = hyphen + 1;
-			}
-			char number[MAX_WORD_SIZE];
-			strcpy(number,original);
-			number[fraction-original] = 0;
-			if (IsNumber(number) && IsNumber(fraction+1))
-			{
-				int x = atoi(number);
-				int y = atoi(fraction+1);
-				float val = (float)((float)x / (float)y);
-				val += basenumber;
-				sprintf(number,(char*)"%1.2f",val);
-				properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
-				if (!entry) entry = StoreWord(original,properties);
-				canonical = FindWord(number,0,PRIMARY_CASE_ALLOWED);
-				if (canonical) properties |= canonical->properties;
-				else canonical = StoreWord(number,properties);
-				sysflags = entry->systemFlags;
-				cansysflags = entry->systemFlags;
-				return properties;
-			}
-		}
-	}
-
-	// cannot be a text number if upper case not at start
-	if (kind) // penn numbers as words do not go to change their entry value -- DO NOT TREAT "once" as a number, though canonical can be 1
-	{
-		if (kind != ROMAN_NUMBER) MakeLowerCase(original);
-		entry = StoreWord(original);
-		char number[MAX_WORD_SIZE];
-		char* value;
-		uint64 baseflags = (entry) ? entry->properties : 0;
-		if (kind == ROMAN_NUMBER) baseflags = 0; // ignore other meanings
-		char* br = hyphen;
-		if (!br) br = strchr(original,'_');
-
-		if (kind == PLACETYPE_NUMBER)
-		{
-			entry = StoreWord(original,properties);
-			sprintf(number,(char*)"%d",(int)Convert2Integer(original));
-			sysflags |= ORDINAL;
-			properties = ADVERB|ADJECTIVE|ADJECTIVE_NUMBER|NOUN|NOUN_NUMBER| (baseflags & TAG_TEST); // place numbers all all potential adverbs:  "*first, he wept"  but not in front of an adjective or noun, only as verb effect
-		}
-		else if (kind == FRACTION_NUMBER && strchr(original,'%'))
-		{
-			int64 val1 = atoi(original);
-			float val = (float)(val1 / 100.0);
-			sprintf(number,(char*)"%1.2f",val );
-			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
-			entry = StoreWord(original,properties);
-			canonical = StoreWord(number,properties);
-			properties |= canonical->properties;
-			sysflags = entry->systemFlags;
-			cansysflags = canonical->systemFlags;
-			return properties;
-		}
-		else if (kind == FRACTION_NUMBER && br) // word fraction
-		{
-			char c = *br;
-			*br = 0;
-			int64 val1 = Convert2Integer(original);
-			int64 val2 = Convert2Integer(br+1);
-			float val = (float)((float)val1 / (float)val2);
-			sprintf(number,(char*)"%1.2f",val );
-			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER;
-			*br = c;
-			entry = StoreWord(original,properties);
-			canonical = StoreWord(number,properties);
-			properties |= canonical->properties;
-			sysflags = entry->systemFlags;
-			cansysflags = canonical->systemFlags;
-			return properties;
-		}
-		else if (kind == CURRENCY_NUMBER) // money
-		{
-			GetCurrency((unsigned char*) original,value);
-			int64 n = Convert2Integer(value);
-			float fn = (float)atof(value);
-			if ((float)n == fn) 
-			{
-#ifdef WIN32
-				sprintf(number,(char*)"%I64d",n); 
-#else
-				sprintf(number,(char*)"%lld",n); 
-#endif
-			}
-			else if (strchr(value,'.')) sprintf(number,(char*)"%1.2f",fn);
-			else 
-			{
-#ifdef WIN32
-				sprintf(number,(char*)"%I64d",n); 
-#else
-				sprintf(number,(char*)"%lld",n); 
-#endif
-			}
-			properties = NOUN|NOUN_NUMBER;
-		}
-		else if (kind == FRACTION_NUMBER)
-		{
-			int64 val = Convert2Integer(original);
-			float val1 = (float)1.0 / (float)val;
-			sprintf(number,(char*)"%f",val1);
-			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER | (baseflags & (PREDETERMINER|DETERMINER));
-		}
-		else
-		{
-			if (strchr(original,'.')) 
-			{
-				float val = (float) atof(original);
-				if (IsDigitWithNumberSuffix(original)) // 10K  10M 10B
-				{
-					len = strlen(original);
-					char d = original[len-1];
-					if (d == 'k' || d == 'K') val *= 1000;
-					else if (d == 'm' || d == 'M') val *= 1000000;
-					else if (d == 'B' || d == 'b' || d == 'G' || d == 'g') val *= 1000000000;
-				}
-				sprintf(number,(char*)"%1.2f",val);
-			}
-			else 
-			{
-				int64 val = Convert2Integer(original);
-				if (val < 1000000000 && val >  -1000000000)
-				{
-					int smallval = (int) val;
-					sprintf(number,(char*)"%d",smallval);
-				}
-				else
-				{
-#ifdef WIN32
-					sprintf(number,(char*)"%I64d",val);	
-#else
-					sprintf(number,(char*)"%lld",val);	
-#endif
-				}
-			
-			}
-			properties = ADJECTIVE|NOUN|ADJECTIVE_NUMBER|NOUN_NUMBER | (baseflags & (PREDETERMINER|DETERMINER));
-		}
-		canonical = StoreWord(number,properties,sysflags);
-		cansysflags |= sysflags;
-
-		// other data already existing on the number
-
-		if (entry->properties & PART_OF_SPEECH) 
-		{
-			uint64 val = entry->properties; // numbers we "know" in some form should be as we know them. like "once" is adverb and adjective, not cardinal noun
-			if (entry->properties & NOUN && !(entry->properties & NOUN_BITS)) // we dont know its typing other than as noun... figure it out
-			{
-				if (IsUpperCase(*entry->word)) val |= NOUN_PROPER_SINGULAR;
-				else val |= NOUN_SINGULAR;
-			}
-			if (val & ADJECTIVE_NORMAL) // change over to known number
-			{
-				properties ^= ADJECTIVE_NORMAL;
-				properties |= ADJECTIVE_NUMBER|ADJECTIVE;
-			}
-			if (val & NOUN_SINGULAR) // change over to known number
-			{
-				properties ^= NOUN_SINGULAR;
-				properties |= NOUN_NUMBER|NOUN;
-				if (tokenControl & TOKEN_AS_IS && !canonical) canonical = entry;
-			}
-			if (val & ADVERB) 
-			{
-				properties |= entry->properties & (ADVERB);
-				if (tokenControl & TOKEN_AS_IS  && !canonical) canonical = entry;
-			}
-			if (val & PREPOSITION) 
-			{
-				properties |= PREPOSITION; // like "once"
-				if (tokenControl & TOKEN_AS_IS  && !canonical) canonical = entry;
-			}
-			if (val & PRONOUN_BITS)  // in Penntags this is CD always but "no one is" is NN or PRP
-			{
-				properties |= entry->properties & PRONOUN_BITS;
-				//if (at > 1 && !stricmp(wordStarts[at-1],(char*)"no"))
-				//{
-					//properties |= val & PRONOUN_BITS; // like "one"
-					if (tokenControl & TOKEN_AS_IS  && !canonical) canonical = entry;
-				//}
-			}
-			if (val & VERB) 
-			{
-				properties |= entry->properties & ( VERB_BITS | VERB); // like "once"
-				if (tokenControl & TOKEN_AS_IS  && !canonical) canonical = FindWord(GetInfinitive(original,false),0,LOWERCASE_LOOKUP);
-			}
-			if (val & POSSESSIVE && tokenControl & TOKEN_AS_IS && !stricmp(original,(char*)"'s") && at > start) // internal expand of "it 's" and "What 's" and capitalization failures that contractions.txt wouldn't have handled 
-			{
-				properties |= AUX_BE | POSSESSIVE | VERB_PRESENT_3PS | VERB;
-				entry = FindWord((char*)"'s",0,PRIMARY_CASE_ALLOWED);
-			}
-		}
-		entry = StoreWord(original,properties,sysflags);
-		sysflags |= entry->systemFlags;
-		cansysflags |= canonical->systemFlags;
-		return properties;
-	}
-		
 	// use forced canonical?
 	if (!canonical && entry)
 	{
-		char* canon = GetCanonical(entry);
-		if (canon) canonical = StoreWord(canon);
+		WORDP canon = GetCanonical(entry);
+		if (canon) canonical = canon;
 	}
 	
 	if (entry && entry->properties & (PART_OF_SPEECH|TAG_TEST|PUNCTUATION)) // we know this usefully already
 	{
 		properties |= entry->properties;
 		sysflags |= entry->systemFlags;
-		if (properties & VERB_PAST)
+		if (csEnglish && properties & VERB_PAST)
 		{
 			char* participle = GetPastParticiple(GetInfinitive(original,true));
 			if (participle && !strcmp(participle,original)) properties |= VERB_PAST_PARTICIPLE; // wordnet exceptions doesnt bother to list both
 		}
-		if (properties & VERB_PAST_PARTICIPLE)
+		if (csEnglish && properties & VERB_PAST_PARTICIPLE)
 		{
 			char* participle = GetPastParticiple(GetInfinitive(original,true));
 			if (participle && !strcmp(participle,original)) properties |= NOUN_ADJECTIVE;
 		}
-		char* canon = GetCanonical(entry);
-		canonical = (canon) ? FindWord(canon,0,PRIMARY_CASE_ALLOWED) : NULL;
+		WORDP canon = GetCanonical(entry);
+		canonical = canon;
 		if (canonical) cansysflags = canonical->systemFlags;
 
 		// possessive pronoun-determiner like my is always a determiner, not a pronoun. 
 		if (entry->properties & (COMMA | PUNCTUATION | PAREN | QUOTE | POSSESSIVE | PUNCTUATION)) return properties;
 	}
-	bool known = (entry) ? ((entry->properties & PART_OF_SPEECH)  != 0) : false;
+	bool known = KnownUsefulWord(entry);
 	bool preknown = known;
 
 	/////// WHETHER OR NOT WE KNOW THE WORD, IT MIGHT BE ALSO SOME OTHER WORD IN ALTERED FORM (like plural noun or comparative adjective)
+	char lower[MAX_WORD_SIZE];
 
-	if (!(properties & VERB_BITS) && (at == start || !IsUpperCase(*original))) // could it be a verb we dont know directly (even if we know the word)
+	if (csEnglish && !(properties & VERB_BITS) && (at == start || !IsUpperCase(*original))) // could it be a verb we dont know directly (even if we know the word)
 	{
-		char lower[MAX_WORD_SIZE];
 		MakeLowerCopy(lower,original);
 		char* verb =  GetInfinitive(lower,true); 
 		if (verb)  // inifinitive will be different from original or we would already have found the word
@@ -859,9 +870,8 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		}
 	}
 	
-	if (!(properties & (NOUN_BITS|PRONOUN_BITS))) // could it be plural noun we dont know directly -- eg dogs or the plural of a singular we know differently-- "arms is both singular and plural" - avoid pronouns like "his" or "hers"
+	if (csEnglish && !(properties & (NOUN_BITS|PRONOUN_BITS))) // could it be plural noun we dont know directly -- eg dogs or the plural of a singular we know differently-- "arms is both singular and plural" - avoid pronouns like "his" or "hers"
 	{
-		char lower[MAX_WORD_SIZE];
 		MakeLowerCopy(lower,original);
 		WORDP X = FindWord(original,0,LOWERCASE_LOOKUP);
 		if (X && strcmp(original,X->word)) // upper case noun we know in lower case -- "Proceeds"
@@ -882,11 +892,11 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 				if (!canonical) canonical = FindWord(noun,0,PRIMARY_CASE_ALLOWED); // 2ndary preference for canonical is noun
 
 				// can it be a number?
-				unsigned int kind =  IsNumber(noun);
+				unsigned int kind =  IsNumber(noun, numberStyle);
 				char number[MAX_WORD_SIZE];
-				if (kind && kind != PLACETYPE_NUMBER) // do not decode seconds to second Place, but tenths can go to tenth
+				if (kind != NOT_A_NUMBER && kind != PLACETYPE_NUMBER) // do not decode seconds to second Place, but tenths can go to tenth
 				{
-					int64 val = Convert2Integer(noun);
+					int64 val = Convert2Integer(noun, numberStyle);
 					if (val < 1000000000 && val >  -1000000000)
 					{
 						int smallval = (int) val;
@@ -907,9 +917,8 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		}
 	}
 
-	if (!(properties & ADJECTIVE_BITS) && (at == start || !IsUpperCase(*original)) && len > 3) // could it be comparative adjective we werent recognizing even if we know the word
+	if (csEnglish && !(properties & ADJECTIVE_BITS) && (at == start || !IsUpperCase(*original)) && len > 3) // could it be comparative adjective we werent recognizing even if we know the word
 	{
-		char lower[MAX_WORD_SIZE];
 		MakeLowerCopy(lower,original);
 		if (lower[len-1] == 'r' && lower[len-2] == 'e' && !canonical) // if canonical its like "slaver" and should never be reduced
 		{
@@ -937,9 +946,8 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		}
 	}
 
-	if (!(properties & ADVERB) && !(properties & (NOUN|VERB)) && (at == start || !IsUpperCase(*original)) && len > 3) // could it be comparative adverb even if we know the word
+	if (csEnglish && !(properties & ADVERB) && !(properties & (NOUN|VERB)) && (at == start || !IsUpperCase(*original)) && len > 3) // could it be comparative adverb even if we know the word
 	{
-		char lower[MAX_WORD_SIZE];
 		MakeLowerCopy(lower,original);
 		if (lower[len-1] == 'r' && lower[len-2] == 'e'  && !canonical)
 		{
@@ -968,12 +976,17 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 	}
 
 	// DETERMINE CANONICAL OF A KNOWN WORD
-	if (!canonical && !IS_NEW_WORD(entry)) // we dont know the word and didn't interpolate it from noun or verb advanced forms (cannot get canonical of word created this volley)
+	if (csEnglish && !canonical && !IS_NEW_WORD(entry)) // we dont know the word and didn't interpolate it from noun or verb advanced forms (cannot get canonical of word created this volley)
 	{
-		if (properties & (VERB|NOUN_GERUND)) canonical = FindWord(GetInfinitive(original,true),0,PRIMARY_CASE_ALLOWED); // verb or known gerund (ing) or noun plural (s) which might be a verb instead
-		if (!canonical && properties & (MORE_FORM|MOST_FORM)) // get base form
+		if (properties & (VERB | NOUN_GERUND))
 		{
-			canonical = FindWord(GetAdjectiveBase(original,true),0,PRIMARY_CASE_ALLOWED);
+			char* inf = GetInfinitive(original, true);
+			if (inf) canonical = FindWord(inf, 0, PRIMARY_CASE_ALLOWED); // verb or known gerund (ing) or noun plural (s) which might be a verb instead
+		}
+		if (!canonical && properties & (MORE_FORM | MOST_FORM)) // get base form
+		{
+			char* adj = GetAdjectiveBase(original, true);
+			if (adj) canonical = FindWord(adj,0,PRIMARY_CASE_ALLOWED);
 			if (!canonical) canonical = FindWord(GetAdverbBase(original,true),0,PRIMARY_CASE_ALLOWED);
 		}
 		if (!canonical && properties & NOUN) // EVEN if we do know it... flies is a singular and needs canonical for fly BUG
@@ -988,7 +1001,11 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			if (!canonical) canonical = FindWord(singular,0,PRIMARY_CASE_ALLOWED);
 		}
 
-		if (!canonical) canonical = FindWord(GetAdjectiveBase(original,true),0,PRIMARY_CASE_ALLOWED);
+		if (!canonical)
+		{
+			char* adj = GetAdjectiveBase(original, true);
+			if (adj) canonical = FindWord(adj, 0, PRIMARY_CASE_ALLOWED);
+		}
 
 		if (properties & (ADJECTIVE_NORMAL|ADVERB)) // some kind of known adjective or adverb
 		{
@@ -1030,7 +1047,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		}
 		else if (!canonical && properties & (NOUN_SINGULAR | NOUN_PROPER_SINGULAR)) canonical = entry;
 	}
-	if (preknown && !canonical) // may have been seen earlier in sentence so have to check what base SHOULD be
+	if (csEnglish && preknown && !canonical) // may have been seen earlier in sentence so have to check what base SHOULD be
 	{
 		char* base = NULL;
 		if (entry->properties & (MORE_FORM|MOST_FORM))
@@ -1043,7 +1060,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		canonical = (base) ? FindWord(base) : entry; 
 	}
 	
-	if (hyphen  && hyphen != original) // check for possible adj meaning "six-pack" is known as noun but can also be adj. as is "6-month"
+	if (csEnglish && hyphen  && hyphen != original) // check for possible adj meaning "six-pack" is known as noun but can also be adj. as is "6-month"
 	{
 		*hyphen = 0;
 		WORDP X = FindWord(original,0,LOWERCASE_LOOKUP);
@@ -1051,7 +1068,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		WORDP Y = FindWord(hyphen+1,0,LOWERCASE_LOOKUP);
 		*hyphen = '-';
 		// adjective made from counted singular noun:  6-month
-		if (X && Y && IsNumber(X->word,false))
+		if (X && Y && IsNumber(X->word,numberStyle,false) != NOT_A_NUMBER)
 		{
 			if (Y->properties & NOUN && !stricmp(Y->word,GetSingularNoun(Y->word, false, true))) // number with singular noun cant be anything but adjective
 			{
@@ -1077,7 +1094,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 	char tmpword[MAX_WORD_SIZE];
 
 	// A WORD WE NEVER KNEW - figure it out
-	if (!preknown) // if we didnt know the original word, then even if we've found noun/verb forms of it, we need to test other options
+	if (csEnglish && !preknown) // if we didnt know the original word, then even if we've found noun/verb forms of it, we need to test other options
 	{
 			// process by know parts of speech or potential parts of speech
 		if (!(properties & NOUN)) // could it be a noun but not already known as a known (eg noun_gerund from verb)
@@ -1197,10 +1214,10 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			if (!properties) // since we recognize no component of the hypen, try as number stuff
 			{
 				*hyphen = 0;
-				if (IsDigit(*original) || IsDigit(hyphen[1]) ||  IsNumber(original) || IsNumber(hyphen+1))
+				if (IsNumber(original, numberStyle) != NOT_A_NUMBER )
 				{
 					int64 n;
-					n = Convert2Integer((IsNumber(original) || IsDigit(*original)) ? original : (hyphen+1));
+					n = Convert2Integer((IsNumber(original, numberStyle) != NOT_A_NUMBER || IsDigit(*original)) ? original : (hyphen+1), numberStyle);
 					#ifdef WIN32
 					sprintf(tmpword,(char*)"%I64d",n); 
 #else
@@ -1219,18 +1236,19 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		}
 	}
 
-	// fill in supplemental flags
-	if (properties & NOUN && !(properties & NOUN_BITS))
+	// fill in supplemental flags - all German nouns are uppercase, so cannot use it to determine if proper or not
+	if (!isGerman && properties & NOUN && !(properties & NOUN_BITS))
 	{
 		if (entry && entry->internalBits & UPPERCASE_HASH) properties |= NOUN_PROPER_SINGULAR;
 		else properties |= NOUN_SINGULAR;
 	}
 	if (canonical && entry) entry->systemFlags |= canonical->systemFlags & AGE_LEARNED; // copy age data across
-	else if (IS_NEW_WORD(entry) && !canonical) canonical = DunknownWord;
+	else if (entry && IS_NEW_WORD(entry) && !canonical) canonical = DunknownWord;
 
 	if (properties){;}
 	else if (tokenControl & ONLY_LOWERCASE) {;}
 	else if (at > 0 && tokenControl & STRICT_CASING && at != start && *wordStarts[at-1] != ':'){;} // can start a sentence after a colon (like newspaper headings
+	else if (isGerman) {;}
 	else 
 	{
 #ifndef NOPOSPARSER
@@ -1269,7 +1287,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 			}
 			if (flags1) 
 			{
-				original = reuseAllocation(original,D1->word);
+				original = D1->word;
 				if (revise) wordStarts[at] = xrevise->word;
 				entry = D1;
 				canonical = D2;
@@ -1291,6 +1309,7 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 	strcpy(word,original);
 	word[len-1] = 0; // word w/o trailing s if any
 	if (nogenerate){;}
+	else if (!csEnglish) {;}
 	else if (!firstTry) {;} // this is second attempt
 	else if (!properties && firstTry) 
 	{
@@ -1362,6 +1381,8 @@ uint64 GetPosData( int at, char* original,WORDP& revise, WORDP &entry,WORDP &can
 		if (!canonical) canonical = DunknownWord;
 	}
 	if (!canonical) canonical = entry;
+	if (IsModelNumber(original))  properties |= MODEL_NUMBER;
+ 
 	AddProperty(entry,properties);
 	// interpolate singular normal nouns to adjective_noun EXCEPT qword nouns like "why"
 	//if (properties & (NOUN_SINGULAR|NOUN_PLURAL) && !(entry->properties & QWORD) && !strchr(entry->word,'_')) flags |= ADJECTIVE_NOUN; // proper names also when followed by ' and 's  merge to be adjective nouns  
@@ -1392,7 +1413,7 @@ void SetSentenceTense(int start, int end)
 	bool subjectFound = false;
 	if ((trace & TRACE_POS || prepareMode == POS_MODE) && CheckTopicTrace()) 
 	{
-		if ( prepareMode == POS_MODE || tmpPrepareMode == POS_MODE || prepareMode == PENN_MODE || prepareMode == POSVERIFY_MODE  || prepareMode == POSTIME_MODE ) Log(STDTRACELOG,(char*)"Not doing a parse.\r\n");
+		if (  tmpPrepareMode == POS_MODE || prepareMode == POSVERIFY_MODE  || prepareMode == POSTIME_MODE ) Log(STDTRACELOG,(char*)"Not doing a parse.\r\n");
 	}
 
 	// assign sentence type
@@ -2075,8 +2096,8 @@ char* GetInfinitive(char* word, bool nonew)
 		verbFormat = VERB_INFINITIVE;  // fall  (fell) conflict
 		return D->word; //    infinitive value
 	}
-	char* canon =  (D) ? GetCanonical(D) : NULL; // "were" has direct canonical
-	if (canon && FindWord(canon)->properties & VERB) 
+	WORDP E =  (D) ? GetCanonical(D) : NULL; // "were" has direct canonical
+	if (E && E->properties & VERB) 
 	{
 		if (D->properties & (VERB_PRESENT|VERB_PRESENT_3PS)) verbFormat |= VERB_PRESENT;
 		if (D->properties & VERB_PRESENT_PARTICIPLE) verbFormat |= VERB_PRESENT_PARTICIPLE;
@@ -2089,7 +2110,7 @@ char* GetInfinitive(char* word, bool nonew)
 			if (word[len-1] == 'g') verbFormat |= VERB_PRESENT_PARTICIPLE;	// even if not stored on word because word like "eats" is a known noun instead
 			if (word[len-2] == 'e' && word[len-1] == 'd') verbFormat |= VERB_PAST_PARTICIPLE;	// even if not stored on word because word like "eats" is a known noun instead
 		}
-		return canon;
+		return E->word;
 	}
 		
     if (D && D->properties & VERB && GetTense(D) ) 
@@ -2198,7 +2219,7 @@ char* GetInfinitive(char* word, bool nonew)
             if (D && D->properties & VERB_INFINITIVE) return D->word; //   found it
         }
 
-		if (!buildDictionary && !nonew && !fullDictionary)
+		if (!xbuildDictionary && !nonew && !fullDictionary)
 		{
 			char wd[MAX_WORD_SIZE];
 			strcpy(wd,word);
@@ -2265,7 +2286,7 @@ char* GetInfinitive(char* word, bool nonew)
         D = FindWord(word,len-3,controls);    //   drop ing
         if (D && D->properties & VERB_INFINITIVE) return D->word; //   found it
 
-		if (!buildDictionary && !nonew)
+		if (!xbuildDictionary && !nonew)
 		{
 			char wd[MAX_WORD_SIZE];
 			strcpy(wd,word);
@@ -2307,7 +2328,7 @@ char* GetInfinitive(char* word, bool nonew)
 		D = FindWord(word,len-1,UPPERCASE_LOOKUP); // if word exists in upper case, this is a plural and NOT a verb with s
 		if (D) return NULL;
 
-		if (!buildDictionary && !nonew && prior != 's') // not consciousness
+		if (!xbuildDictionary && !nonew && prior != 's') // not consciousness
 		{
 			char wd[MAX_WORD_SIZE];
 			strcpy(wd,word);
@@ -2325,7 +2346,7 @@ char* GetInfinitive(char* word, bool nonew)
 		verbFormat = 0;
 		return word;
 	}
-	if ( nonew || buildDictionary ) return NULL;
+	if ( nonew || xbuildDictionary ) return NULL;
 	verbFormat = VERB_INFINITIVE;
 	return InferVerb(word,len);
 }
@@ -2534,7 +2555,7 @@ char* GetSingularNoun(char* word, bool initial, bool nonew)
 	}
 
 	if (D && D->properties & NOUN && !(D->properties & NOUN_PLURAL) && !(D->properties & (NOUN_PROPER_SINGULAR|NOUN_PROPER_PLURAL))) return D->word; //   unmarked as plural, it must be singular unless its a name
-    if (!D && IsNumber(word))  return word;
+    if (!D && IsNumber(word, numberStyle) != NOT_A_NUMBER)  return word;
 	if (D && D->properties & AUX_VERB) return NULL; // avoid "is" or "was" as plural noun
 
 	// check known from plural s or es
@@ -2578,7 +2599,7 @@ char* GetSingularNoun(char* word, bool initial, bool nonew)
 			}
 		}
 	}
-	if ( nonew || buildDictionary ) return NULL;
+	if ( nonew || xbuildDictionary ) return NULL;
 
 	nounFormat = (IsUpperCase(*word)) ? NOUN_PROPER_SINGULAR : NOUN_SINGULAR;
 	return InferNoun(word,len);
@@ -2717,7 +2738,7 @@ uint64 ProbableAdverb(char* original, unsigned int len,uint64& expectedBase) // 
 	//est
 	if (len > 4 && !strcmp(word+len-3,(char*)"est")) 
 	{
-		WORDP X = FindWord(word,len-2);
+		WORDP X = FindWord(word,len-3);
 		if (X && X->properties & ADVERB) expectedBase = ADVERB;
 		return ADVERB;
 	}
@@ -2794,6 +2815,16 @@ char* GetAdverbBase(char* word, bool nonew)
 			return D->word;
 		}
     }
+	if (len >= 5 && priorc == 'e' && lastc == 'r')
+	{
+		D = FindWord(word, len - 1, controls);
+		if (D && D->properties & ADVERB)
+		{
+			adverbFormat = MORE_FORM;
+			return D->word;
+		}
+	}
+
 	if (len > 5 && prior2c == 'e' && priorc == 's' && lastc == 't')
     {
         D = FindWord(word,len-3,controls);
@@ -2803,7 +2834,17 @@ char* GetAdverbBase(char* word, bool nonew)
 			return D->word;
 		}
     }
-	if ( nonew || buildDictionary) return NULL;
+	if (len > 5 && prior2c == 'e' && priorc == 's' && lastc == 't')
+	{
+		D = FindWord(word, len - 2, controls);
+		if (D && D->properties & ADVERB)
+		{
+			adverbFormat = MOST_FORM;
+			return D->word;
+		}
+	}
+
+	if ( nonew || xbuildDictionary) return NULL;
 	
 	return InferAdverb(word,len);
 }
@@ -2989,20 +3030,34 @@ uint64 ProbableAdjective(char* original, unsigned int len,uint64 &expectedBase) 
 		}
 	}
 
-	// est -  comparative
+	// est -  comparative -- hard est
 	if (len >= 4 &&  !strcmp(word+len-3,(char*)"est")  ) 
 	{
-		WORDP X = FindWord(word,len-1);
+		WORDP X = FindWord(word,len-3);
 		if (X && X->properties & ADJECTIVE_NORMAL) expectedBase = PROBABLE_ADJECTIVE;
 		return ADJECTIVE|ADJECTIVE_NORMAL|MOST_FORM;
 	}
+	// est -  comparative -- strange st
+	if (len >= 4 && !strcmp(word + len - 3, (char*)"est"))
+	{
+		WORDP X = FindWord(word, len - 2); // starnge
+		if (X && X->properties & ADJECTIVE_NORMAL) expectedBase = PROBABLE_ADJECTIVE;
+		return ADJECTIVE | ADJECTIVE_NORMAL | MOST_FORM;
+	}
 
-	// er -  comparative
+	// er -  comparative -- harder
 	if (len >= 4 &&  !strcmp(word+len-2,(char*)"er")  ) 
 	{
-		WORDP X = FindWord(word,len-1);
+		WORDP X = FindWord(word,len-2);
 		if (X && X->properties & ADJECTIVE_NORMAL) expectedBase = ADJECTIVE;
 		return ADJECTIVE|ADJECTIVE_NORMAL|MORE_FORM;
+	}
+	// er -  comparative -- stranger
+	if (len >= 4 && !strcmp(word + len - 2, (char*)"er"))
+	{
+		WORDP X = FindWord(word, len - 1);
+		if (X && X->properties & ADJECTIVE_NORMAL) expectedBase = ADJECTIVE;
+		return ADJECTIVE | ADJECTIVE_NORMAL | MORE_FORM;
 	}
 
 	return 0;
@@ -3106,7 +3161,7 @@ char* GetAdjectiveBase(char* word, bool nonew)
              if (D && D->properties & ADJECTIVE) return D->word; 
         }   
     }
-	if ( nonew || buildDictionary) return NULL;
+	if ( nonew || xbuildDictionary) return NULL;
 	
 	return InferAdjective(word,len);
 }

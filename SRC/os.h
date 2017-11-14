@@ -2,7 +2,7 @@
 #define _OSH_
 
 #ifdef INFORMATION
-Copyright (C) 2011-2016by Bruce Wilcox
+Copyright (C) 2011-2017 by Bruce Wilcox
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -22,26 +22,28 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #define SERVER_RECOVERY 4
 extern jmp_buf scriptJump[5];
 extern int jumpIndex;
-
+void ShowMemory(char* label);
 void JumpBack();
 void myexit(char* msg, int code = 4);
 void mystart(char* msg);
-
+extern char hide[4000];
 #define NORMALFILES 0
 #define MONGOFILES 1
 #define POSTGRESFILES 2
+#define MYSQLFILES 3
 extern bool logged;
 extern int filesystemOverride;
-extern char* ruleDepth[512];
-extern char* nameDepth[512];
-extern char* tagDepth[512][25];
+#define MAX_GLOBAL 600
+extern char* ruleDepth[MAX_GLOBAL];
+extern char* nameDepth[MAX_GLOBAL];
+extern char* tagDepth[MAX_GLOBAL][25];
 
 #define RECORD_SIZE 4000
 
 // MEMORY SYSTEM
-extern char* inverseStringDepth[512];
+extern char* releaseStackDepth[MAX_GLOBAL];
 extern unsigned int maxBufferLimit;
-extern unsigned int maxInverseStringGap;
+extern unsigned int maxReleaseStackGap;
 extern unsigned int maxBufferSize;
 extern unsigned int maxBufferUsed;	
 extern unsigned int bufferIndex;
@@ -49,26 +51,55 @@ extern unsigned int baseBufferIndex;
 extern unsigned int overflowIndex;
 extern char* buffers;
 extern bool showmem;
+extern unsigned long maxHeapBytes;
+extern char* heapBase;
+extern char* heapFree;
+extern char* stackFree;
+extern char* stackStart;
+extern char* heapEnd;
+extern unsigned long minHeapAvailable;
+extern int loglimit;
 
+char* Index2Heap(unsigned int offset);
+inline unsigned int Heap2Index(char* str) {return (!str) ? 0 : (unsigned int)(heapBase - str);}
+inline unsigned int Stack2Index(char* str) { return (!str) ? 0 : (unsigned int)(str - stackStart); }
+inline char* Index2Stack(unsigned int ptr) { return (!ptr) ? 0 : (stackStart + ptr); }
+
+// MEMORY SYSTEM
 void ResetBuffers();
-char* AllocateAlignedBuffer();
-char* AllocateBuffer();
-void FreeBuffer();
+char* AllocateBuffer(char*name = "");
+void FreeBuffer(char*name = "");
 void CloseBuffers();
+char* AllocateStack(char* word, size_t len = 0, bool localvar = false, bool align4 = false);
+void ReleaseInfiniteStack();
+void ReleaseStack(char* word);
+char* InfiniteStack(char*& limit,char* caller);
+char* InfiniteStack64(char*& limit,char* caller);
+void CompleteBindStack64(int n,char* base);
+void CompleteBindStack();
+bool AllocateStackSlot(char* variable);
+char* RestoreStackSlot(char* variable,char* slot);
+char* AllocateHeap(char* word,size_t len = 0,int bytes= 1,bool clear = false,bool purelocal = false);
+bool PreallocateHeap(size_t len);
+void ProtectNL(char* buffer);
+void InitStackHeap();
+void FreeStackHeap();
 bool KeyReady();
-int MakeDirectory(char* directory);
+bool InHeap(char* ptr);
+bool InStack(char* ptr);
 
 // FILE SYSTEM
+int MakeDirectory(char* directory);
 void EncryptInit(char* params);
 void DecryptInit(char* params);
 void EncryptRestart();
 extern unsigned int currentFileLine;
 extern unsigned int maxFileLine;
 extern char currentFilename[MAX_WORD_SIZE];
-extern struct tm* ptm;
 int FClose(FILE* file);
 void InitFileSystem(char* untouchedPath,char* readablePath,char* writeablePath);
 void C_Directories(char* x);
+void ResetEncryptTags();
 void StartFile(const char* name);
 int FileSize(FILE* in,char* buffer,size_t allowedSize);
 void FileDelete(const char* filename);
@@ -99,8 +130,10 @@ typedef size_t (*UserFileRead)(void* buffer,size_t size, size_t count, FILE* fil
 typedef size_t (*UserFileWrite)(const void* buffer,size_t size, size_t count, FILE* file);
 typedef int (*UserFileSize)(FILE* file, char* buffer, size_t allowedSize);
 typedef void (*UserFileDelete)(const char* name);
-typedef size_t (*UserFileDecrypt)(void* buffer,size_t size, size_t count, FILE* file);
-typedef size_t (*UserFileEncrypt)(const void* buffer,size_t size, size_t count, FILE* file);
+typedef size_t (*UserFileDecrypt)(void* buffer,size_t size, size_t count, FILE* file,char* filekind);
+typedef size_t (*UserFileEncrypt)(const void* buffer,size_t size, size_t count, FILE* file,char* filekind);
+
+typedef char*(*AllocatePtr)(char* word, size_t len, int bytes, bool clear, bool purelocal);
 
 typedef struct USERFILESYSTEM //  how to access user topic data
 {
@@ -118,16 +151,18 @@ typedef struct USERFILESYSTEM //  how to access user topic data
 extern USERFILESYSTEM userFileSystem;
 void InitUserFiles();
 void WalkDirectory(char* directory,FILEWALK function, uint64 flags);
-size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file);
-size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file);
+size_t DecryptableFileRead(void* buffer,size_t size, size_t count, FILE* file,bool decrypt,char* filekind);
+size_t EncryptableFileWrite(void* buffer,size_t size, size_t count, FILE* file,bool encrypt,char* filekind);
 char* GetUserPath(char* name);
 
 // TIME
 
 #define SKIPWEEKDAY 4 // from gettimeinfo
 
-char* GetTimeInfo(bool nouser=false,bool utc=false);
+char* GetTimeInfo(struct tm* ptm, bool nouser=false,bool utc=false);
 char* GetMyTime(time_t curr);
+void mylocaltime (const time_t * timer, struct tm* ptm);
+void myctime(time_t * timer,char* buffer);
 
 #ifdef __MACH__
 void clock_get_mactime(struct timespec &ts);
@@ -154,6 +189,8 @@ unsigned int GetFutureSeconds(unsigned int seconds);
 #define STDTRACEATTNLOG 201
 #define STDTIMETABLOG 301
 
+extern bool userEncrypt;
+extern bool ltmEncrypt;
 extern bool echo;
 extern bool showDepth;
 extern bool oob;
@@ -161,11 +198,13 @@ extern bool silent;
 extern uint64 logCount;
 extern char* testOutput;
 
-#define ReportBug(...) {Log(BUGLOG, __VA_ARGS__);}
-
+#define ReportBug(...) { Bug(); Log(BUGLOG, __VA_ARGS__);}
+#define DebugPrint(...) Log(STDDEBUGLOG, __VA_ARGS__)
 extern char logFilename[MAX_WORD_SIZE];
 extern bool logUpdated;
-extern char logmainbuffer[MAX_BUFFER_SIZE]; // no dynamic allocate. Know its there
+extern char* logmainbuffer; 
+extern int logsize;
+extern int outputsize;
 extern char serverLogfileName[200];
 extern int userLog;
 extern int serverLog;
@@ -173,8 +212,9 @@ extern bool serverPreLog;
 extern bool serverctrlz;
 
 unsigned int Log(unsigned int spot,const char * fmt, ...);
-void ChangeDepth(int value,char* where);
+void ChangeDepth(int value,char* where,bool nostackCutboack = false,char* code = NULL,FunctionResult result = NOPROBLEM_BIT);
 void BugBacktrace(FILE* out);
+void Bug();
 
 // RANDOM NUMBERS
 

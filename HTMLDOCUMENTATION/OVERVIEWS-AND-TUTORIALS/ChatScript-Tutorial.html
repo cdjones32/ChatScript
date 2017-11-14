@@ -15,7 +15,7 @@
 <p>This tutorial will show you how to use ChatScript for building a simple but useful chatbot - one that can help a human plan a travel.</p>
 <p>First download ChatScript, read the manual, go through the overview, and make sure you can chat with the default bot about its childhood.</p>
 <p>Now, in order to build a new chat-script from scratch: Create a folder called TEST inside the RAWDATA folder. Create an empty file named <code>tutorial.top</code>, and put it inside this TEST folder.</p>
-<p>Copy the file <code>ChatScript/filesharry.txt</code> that comes with the zip file into a new file <code>ChatScript/filesmine.txt</code>.</p>
+<p>Copy the file <code>RAWDATA/filesHarry.txt</code> that comes with the zip file into a new file <code>RAWDATA/filesmine.txt</code>.</p>
 <p>In <code>filesmine.txt</code>, insert a reference to your newly created file and revise the reference to HARRY. <code>filesmine.txt</code> looks like this:</p>
 <pre><code>RAWDATA/HARRY/simplecontrol.top # default bot control
 RAWDATA/TEST/tutorial.top # tutorial bot data</code></pre>
@@ -23,7 +23,7 @@ RAWDATA/TEST/tutorial.top # tutorial bot data</code></pre>
 <p>NOTE: This tutorial will cover only a small part of ChatScript's features - only those features needed for building our traveling-agent bot. You can find many more features in the documentation.</p>
 <h1 id="contents">Contents</h1>
 <ul>
-<li><a href="ChatScript-Tutorial.html#speaking-topic--t">Speaking (topic: , t:)</a></li>
+<li><a href="ChatScript-Tutorial-md#speaking-topic--t">Speaking (topic: , t:)</a></li>
 <li><a href="ChatScript-Tutorial.html#saying-more-keep-random-selection--repeat">Saying more (^keep, random selection [], ^repeat)</a></li>
 <li><a href="ChatScript-Tutorial.html#listening-u-reuse">Listening (u:, ^reuse)</a></li>
 <li><a href="ChatScript-Tutorial.html#short-term-memory--_">Short-term memory (* _)</a></li>
@@ -43,8 +43,8 @@ t: Hello, talk to me!</code></pre>
 <li><p>The keyword topic: defines a topic for conversation. We called our topic <code>~introductions</code> (topic names always start with <code>~</code>).</p></li>
 <li><p>The keyword <code>t:</code> defines a sentence to say within a topic (it's called a &quot;gambit&quot;, as the bot says it without waiting for our input).</p></li>
 </ul>
-<p>Put this text in <code>tutorial.top</code>. Then, at the client's prompt, type <code>:build 2</code>. You should see something like this:</p>
-<pre><code> &gt;:build 2 
+<p>Put this text in <code>tutorial.top</code>. Then, at the client's prompt, type <code>:build mine</code>. You should see something like this:</p>
+<pre><code> &gt;:build mine
  
  ----Reading file simplecontrol.top
  Reading outputmacro: ^harry
@@ -76,7 +76,7 @@ t: Hello, talk to me!</code></pre>
   I don&#39;t know what to say.
  </code></pre>
 <p>The bot just says what we told it to say, and then stuck, as it does not have anything else to say.</p>
-<p>If you are tired of speaking with the bot, you can exit the client using the <code>:shutdown</code> command.</p>
+<p>If you are tired of speaking with the bot, you can exit the client using the <code>:quit</code> command.</p>
 <h2 id="saying-more-keep-random-selection-repeat">Saying more (<code>^keep</code>, random selection <code>[]</code>, <code>^repeat</code>)</h2>
 <p>Let's make our bot a bit more interesting:</p>
 <pre><code>topic: ~introductions []

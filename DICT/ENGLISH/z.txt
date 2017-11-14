@@ -1,187 +1,122 @@
-﻿ zooflagellate ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
-    zoomastigote~1nz (^flagellated_protozoan~1) flagellate protozoan lacking photosynthesis and other plant-like characteristics
- zinc ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT ) 
-    Zn~1nz (^metal~2) a bluish-white lustrous metallic element
-    zinc~2vz coat or cover with zinc
- Zalophus_californicus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Zalophus_californianus~1n 
- Zito ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zarontin ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    ethosuximide~1n 
- Zambia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Republic_of_Zambia~1n 
- zone ( meanings=6 glosses=6 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ) 
-    zona~1nz (^structure~3) any encircling or beltlike structure
-    zone~2nz (^part~9) an area or region distinguished from adjacent parts by a distinctive feature or characteristic
-    geographical_zone~1nz (^geographical_region~1) any of the regions of the surface of the Earth loosely divided according to latitude or longitude
-    zone~4nz (^place~13) a locally circumscribed place characterized by some distinctive features
-    partition~5vz separate or apportion into sections
-    district~2vz regulate housing in
- Zaria ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
-    Zaria~1nz (^city~2) a city in north central Nigeria
- Zavier ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zoie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Zaire ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
-    Congo~2n 
- Zamarripa ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+﻿ Zante ( NOUN NOUN_PROPER_SINGULAR ) 
+ Zanzibar ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Zanzibar~1nz (^island~2) an island in the Indian Ocean off the east coast of Africa
+ Zurich ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Zurich~1nz (^city~2) the largest city in Switzerland
  Zabala ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zellers ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zabel ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Zacharias ( meanings=2 glosses=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
     Zechariah~1n 
     Zechariah~2nz (^prophet~2) a Hebrew minor prophet of the late 6th century BC
- Zama ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    battle_of_Zama~1n 
- Zigler ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zion ( meanings=3 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
-    Utopia~1n 
-    Sion~2n 
-    Sion~3nz (^hill~3) originally a stronghold captured by David 
- Zellmer ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zalewski ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zalophus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    genus_Zalophus~1n 
- Zackery ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zucker ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zoey ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
- Zelaya ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zhao ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zukowski ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zakary ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zayas ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zielinski ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zora ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- Zendejas ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zechariah ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
-    Book_of_Zachariah~1n 
-    Zacharias~2n 
- Zoe ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
  Zachary ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zeringue ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zimmermann ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zoa ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Zachery ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zack ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zackery ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
  Zahn ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zorn ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
- Zeke ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zygnemales ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Zygnematales~1n 
- zealotry ( meanings=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
-    fanaticism~1n 
- Zepeda ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zinn ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- zooplankton ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    zooplankton~1nz (^animal~1) animal constituent of plankton
- Zimmer ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
-    walker~2n 
- Zelia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Zelda ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- Zamboni ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    Zamboni~1nz (^machine~2) the trademark for a machine that smooths the ice in an ice-skating rink
- zebra_mussel ( meanings=1 NOUN NOUN_SINGULAR ) 
-    Dreissena_polymorpha~1n 
- Zhou ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
-    Zhou_dynasty~1n 
- Zackary ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zerbe ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zajac ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zak ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Zalewski ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zamarripa ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zambrano ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zamora ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zamudio ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zander ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zapata ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+    Emiliano_Zapata~1n 
+ Zaragoza ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+    Saragossa~1n 
+ Zarate ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zavala ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zayas ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zehr ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zeigler ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zelaya ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zeller ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zellers ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zellmer ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zeman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zendejas ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
  Zeno ( meanings=2 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
     Zeno_of_Citium~1n 
     Zeno_of_Elea~1n 
- Zuckerman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- zebra_crossing ( meanings=1 NOUN NOUN_SINGULAR ) 
-    pedestrian_crossing~1n 
- Zita ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Zarate ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zebulon ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zachery ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zepeda ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zerbe ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zeringue ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zhang ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zhao ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zhou ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+    Chow~1n 
+ Zhu ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  Ziegler ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
     Karl_Waldemar_Ziegler~1n 
- zebra_finch ( meanings=1 NOUN NOUN_SINGULAR ) 
-    Poephila_castanotis~1n 
- Zeller ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zeman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zavala ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zuniga ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zook ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zambrano ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zalophus_californianus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    California_sea_lion~1nz (^sea_lion~1) often trained as a show animal
- Zena ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Zumwalt ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zina ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Zante ( NOUN NOUN_PROPER_SINGULAR ) 
- Zabel ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- zigzag ( meanings=4 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT ) 
-    zag~1nz (^angular_shape~1) an angular shape characterized by sharp turns in alternating directions
-    zig-zag~1a 
-    zigzag~3bz in a zigzag course or on a zigzag path
-    crank~10v 
- Zurich ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Zurich~1nz (^city~2) the largest city in Switzerland
- Zane ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- zoopsia ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
-    zoopsia~1nz (^visual_hallucination~1) visual hallucination of animals
+ Zielinski ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zigler ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zimmer ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+    walker~2n 
  Zimmerman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zantac ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    ranitidine~1n 
- zoomastigote ( meanings=1 NOUN NOUN_SINGULAR ) 
-    zooflagellate~1n 
+ Zimmermann ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zink ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zinn ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zirkle ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zito ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zook ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zorn ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Zuber ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zucker ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zuckerman ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zukowski ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zumwalt ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zuniga ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zachariah ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zackary ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zada ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Zadie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Zain ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zeidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
-    Zeidae~1nz (^fish_family~1) a family of fish in the order Zeomorphi
- Zula ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- Zovirax ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    acyclovir~1n 
- Zehr ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zonotrichia_albicollis ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    white-throated_sparrow~1n 
- zoolatry ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
-    animal-worship~1n 
- Zuber ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zhang ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zanzibar ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
-    Zanzibar~1nz (^island~2) an island in the Indian Ocean off the east coast of Africa
- Zamudio ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
+ Zaire ( meanings=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+    Congo~2n 
+ Zakary ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zane ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zaria ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+    Zaria~1nz (^city~2) a city in north central Nigeria
+ Zavier ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zeb ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Zechariah ( meanings=2 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+    Book_of_Zachariah~1n 
+    Zacharias~2n 
+ Zelda ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
+ Zelia ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
  Zella ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
  Zelma ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- Zajac ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- zoril ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
-    Ictonyx_frenata~1n 
- Zeomorphi ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    order_Zeomorphi~1n 
+ Zena ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Zetta ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Zettie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Zigmund ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zina ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Zion ( meanings=3 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+    Utopia~1n 
+    State_of_Israel~1n 
+    Sion~3nz (^hill~3) originally a stronghold captured by David 
+ Zita ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Zoa ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Zoe ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 KINDERGARTEN ) 
+ Zoey ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+ Zoie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
+ Zola ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
+    Emile_Zola~1nz (^novelist~1) French novelist and critic
+ Zollie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zona ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
+ Zora ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
+ Zeque ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zebulon ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zeke ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
+ Zula ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
+ Zac ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  zoom ( meanings=5 glosses=5 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON2 COMMON1 KINDERGARTEN posdefault:NOUN posdefault:VERB VERB_NOOBJECT ) 
     soar~1nz (^rise~1) the act of rising upward into the air
     rapid_growth~1nz (^rise~9) a rapid rise
     soar_upwards~1vz rise rapidly
     whizz_along~1vz move along very quickly
     zoom~5vz move with a low humming noise
- zest ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT ) 
-    tang~5n 
-    gusto~1n 
-    spice~5v 
- Zack ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zak ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
- Zamora ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zander ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zapata ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
-    Emiliano_Zapata~1n 
- Zaragoza ( meanings=1 NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
-    Saragossa~1n 
- Zeigler ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zhu ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
- Zink ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zirkle ( NOUN_HUMAN NOUN NOUN_PROPER_SINGULAR ) 
- Zachariah ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zada ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Zeb ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
- Zetta ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Zettie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR ) 
- Zigmund ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zola ( meanings=1 glosses=1 NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
-    Emile_Zola~1nz (^novelist~1) French novelist and critic
- Zollie ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zona ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_SHE NOUN NOUN_PROPER_SINGULAR KINDERGARTEN ) 
- Zeque ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR ) 
- Zac ( NOUN_HUMAN NOUN_FIRSTNAME NOUN_HE NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
  zero-sum_game ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     zero-sum_game~1nz (^game~2) a game in which the total of all the gains and losses is zero
  zoophilia ( meanings=1 NOUN NOUN_SINGULAR COMMON4 NOUN_NODETERMINER ) 
@@ -199,8 +134,23 @@
     zoning~1nz (^division~2) dividing an area into zones or sections reserved for different purposes such as residence and business and manufacturing etc
  zone_fire ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     zone_fire~1nz (^artillery_fire~1) artillery or mortar fire delivered in a constant direction at several quadrant elevations
+ zone ( meanings=6 glosses=6 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 KINDERGARTEN posdefault:NOUN VERB_DIRECTOBJECT ) 
+    zona~1nz (^structure~3) any encircling or beltlike structure
+    zone~2nz (^part~9) an area or region distinguished from adjacent parts by a distinctive feature or characteristic
+    geographical_zone~1nz (^geographical_region~1) any of the regions of the surface of the Earth loosely divided according to latitude or longitude
+    zone~4nz (^place~13) a locally circumscribed place characterized by some distinctive features
+    partition~5vz separate or apportion into sections
+    district~2vz regulate housing in
+ zoolatry ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
+    animal-worship~1n 
+ Zama ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    battle_of_Zama~1n 
+ zooplankton ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
+    zooplankton~1nz (^animal~1) animal constituent of plankton
  Zygnematales ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     order_Zygnematales~1n 
+ Zygnemales ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Zygnematales~1n 
  Zygnemataceae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Zygnemataceae~1nz (^protoctist_family~1) pond scums: common freshwater algae forming green slimy masses
  Zygnema ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -209,6 +159,14 @@
     zooid~1nz (^being~1) one of the distinct individuals forming a colonial animal such as a bryozoan or hydrozoan
  Zoomastigina ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     subclass_Zoomastigina~1n 
+ zoomastigote ( meanings=1 NOUN NOUN_SINGULAR ) 
+    zooflagellate~1n 
+ zooflagellate ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
+    zoomastigote~1nz (^flagellated_protozoan~1) flagellate protozoan lacking photosynthesis and other plant-like characteristics
+ Zeomorphi ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    order_Zeomorphi~1n 
+ Zeidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
+    Zeidae~1nz (^fish_family~1) a family of fish in the order Zeomorphi
  Zeus ( meanings=2 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     genus_Zeus~1n 
     Zeus~2nz (^Greek_deity~1) the supreme god of ancient Greek mythology
@@ -216,8 +174,12 @@
     John_Dory~1nz (^dory~1) European dory
  Zonotrichia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     genus_Zonotrichia~1n 
+ Zonotrichia_albicollis ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    whitethroat~1n 
  Zonotrichia_leucophrys ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     white-crowned_sparrow~1nz (^New_World_sparrow~1) finch with black-and-white striped crown
+ zebra_finch ( meanings=1 NOUN NOUN_SINGULAR ) 
+    Poephila_castanotis~1n 
  zebra ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 GRADE1_2 posdefault:NOUN ) 
     zebra~1nz (^equine~1) any of several fleet black-and-white striped African equines
  zebra-tailed_lizard ( meanings=1 NOUN NOUN_SINGULAR ) 
@@ -230,8 +192,16 @@
     genus_Zaglossus~1n 
  zoophyte ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
     zoophyte~1nz (^invertebrate~1) any of various invertebrate animals resembling a plant such as a sea anemone or coral or sponge
+ zebra_mussel ( meanings=1 NOUN NOUN_SINGULAR ) 
+    Dreissena_polymorpha~1n 
  Ziphiidae ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Hyperodontidae~1n 
+ Zalophus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    genus_Zalophus~1n 
+ Zalophus_californianus ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Zalophus_californicus~1nz (^sea_lion~1) often trained as a show animal
+ Zalophus_californicus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    California_sea_lion~1n 
  Zalophus_lobatus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Australian_sea_lion~1n 
  zygodactyl_foot ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -248,6 +218,8 @@
     meadow_jumping_mouse~1n 
  zebu ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     zebu~1nz (^Bos_indicus~1) domesticated ox having a humped back and long horns and a large dewlap
+ zoril ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
+    Ictonyx_frenata~1n 
  Zinjanthropus ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     genus_Zinjanthropus~1n 
  Zoarcidae ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -260,6 +232,8 @@
     window_pane~1n 
     Zen_Buddhism~1n 
     Zen_Buddhism~2n 
+ Zovirax ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    acyclovir~1n 
  Zyloprim ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     allopurinol~1n 
  zidovudine ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
@@ -272,6 +246,8 @@
     Ceftin~1n 
  zalcitabine ( meanings=1 NOUN NOUN_SINGULAR COMMON2 ) 
     DDC~1n 
+ Zarontin ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Emeside~1n 
  Zestril ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Prinival~1n 
  zoo ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON4 GRADE1_2 posdefault:NOUN ) 
@@ -282,8 +258,12 @@
     zoological~1az of or relating to animals or animal groups
     zoological~2az concerning the study of animals and their classification and properties
     zoological~3az 
+ zebra_crossing ( meanings=1 NOUN NOUN_SINGULAR ) 
+    pedestrian_crossing~1n 
  zori ( meanings=1 NOUN NOUN_SINGULAR COMMON1 ) 
     pusher~2n 
+ Zantac ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    ranitidine~1n 
  Zoloft ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     sertraline~1n 
  Zocor ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -303,6 +283,8 @@
     telephoto_lens~1n 
  Zimmer_frame ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Zimmer~1n 
+ Zamboni ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
+    Zamboni~1nz (^machine~2) the trademark for a machine that smooths the ice in an ice-skating rink
  zapper ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     zapper~1nz (^electrical_device~1) an electrical device that can injure or kill by means of electric currents
  zarf ( meanings=1 glosses=1 NOUN NOUN_SINGULAR COMMON1 ) 
@@ -330,6 +312,9 @@
     zill~1nz (^cymbal~1) one of a pair of small metallic cymbals worn on the thumb and middle finger
  zinc_ointment ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     zinc_ointment~1nz (^ointment~2) an ointment containing zinc that is used to treat certain skin diseases
+ zinc ( meanings=2 glosses=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON4 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT ) 
+    Zn~1nz (^metal~2) a bluish-white lustrous metallic element
+    zinc~2vz coat or cover with zinc
  zip_gun ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
     zip_gun~1nz (^shooting_iron~1) a crude homemade pistol
  zither ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
@@ -348,10 +333,14 @@
     eagerness~1n 
     zeal~2nz (^fire~6) excessive fervor to do something or accomplish some end
     ardour~3n 
- zygomatic_bone ( meanings=1 NOUN NOUN_SINGULAR ) 
-    cheekbone~1n 
+ zest ( meanings=3 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN VERB_DIRECTOBJECT ) 
+    tanginess~1n 
+    gusto~1n 
+    spice_up~2v 
+ zygomatic_bone ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
+    os_zygomaticum~1nz (^bone~2) the arch of bone beneath the eye that forms the prominence of the cheek
  zygomatic ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 posdefault:ADJECTIVE ) 
-    zygomatic_bone~1n 
+    cheekbone~1n 
     zygomatic~2az of or relating to the cheek region of the face
  zygoma ( meanings=1 NOUN NOUN_SINGULAR COMMON1 posdefault:NOUN ) 
     zygomatic_arch~1n 
@@ -375,6 +364,8 @@
     zero~2n 
  zeroth_law_of_thermodynamics ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     zeroth_law_of_thermodynamics~1nz (^law_of_thermodynamics~1) the law that if two bodies are in thermal equilibrium with a third body then the first two bodies are in thermal equilibrium with each other
+ zeroth ( meanings=1 glosses=1 ADJECTIVE ADJECTIVE_NORMAL COMMON2 COMMON1 ) 
+    zeroth~1az preceding even the first
  zakat ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON2 ) 
     zakat~1nz (^charity~1) the fourth pillar of Islam is almsgiving as an act of worship
  z-axis ( meanings=1 glosses=1 NOUN NOUN_SINGULAR ) 
@@ -388,6 +379,8 @@
     fauna~2nz (^collection~4) all the animal life in a particular region or period
  zoological_science ( meanings=1 NOUN NOUN_SINGULAR ) 
     zoology~1n 
+ zealotry ( meanings=1 NOUN NOUN_SINGULAR COMMON2 NOUN_NODETERMINER posdefault:NOUN ) 
+    fanatism~1n 
  zero_tolerance ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR ) 
     zero_tolerance~1nz (^intolerance~2) extreme intolerance of antisocial behavior 
  Zen_Buddhism ( meanings=2 glosses=2 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
@@ -399,9 +392,9 @@
     Zurvanism~1nz (^heresy~1) a heretical Zoroastrian doctrine holding that Zurvan was the ultimate source of the universe and that both Ahura Mazda and Ahriman were Zurvan's offspring
     Zurvanism~2nz (^sect~1) a Zoroastrian sect that claims Zurvan was the ultimate source of the universe
  ZIP_code ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
-    postal_code~1n 
+    postcode~1n 
  ZIP ( meanings=1 NOUN NOUN_PROPER_SINGULAR COMMON1 ) 
-    ZIP_code~1n 
+    postal_code~1n 
  Zend-Avesta ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_PROPER_SINGULAR ) 
     Avesta~1nz (^religious_writing~1) a collection of Zoroastrian texts gathered during the 4th or 6th centuries
  Zephaniah ( meanings=2 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -517,6 +510,8 @@
     Zomba~1nz (^city~2) a city in southern Malawi
  Zabrze ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
     Zabrze~1nz (^city~2) an industrial city in southern Poland
+ Zambia ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
+    Republic_of_Zambia~1n 
  Zimbabwe ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
     Republic_of_Zimbabwe~1n 
  Zaire_River ( meanings=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -670,6 +665,11 @@
     Thanksgiving_cactus~1n 
  zigzag_goldenrod ( meanings=1 NOUN NOUN_SINGULAR ) 
     broad_leaved_goldenrod~1n 
+ zigzag ( meanings=4 glosses=2 NOUN_ABSTRACT VERB_PRESENT VERB_INFINITIVE NOUN VERB ADJECTIVE ADVERB ADJECTIVE_NORMAL NOUN_SINGULAR ADJECTIVE_NOT_PREDICATE COMMON2 COMMON1 posdefault:NOUN VERB_NOOBJECT ) 
+    zag~1nz (^angular_shape~1) an angular shape characterized by sharp turns in alternating directions
+    zig-zag~1a 
+    zigzag~3z in a zigzag course or on a zigzag path
+    crank~10v 
  zinnia ( meanings=1 NOUN NOUN_SINGULAR COMMON2 posdefault:NOUN ) 
     old_maid_flower~1n 
  Zinnia_acerosa ( meanings=1 glosses=1 NOUN NOUN_PROPER_SINGULAR ) 
@@ -831,7 +831,7 @@
  zippo ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
     zilch~1n 
  zillion ( meanings=2 glosses=1 NOUN ADJECTIVE ADJECTIVE_NORMAL NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN ) 
-    trillion~3n 
+    billion~3n 
     zillion~2az very large indeterminate number
  zig ( meanings=2 VERB_PRESENT VERB_INFINITIVE NOUN VERB NOUN_SINGULAR COMMON2 COMMON1 posdefault:NOUN VERB_DIRECTOBJECT VERB_NOOBJECT ) 
     zigzag~1n 
@@ -851,6 +851,8 @@
     zoonotic~1az of or relating to or constituting zoonosis
  zit ( meanings=1 NOUN NOUN_SINGULAR COMMON2 COMMON1 NOUN_NODETERMINER posdefault:NOUN ) 
     pimple~1n 
+ zoopsia ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
+    zoopsia~1nz (^visual_hallucination~1) visual hallucination of animals
  zoanthropy ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
     zoanthropy~1nz (^delusion~3) the delusion that you have assumed the form of an animal
  zoophobia ( meanings=1 glosses=1 NOUN_ABSTRACT NOUN NOUN_SINGULAR COMMON1 ) 
@@ -1030,17 +1032,17 @@
  zippier ( MORE_FORM ADJECTIVE ADJECTIVE_NORMAL COMMON1 posdefault:ADJECTIVE ) comparative=zippy 
  zippiest ( MOST_FORM ADJECTIVE ADJECTIVE_NORMAL COMMON1 ) comparative=zippier 
  zealously ( meanings=1 glosses=1 ADVERB COMMON2 COMMON1 posdefault:ADVERB ) 
-    zealously~1bz in a zealous manner
+    zealously~1z in a zealous manner
  zestfully ( meanings=1 glosses=1 ADVERB COMMON1 ) 
-    zestily~1bz with zest
+    zestily~1z with zest
  zestily ( meanings=1 ADVERB COMMON1 ) 
-    zestfully~1b 
+    zestfully~1z 
  zymographically ( meanings=2 ADVERB ) 
-    zymographically~1bz 
-    zymographically~2bz 
+    zymographically~1z 
+    zymographically~2z 
  zygotically ( meanings=2 ADVERB COMMON1 ) 
-    zygotically~1bz 
-    zygotically~2bz 
+    zygotically~1z 
+    zygotically~2z 
  zonk_out ( meanings=2 glosses=1 VERB_PRESENT VERB_INFINITIVE VERB VERB_DIRECTOBJECT VERB_NOOBJECT PHRASAL_VERB INSEPARABLE_PHRASAL_VERB VERB_CONJUGATE1 ) 
     zonk_out~1vz fall asleep fast, as when one is extremely tired
     pass_out~2v 
